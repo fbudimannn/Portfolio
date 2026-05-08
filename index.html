@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fakhri Budiman — Data & AI Portfolio</title>
+  <meta name="description" content="Portfolio of Fakhri Budiman — Data Analyst & AI Enthusiast. MSc Business Analytics at University of Warwick. Specializing in Machine Learning, SQL, Python, and Generative AI." />
+  <meta property="og:title" content="Fakhri Budiman — Data & AI Portfolio" />
+  <meta property="og:description" content="Explore projects in Data Analytics, Machine Learning, and Generative AI." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono&family=DM+Sans:opsz@9..40;wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Three.js Canvas Background -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- Preloader — Split Door Gate -->
+  <div class="preloader" id="preloader">
+    <div class="gate gate-left"></div>
+    <div class="gate gate-right"></div>
+    <div class="gate-center">
+      <div class="gate-logo">FB</div>
+      <div class="gate-bar">
+        <div class="gate-bar-fill" id="gate-bar-fill"></div>
+      </div>
+      <div class="gate-text" id="gate-text">INITIALIZING</div>
+    </div>
+    <div class="gate-line gate-line-h"></div>
+    <div class="gate-line gate-line-v"></div>
+  </div>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
+  <!-- Video Background -->
+  <div class="video-container">
+    <video id="bg-video" autoplay muted loop playsinline>
+      <source src="/video_background.mp4" type="video/mp4" />
+    </video>
+    <div class="video-overlay"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-container">
+      <a href="#hero" class="nav-brand">FAKHRI BUDIMAN</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#hero" class="nav-link active" data-section="hero">Home</a></li>
+        <li><a href="#skills" class="nav-link" data-section="skills">Skills</a></li>
+        <li><a href="#timeline" class="nav-link" data-section="timeline">Experience</a></li>
+        <li><a href="#projects" class="nav-link" data-section="projects">Projects</a></li>
+        <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ======================== HERO ======================== -->
+    <section id="hero" class="section hero">
+      <div class="hero-split">
+        <!-- LEFT: Text Content -->
+        <div class="hero-left">
+          <div class="hero-greeting">
+            <span class="greeting-word" id="greeting-word">Hello,</span>
+          </div>
+          <h1 class="hero-title" id="hero-title">Welcome to my<br>portfolio</h1>
+          <p class="hero-desc">I am a passionate Data Analyst & AI Enthusiast based in Indonesia. MSc Business Analytics at University of Warwick. Welcome to my showcase of data-driven projects.</p>
+          <a href="#projects" class="hero-cta" id="hero-cta">
+            View Portfolio
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          </a>
+        </div>
+
+        <!-- RIGHT: Photo with silhouette + bubbles -->
+        <div class="hero-right">
+          <div class="hero-photo-wrapper">
+            <div class="photo-silhouette"></div>
+            <img src="/fakhri.png" alt="Fakhri Budiman" class="hero-photo" id="hero-photo" />
+          </div>
+          <!-- Dynamic Skill Bubbles (JS-generated) -->
+          <div class="bubbles-container" id="bubbles-container"></div>
+        </div>
+      </div>
+
+      <div class="scroll-indicator" id="scroll-indicator">
+        <span>Scroll to explore</span>
+        <div class="scroll-arrow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= SKILLS ======================= -->
+    <section id="skills" class="section skills-section">
+      <div class="section-container">
+        <div class="section-header" id="skills-header">
+          <span class="section-tag">What I Bring</span>
+          <h2 class="section-title">My Universe of Skills</h2>
+          <p class="section-subtitle">A curated constellation of skills honed through education, projects, and professional experience.</p>
+        </div>
+
+        <div class="skills-grid">
+          <!-- Soft Skills -->
+          <div class="skill-category" data-accent="1">
+            <div class="category-icon">🧠</div>
+            <h3 class="category-title">Soft Skills</h3>
+            <div class="skill-tags">
+              <span class="skill-tag">Teamwork</span>
+              <span class="skill-tag">Detail-Oriented</span>
+              <span class="skill-tag">Fast Learner</span>
+              <span class="skill-tag">Analytical Thinking</span>
+              <span class="skill-tag">Growth Mindset</span>
+              <span class="skill-tag">Problem Solver</span>
+              <span class="skill-tag">Leadership</span>
+            </div>
+          </div>
+
+          <!-- Technical Skills -->
+          <div class="skill-category" data-accent="2">
+            <div class="category-icon">⚡</div>
+            <h3 class="category-title">Technical Skills</h3>
+            <div class="skill-tags">
+              <span class="skill-tag">SQL</span>
+              <span class="skill-tag">PostgreSQL</span>
+              <span class="skill-tag">Machine Learning</span>
+              <span class="skill-tag">Deep Learning</span>
+              <span class="skill-tag">Data Visualisation</span>
+              <span class="skill-tag">Excel</span>
+              <span class="skill-tag">Generative AI</span>
+              <span class="skill-tag">LLM Fine-tuning</span>
+              <span class="skill-tag">RAG</span>
+              <span class="skill-tag">Forecasting</span>
+              <span class="skill-tag">A/B Testing</span>
+            </div>
+          </div>
+
+          <!-- Toolset -->
+          <div class="skill-category" data-accent="3">
+            <div class="category-icon">🛠️</div>
+            <h3 class="category-title">Toolset</h3>
+            <div class="skill-tags">
+              <span class="skill-tag">Tableau</span>
+              <span class="skill-tag">Power BI</span>
+              <span class="skill-tag">Looker Studio</span>
+              <span class="skill-tag">Adobe Illustrator</span>
+              <span class="skill-tag">Figma</span>
+              <span class="skill-tag">Python</span>
+              <span class="skill-tag">BigQuery</span>
+              <span class="skill-tag">Slack</span>
+              <span class="skill-tag">RStudio</span>
+              <span class="skill-tag">Streamlit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== TIMELINE ====================== -->
+    <section id="timeline" class="section timeline-section">
+      <div class="section-container">
+        <div class="section-header" id="timeline-header">
+          <span class="section-tag">My Journey</span>
+          <h2 class="section-title">Experience & Education</h2>
+          <p class="section-subtitle">From Bandung to Coventry — a path fuelled by curiosity and data.</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-line"></div>
+
+          <div class="timeline-item" data-side="right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <span class="timeline-date">Sep 2024 – Sep 2025</span>
+              <h3 class="timeline-title">University of Warwick</h3>
+              <p class="timeline-role">MSc Business Analytics</p>
+              <p class="timeline-desc">Merit · LPDP (Indonesian Endowment Fund) Scholar. Advanced coursework in machine learning, statistical modelling, and business intelligence.</p>
+              <div class="timeline-tags">
+                <span class="timeline-tag">Merit</span>
+                <span class="timeline-tag">LPDP Scholar</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item" data-side="left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <span class="timeline-date">Sep 2023 – Sep 2024</span>
+              <h3 class="timeline-title">RevoU</h3>
+              <p class="timeline-role">Team Lead — Full Stack Data Analytics</p>
+              <p class="timeline-desc">Led cross-functional data analytics teams. Achieved 5.0/5.0 satisfaction rating. Mentored junior analysts on SQL, Python, and dashboard design.</p>
+              <div class="timeline-tags">
+                <span class="timeline-tag">Team Lead</span>
+                <span class="timeline-tag">5.0/5.0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item" data-side="right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <span class="timeline-date">Jan – Apr 2023</span>
+              <h3 class="timeline-title">RevoU</h3>
+              <p class="timeline-role">Data Analyst Associate</p>
+              <p class="timeline-desc">Built KPI dashboards, conducted market basket analysis, and executed A/B testing workflows for data-driven decision making.</p>
+              <div class="timeline-tags">
+                <span class="timeline-tag">KPI Dashboards</span>
+                <span class="timeline-tag">A/B Testing</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item" data-side="left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <span class="timeline-date">2017 – 2021</span>
+              <h3 class="timeline-title">Telkom University</h3>
+              <p class="timeline-role">BSc International ICT Business</p>
+              <p class="timeline-desc">3.68 GPA · Cum Laude · Semester exchange at Korea University. Foundation in business analytics, information systems, and digital strategy.</p>
+              <div class="timeline-tags">
+                <span class="timeline-tag">Cum Laude</span>
+                <span class="timeline-tag">Korea Exchange</span>
+                <span class="timeline-tag">3.68 GPA</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== PROJECTS ====================== -->
+    <section id="projects" class="section projects-section">
+      <div class="section-container">
+        <div class="section-header" id="projects-header">
+          <span class="section-tag">Portfolio</span>
+          <h2 class="section-title">Projects</h2>
+          <p class="section-subtitle">End-to-end data projects from analysis to deployment.</p>
+        </div>
+
+        <div class="projects-grid">
+          <div class="project-card" data-accent="1">
+            <div class="card-number">01</div>
+            <h3 class="card-title">RFM Segmentation</h3>
+            <p class="card-desc">Customer segmentation for EcommerceU using RFM analysis, uncovering high-value customer clusters and churn patterns.</p>
+            <div class="card-tags">
+              <span class="tag">Python</span><span class="tag">BigQuery</span><span class="tag">Tableau</span>
+            </div>
+            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
+          </div>
+
+          <div class="project-card" data-accent="2">
+            <div class="card-number">02</div>
+            <h3 class="card-title">End-to-End Analysis</h3>
+            <p class="card-desc">Multi-industry data pipelines — from raw data ingestion to actionable insights dashboards.</p>
+            <div class="card-tags">
+              <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Analytics</span>
+            </div>
+            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
+          </div>
+
+          <div class="project-card" data-accent="3">
+            <div class="card-number">03</div>
+            <h3 class="card-title">Unsupervised Learning</h3>
+            <p class="card-desc">Clustering models for customer segmentation and anomaly detection using K-Means and hierarchical methods.</p>
+            <div class="card-tags">
+              <span class="tag">Python</span><span class="tag">Scikit-learn</span><span class="tag">Clustering</span>
+            </div>
+            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
+          </div>
+
+          <div class="project-card" data-accent="1">
+            <div class="card-number">04</div>
+            <h3 class="card-title">Supervised Learning</h3>
+            <p class="card-desc">Predictive modelling with classification and regression — feature engineering, model tuning, and evaluation.</p>
+            <div class="card-tags">
+              <span class="tag">Python</span><span class="tag">ML</span><span class="tag">XGBoost</span>
+            </div>
+            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
+          </div>
+
+          <div class="project-card" data-accent="2">
+            <div class="card-number">05</div>
+            <h3 class="card-title">Generative AI</h3>
+            <p class="card-desc">LLM fine-tuning and Retrieval-Augmented Generation (RAG) pipelines for domain-specific AI applications.</p>
+            <div class="card-tags">
+              <span class="tag">Python</span><span class="tag">LLM</span><span class="tag">RAG</span>
+            </div>
+            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
+          </div>
+
+          <div class="project-card" data-accent="3">
+            <div class="card-number">06</div>
+            <h3 class="card-title">Database Engineering</h3>
+            <p class="card-desc">End-to-end database design — ERD modelling, normalization, and query optimization for production systems.</p>
+            <div class="card-tags">
+              <span class="tag">SQL</span><span class="tag">PostgreSQL</span><span class="tag">ERD</span>
+            </div>
+            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
+          </div>
+
+          <div class="project-card" data-accent="1">
+            <div class="card-number">07</div>
+            <h3 class="card-title">A/B Testing</h3>
+            <p class="card-desc">Statistical hypothesis testing for product experiments — sample sizing, significance testing, and business recommendations.</p>
+            <div class="card-tags">
+              <span class="tag">Python</span><span class="tag">Statistics</span><span class="tag">Analytics</span>
+            </div>
+            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
+          </div>
+
+          <div class="project-card" data-accent="2">
+            <div class="card-number">08</div>
+            <h3 class="card-title">Data Visualization</h3>
+            <p class="card-desc">Interactive dashboards and visual storytelling across Tableau, Power BI, and Looker Studio.</p>
+            <div class="card-tags">
+              <span class="tag">Tableau</span><span class="tag">Power BI</span><span class="tag">Looker</span>
+            </div>
+            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
+          </div>
+
+          <div class="project-card" data-accent="3">
+            <div class="card-number">09</div>
+            <h3 class="card-title">Customer Behaviour</h3>
+            <p class="card-desc">9 side projects analysing customer behaviour — purchase patterns, retention, and lifetime value modelling.</p>
+            <div class="card-tags">
+              <span class="tag">Python</span><span class="tag">Analytics</span><span class="tag">EDA</span>
+            </div>
+            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== CONTACT ====================== -->
+    <section id="contact" class="section contact-section">
+      <div class="section-container">
+        <div class="section-header" id="contact-header">
+          <span class="section-tag">Get In Touch</span>
+          <h2 class="section-title">Let's Connect</h2>
+        </div>
+
+        <div class="terminal">
+          <div class="terminal-header">
+            <span class="terminal-dot" style="background:#ff5f56"></span>
+            <span class="terminal-dot" style="background:#ffbd2e"></span>
+            <span class="terminal-dot" style="background:#27c93f"></span>
+            <span class="terminal-title">fakhri@portfolio ~ %</span>
+          </div>
+          <div class="terminal-body">
+            <p class="terminal-line"><span class="terminal-prompt">$</span> echo $EMAIL</p>
+            <p class="typewriter" id="typewriter"></p>
+            <p class="terminal-line"><span class="terminal-prompt">$</span> cat socials.txt</p>
+            <div class="social-links">
+              <a href="https://linkedin.com/in/fakhribudiman" class="social-link" target="_blank" rel="noopener">
+                <span class="social-icon">in</span> LinkedIn
+              </a>
+              <a href="https://github.com/fakhribudiman" class="social-link" target="_blank" rel="noopener">
+                <span class="social-icon">gh</span> GitHub
+              </a>
+              <a href="mailto:fakhribudiman1721@gmail.com" class="social-link">
+                <span class="social-icon">@</span> Email
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <blockquote class="contact-quote">
+          "You can have data without information, but you cannot have information without data."
+          <cite>— Daniel Keys Moran</cite>
+        </blockquote>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Built with passion by <strong>Fakhri Budiman</strong> · Made in Indonesia 🇮🇩</p>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
