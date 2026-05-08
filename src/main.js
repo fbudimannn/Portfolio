@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProjectCards();
   initContactSection();
   initVideoBackground();
+  initMusicPlayer();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -743,5 +744,26 @@ function initContactSection() {
   gsap.from('.contact-quote', {
     y: 30, opacity: 0, duration: 0.8,
     scrollTrigger: { trigger: '.contact-quote', start: 'top 85%' }
+  });
+}
+
+/* ============ MUSIC PLAYER ============ */
+function initMusicPlayer() {
+  const musicToggle = document.getElementById('music-toggle');
+  const bgMusic = document.getElementById('bg-music');
+  
+  if (!musicToggle || !bgMusic) return;
+
+  // Set music volume (optional, so it's not too loud)
+  bgMusic.volume = 0.4;
+
+  musicToggle.addEventListener('click', () => {
+    if (bgMusic.paused) {
+      bgMusic.play();
+      musicToggle.classList.add('playing');
+    } else {
+      bgMusic.pause();
+      musicToggle.classList.remove('playing');
+    }
   });
 }

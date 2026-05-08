@@ -695,6 +695,67 @@ img { max-width: 100%; display: block; }
 }
 .footer strong { color: var(--text-dim); }
 
+/* ======================== MUSIC TOGGLE ======================== */
+.music-toggle {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+.music-toggle:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+.music-toggle .bar {
+  width: 3px;
+  height: 15px;
+  background-color: var(--accent-1);
+  border-radius: 2px;
+  animation: equalize 1s ease-in-out infinite alternate;
+  animation-play-state: paused; /* Paused by default */
+}
+/* Individual bar delays to make them bounce randomly */
+.music-toggle .bar:nth-child(1) { animation-delay: 0.0s; height: 10px; }
+.music-toggle .bar:nth-child(2) { animation-delay: 0.3s; height: 15px; }
+.music-toggle .bar:nth-child(3) { animation-delay: 0.6s; height: 12px; }
+.music-toggle .bar:nth-child(4) { animation-delay: 0.2s; height: 18px; }
+
+/* When playing, run the animation and add a subtle glow */
+.music-toggle.playing {
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+}
+.music-toggle.playing .bar {
+  animation-play-state: running;
+}
+
+@keyframes equalize {
+  0% { transform: scaleY(0.3); opacity: 0.5; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .music-toggle {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+  }
+}
+
 /* ======================== RESPONSIVE ======================== */
 @media (max-width: 900px) {
   .nav-links {
