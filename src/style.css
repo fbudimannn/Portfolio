@@ -696,7 +696,7 @@ img { max-width: 100%; display: block; }
 .footer strong { color: var(--text-dim); }
 
 /* ======================== RESPONSIVE ======================== */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .nav-links {
     position: fixed; top: 0; right: -100%;
     width: 70%; height: 100vh;
@@ -714,14 +714,15 @@ img { max-width: 100%; display: block; }
     flex-direction: column;
     padding: 6rem 1.5rem 2rem;
     text-align: center;
-    gap: 3rem;
+    gap: 5rem;
+    align-items: center;
   }
-  .hero-left { max-width: 100%; align-items: center; display: flex; flex-direction: column; }
-  .hero-desc { text-align: center; }
-  .hero-photo-wrapper { max-width: 240px; margin: 0 auto; }
+  .hero-left { max-width: 100%; align-items: center; display: flex; flex-direction: column; padding-top: 0; }
+  .hero-desc { text-align: center; max-width: 500px; }
+  .hero-photo-wrapper { max-width: 260px; margin: 0 auto; }
 
-  /* Bubbles: smaller on tablet */
-  .bubbles-container { inset: -15% -20% -5% -15%; }
+  /* Bubbles: tighter inset to prevent overlap */
+  .bubbles-container { inset: -5% -10% -5% -10%; }
   .bubble { font-size: 0.55rem; padding: 0.3rem 0.6rem; }
 
   .skills-grid { grid-template-columns: 1fr; }
@@ -742,6 +743,6 @@ img { max-width: 100%; display: block; }
   .hero-split { padding-top: 4.5rem; }
   .hero-desc { font-size: 0.9rem; }
   .hero-cta { font-size: 0.78rem; padding: 0.7rem 1.4rem; }
-  .bubbles-container { inset: -20% -25% -10% -20%; }
+  .bubbles-container { inset: 0% -5% 0% -5%; }
   .bubble { font-size: 0.45rem; padding: 0.2rem 0.4rem; border-width: 1px; }
 }
