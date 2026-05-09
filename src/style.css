@@ -487,7 +487,7 @@ img { max-width: 100%; display: block; }
 
 /* Floating Skill Bubbles (dynamic) */
 
-/* ======================== QUOTE (COMET SHATTER) ======================== */
+/* ======================== QUOTE (SCI-FI TYPING) ======================== */
 .quote-section {
   position: relative;
   min-height: 50vh;
@@ -495,63 +495,56 @@ img { max-width: 100%; display: block; }
   overflow: visible;
   background: transparent;
   z-index: 10;
-  padding: 4rem 2rem;
+  padding: 6rem 2rem;
 }
-.shatter-shape {
-  position: relative;
-  background: rgba(13, 13, 31, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: 20px;
-  padding: 4rem 3rem;
-  max-width: 800px;
+.scifi-quote-container {
+  max-width: 1000px;
   width: 100%;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(56, 189, 248, 0.1);
-  overflow: hidden;
-  opacity: 0; /* Hidden before impact */
-  animation: shape-float 6s ease-in-out infinite alternate;
-}
-@keyframes shape-float {
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(-15px); }
-}
-
-.shatter-video {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%; height: 100%;
-  object-fit: cover;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0; /* Hidden until triggered */
-}
-
-.shatter-quote {
-  position: relative;
-  z-index: 2;
-  font-family: var(--font-mono);
-  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-  font-weight: 400;
   text-align: center;
-  color: var(--text);
-  line-height: 1.6;
-  opacity: 0;
-  text-shadow: 0 0 15px rgba(56,189,248,0.5);
-  letter-spacing: 0.05em;
+  position: relative;
 }
-.shatter-quote cite {
-  display: block;
-  margin-top: 2rem;
-  font-family: var(--font-display);
-  font-size: 1.1rem;
+.scifi-quote {
+  font-family: var(--font-mono);
+  font-size: clamp(1.8rem, 4vw, 3.5rem);
+  font-weight: 700;
   color: var(--accent-1);
+  line-height: 1.4;
+  text-shadow: 0 0 20px rgba(56,189,248,0.6);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.scifi-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 0.1em;
+  background: var(--accent-1);
+  margin-left: 5px;
+  vertical-align: bottom;
+  animation: cursor-blink 1s infinite;
+  box-shadow: 0 0 10px var(--accent-1);
+}
+@keyframes cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.scifi-cite {
+  display: block;
+  margin-top: 3rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--text-dim);
   font-style: normal;
   font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  text-shadow: 0 0 10px rgba(56,189,248,0.4);
+  letter-spacing: 0.3em;
+  opacity: 0; /* Hidden initially */
+  text-shadow: 0 0 10px rgba(148,163,184,0.4);
+}
+.float-effect {
+  animation: quote-float 6s ease-in-out infinite alternate;
+}
+@keyframes quote-float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-20px) rotate(0.5deg); text-shadow: 0 0 30px rgba(56,189,248,0.8); }
 }
 .bubbles-container {
   position: absolute; inset: -5% -10% 0% -5%;

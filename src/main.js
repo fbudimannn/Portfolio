@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactSection();
   initVideoBackground();
   initMusicPlayer();
-  initQuoteShatter();
+  initScifiTypingQuote();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -744,37 +744,41 @@ function initContactSection() {
 
 }
 
-/* ============ QUOTE SHATTER ANIMATION ============ */
-function initQuoteShatter() {
+/* ============ SCI-FI TYPING QUOTE ============ */
+function initScifiTypingQuote() {
   const quoteSec = document.getElementById('quote');
-  const shatterVideo = document.getElementById('shatter-video');
-  if (!quoteSec) return;
+  const typingTextEl = document.getElementById('scifi-typing-text');
+  const citeEl = document.getElementById('scifi-cite');
+  const containerEl = document.querySelector('.scifi-quote-container');
+  
+  if (!quoteSec || !typingTextEl) return;
 
-  // Set initial states
-  gsap.set('#shatter-shape', { opacity: 0, scale: 0.95 });
-  gsap.set('#shatter-quote', { opacity: 0, y: 20 });
+  const fullText = '"YOU CAN HAVE DATA WITHOUT INFORMATION, BUT YOU CANNOT HAVE INFORMATION WITHOUT DATA."';
+  let typed = false;
 
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#quote',
-      start: 'top 60%', // triggers when the section is at 60% of viewport
-      once: true
+  ScrollTrigger.create({
+    trigger: '#quote',
+    start: 'top 65%',
+    once: true,
+    onEnter: () => {
+      if (typed) return;
+      typed = true;
+      let i = 0;
+      
+      // Fast sci-fi typing
+      const interval = setInterval(() => {
+        if (i <= fullText.length) {
+          typingTextEl.textContent = fullText.substring(0, i);
+          i++;
+        } else {
+          clearInterval(interval);
+          // When typing finishes, show cite and start float effect
+          gsap.to(citeEl, { opacity: 1, y: -10, duration: 1, ease: 'power2.out' });
+          containerEl.classList.add('float-effect');
+        }
+      }, 50); // 50ms per character
     }
   });
-
-  tl.to('#shatter-shape', {
-      opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out',
-      onComplete: () => {
-        if (shatterVideo) {
-          shatterVideo.style.opacity = 1;
-          shatterVideo.play().catch(e => console.log('Video autoplay blocked:', e));
-        }
-      }
-    })
-    // Text glitches/flickers in after a delay (adjust delay based on the video length)
-    .to('#shatter-quote', {
-      opacity: 1, y: 0, scale: 1, duration: 1.5, ease: 'elastic.out(1, 0.4)'
-    }, '+=1.5'); // waits 1.5s after shape appears (while video is playing)
 }
 
 /* ============ MUSIC PLAYER ============ */
