@@ -752,69 +752,81 @@ img.simple-icon {
   transform: scale(1.15) !important;
 }
 
-/* ======================== TIMELINE ======================== */
-.timeline-section { background: linear-gradient(180deg, transparent, rgba(13,13,31,0.3), transparent); }
-.timeline {
-  position: relative; padding: 2rem 0;
-  max-width: 900px; margin: 0 auto;
+/* ======================== JOURNEY PORTALS ======================== */
+.journey-section { padding: 6rem 0; position: relative; }
+.portals-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-top: 4rem;
 }
-.timeline-line {
-  position: absolute; left: 50%; top: 0; bottom: 0;
-  width: 2px; transform: translateX(-50%);
-  background: linear-gradient(180deg, transparent, var(--accent-2), var(--accent-1), transparent);
-}
-.timeline-item {
-  position: relative; width: 50%;
-  padding: 0 2.5rem 3rem;
-}
-.timeline-item[data-side="right"] { margin-left: 50%; }
-.timeline-item[data-side="left"] { text-align: right; }
 
-.timeline-dot {
-  position: absolute; top: 0.5rem;
-  width: 14px; height: 14px;
-  background: var(--accent-2);
-  border: 3px solid var(--bg);
-  border-radius: 50%; z-index: 2;
-  box-shadow: 0 0 12px rgba(59,130,246,0.4);
+.scifi-portal {
+  position: relative;
+  height: 450px;
+  border-radius: 10px;
+  clip-path: polygon(10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%, 0 10%);
+  background: rgba(13,13,31,0.8);
+  border: 1px solid rgba(56,189,248, 0.4);
+  overflow: hidden;
+  cursor: pointer;
 }
-.timeline-item[data-side="right"] .timeline-dot { left: -7px; }
-.timeline-item[data-side="left"] .timeline-dot { right: -7px; }
 
-.timeline-content {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px; padding: 1.5rem;
-  transition: transform 0.4s, box-shadow 0.4s;
+/* The Door that slides away */
+.portal-door {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(8,12,24,0.95));
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: transform 0.6s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.5s ease;
+  border: 2px solid rgba(56,189,248, 0.2);
 }
-.timeline-content:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+.door-content {
+  text-align: center;
+  transition: transform 0.3s ease;
 }
-.timeline-date {
-  font-family: var(--font-mono); font-size: 0.72rem;
-  color: var(--accent-1); letter-spacing: 0.05em;
+.door-icon { font-size: 3rem; display: block; margin-bottom: 1rem; filter: grayscale(1) sepia(1) hue-rotate(180deg) saturate(3); }
+.door-title { font-family: var(--font-display); font-size: 2rem; color: var(--accent-1); letter-spacing: 0.2em; text-shadow: 0 0 15px rgba(56,189,248,0.5); }
+.door-glow { position: absolute; width: 100%; height: 2px; background: var(--accent-1); top: 50%; left: 0; box-shadow: 0 0 20px var(--accent-1); transform: scaleX(0); transition: transform 0.4s ease; }
+
+/* The Inside (Hologram) */
+.portal-inside {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 5;
+  background: radial-gradient(circle at center, rgba(56,189,248,0.1) 0%, transparent 70%);
 }
-.timeline-title {
-  font-family: var(--font-display); font-weight: 700;
-  font-size: 1.2rem; margin-top: 0.3rem;
+.inside-title { font-family: var(--font-mono); font-size: 1.2rem; color: var(--accent-1); margin-bottom: 2rem; text-transform: uppercase; border-bottom: 1px solid rgba(56,189,248,0.3); padding-bottom: 0.5rem; width: 100%; }
+.inside-list { list-style: none; padding: 0; margin: 0 0 2rem 0; width: 100%; }
+.inside-list li { margin-bottom: 1.5rem; color: var(--text); font-size: 1rem; position: relative; padding-left: 1rem; border-left: 2px solid var(--accent-2); }
+.inside-list .year { display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-1); margin-bottom: 0.2rem; }
+.inside-list strong { color: #fff; letter-spacing: 0.05em; }
+
+.portal-btn {
+  background: transparent; border: 1px solid var(--accent-1); color: var(--accent-1); font-family: var(--font-mono); padding: 0.8rem 1.5rem; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.1em; align-self: center; margin-top: auto;
 }
-.timeline-role {
-  font-size: 0.95rem; color: var(--accent-2);
-  margin-bottom: 0.5rem;
+.portal-btn:hover { background: rgba(56,189,248,0.2); box-shadow: 0 0 15px rgba(56,189,248,0.5); }
+
+/* Hover Animation */
+.scifi-portal:hover .portal-door {
+  transform: translateY(-100%);
+  opacity: 0;
 }
-.timeline-desc {
-  font-size: 0.88rem; color: var(--text-dim);
-  line-height: 1.6; margin-bottom: 0.8rem;
-}
-.timeline-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.timeline-item[data-side="left"] .timeline-tags { justify-content: flex-end; }
-.timeline-tag {
-  font-family: var(--font-mono); font-size: 0.65rem;
-  padding: 0.2rem 0.6rem;
-  background: rgba(59,130,246,0.1);
-  border: 1px solid rgba(59,130,246,0.2);
-  border-radius: 12px; color: var(--accent-2);
+.scifi-portal:hover .door-glow { transform: scaleX(1); }
+
+@media (max-width: 768px) {
+  .portals-container { grid-template-columns: 1fr; }
+  .scifi-portal { height: 350px; }
+  .door-title { font-size: 1.5rem; }
 }
 
 /* ======================== PROJECTS ======================== */
