@@ -804,10 +804,94 @@ function initMusicPlayer() {
   });
 }
 
-/* ============ MAGIC PORTALS (GSAP SCROLLTRIGGER) ============ */
+/* ============ MAGIC PORTALS (GSAP SCROLLTRIGGER + CANVAS PARTICLES) ============ */
 function initMagicPortals() {
   const portals = document.querySelectorAll('.magic-portal');
   if (!portals.length) return;
+
+  const canvas = document.getElementById('portal-particles');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  // Set canvas size to cover the entire portal container
+  const container = document.getElementById('magic-portals');
+  let width, height;
+  function resize() {
+    width = canvas.width = container.offsetWidth;
+    height = canvas.height = container.offsetHeight || 400; // fallback height
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Particle System
+  const particles = [];
+  const maxParticles = 150;
+  
+  class Particle {
+    constructor(x, y, radius) {
+      this.centerX = x;
+      this.centerY = y;
+      this.radius = radius;
+      this.angle = Math.random() * Math.PI * 2;
+      // Faster rotation for Doctor Strange feel
+      this.speed = (Math.random() * 0.05 + 0.02) * (Math.random() > 0.5 ? 1 : -1); 
+      this.distance = radius + (Math.random() * 20 - 10);
+      this.size = Math.random() * 3 + 1;
+      this.alpha = Math.random() * 0.5 + 0.5;
+      this.life = Math.random() * 100;
+    }
+    update() {
+      this.angle += this.speed;
+      this.life--;
+      if(this.life <= 0) {
+        this.alpha -= 0.02;
+      }
+    }
+    draw(ctx) {
+      const x = this.centerX + Math.cos(this.angle) * this.distance;
+      const y = this.centerY + Math.sin(this.angle) * this.distance;
+      ctx.beginPath();
+      ctx.arc(x, y, this.size, 0, Math.PI * 2);
+      // Sci-fi blue color
+      ctx.fillStyle = `rgba(56, 189, 248, ${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  let animationFrame;
+  let activePortals = [];
+
+  function renderParticles() {
+    ctx.clearRect(0, 0, width, height);
+    
+    // Add new particles
+    activePortals.forEach(portal => {
+      if (particles.length < maxParticles) {
+        const rect = portal.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        // Calculate center relative to canvas
+        const centerX = (rect.left - containerRect.left) + rect.width / 2;
+        const centerY = (rect.top - containerRect.top) + rect.height / 2;
+        
+        // Only spawn if valid coordinates
+        if(centerX > 0 && centerY > 0) {
+           particles.push(new Particle(centerX, centerY, 125)); // 125 is approx portal radius
+        }
+      }
+    });
+
+    // Update and draw
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.update();
+      p.draw(ctx);
+      if (p.alpha <= 0) {
+        particles.splice(i, 1);
+      }
+    }
+    
+    animationFrame = requestAnimationFrame(renderParticles);
+  }
 
   // Use GSAP to create a Dr. Strange portal popping effect when scrolled into view
   portals.forEach((portal, index) => {
@@ -829,11 +913,23 @@ function initMagicPortals() {
           toggleActions: 'play none none reverse' // play on enter, reverse on leave back up
         },
         delay: index * 0.3, // stagger the portals
+        onStart: () => {
+             if(activePortals.length === 0) {
+                 renderParticles();
+             }
+             activePortals.push(portal);
+        },
         onComplete: () => {
           portal.classList.add('is-visible');
         },
         onReverseComplete: () => {
           portal.classList.remove('is-visible');
+          activePortals = activePortals.filter(p => p !== portal);
+          if(activePortals.length === 0) {
+              cancelAnimationFrame(animationFrame);
+              ctx.clearRect(0, 0, width, height);
+              particles.length = 0;
+          }
         }
       }
     );
