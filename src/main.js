@@ -161,25 +161,26 @@ function initPreloader() {
   function openGate() {
     const tl = gsap.timeline();
 
-    // Stage 1: Trigger warp speed!
+    // Stage 1: Trigger warp speed & spin rings faster
     tl.add(() => {
       triggerWarp();
     })
+    .to('.radar-ring-1', { rotation: 1080, duration: 1.5, ease: 'power2.in' }, 0)
+    .to('.radar-ring-2', { rotation: -1080, duration: 1.5, ease: 'power2.in' }, 0)
+    .to('.telemetry', { opacity: 0, stagger: 0.1, duration: 0.2 }, 0)
     // Stage 2: Logo glows intensely
     .to('.gate-logo', {
-      textShadow: '0 0 60px rgba(56,189,248,0.8), 0 0 120px rgba(167,139,250,0.4)',
+      textShadow: '0 0 60px rgba(56,189,248,0.8), 0 0 120px rgba(59,130,246,0.6)',
       scale: 1.2,
       color: '#fff',
       duration: 0.6,
       ease: 'power2.out',
-    })
+    }, 0.2)
     // Stage 3: Hold for warp effect
     .to('.gate-bar', { opacity: 0, duration: 0.3 }, '-=0.3')
-    .to('.gate-text', {
-      opacity: 0, duration: 0.2,
-    }, '-=0.2')
+    .to('.gate-text', { opacity: 0, duration: 0.2 }, '-=0.2')
     // Stage 4: Center content fades with warp blur
-    .to('.gate-logo', {
+    .to('.gate-logo-wrapper, .radar-ring', {
       opacity: 0, scale: 2.5, filter: 'blur(10px)',
       duration: 0.5, ease: 'power2.in',
     })

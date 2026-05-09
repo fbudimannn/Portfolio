@@ -16,16 +16,28 @@
   <!-- Three.js Canvas Background -->
   <canvas id="three-canvas"></canvas>
 
-  <!-- Preloader — Split Door Gate -->
+  <!-- Preloader — Space Airlock Gate -->
   <div class="preloader" id="preloader">
     <div class="gate gate-left"></div>
     <div class="gate gate-right"></div>
+    
+    <!-- Telemetry Data (Sci-Fi corners) -->
+    <div class="telemetry top-left">SYS_CORE: ONLINE<br>LAT: 45.109<br>LNG: -12.440</div>
+    <div class="telemetry bottom-right">MEM: 84%<br>WARP_DRIVE: STABLE<br>SEC: ENCRYPTED</div>
+
     <div class="gate-center">
-      <div class="gate-logo">FB</div>
+      <!-- Sci-fi rotating rings -->
+      <div class="radar-ring radar-ring-1"></div>
+      <div class="radar-ring radar-ring-2"></div>
+      
+      <div class="gate-logo-wrapper">
+        <div class="gate-logo" data-text="FB">FB</div>
+      </div>
+      
       <div class="gate-bar">
         <div class="gate-bar-fill" id="gate-bar-fill"></div>
       </div>
-      <div class="gate-text" id="gate-text">INITIALIZING</div>
+      <div class="gate-text" id="gate-text">INITIALIZING...</div>
     </div>
     <div class="gate-line gate-line-h"></div>
     <div class="gate-line gate-line-v"></div>
