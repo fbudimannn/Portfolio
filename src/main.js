@@ -825,7 +825,7 @@ function initMagicPortals() {
 
   // Particle System
   const particles = [];
-  const maxParticles = 150;
+  const maxParticles = 300; // More particles for a denser spark effect
   
   class Particle {
     constructor(x, y, radius) {
@@ -833,18 +833,28 @@ function initMagicPortals() {
       this.centerY = y;
       this.radius = radius;
       this.angle = Math.random() * Math.PI * 2;
-      // Faster rotation for Doctor Strange feel
-      this.speed = (Math.random() * 0.05 + 0.02) * (Math.random() > 0.5 ? 1 : -1); 
-      this.distance = radius + (Math.random() * 20 - 10);
-      this.size = Math.random() * 3 + 1;
-      this.alpha = Math.random() * 0.5 + 0.5;
-      this.life = Math.random() * 100;
+      // Slower rotation for a more majestic, less chaotic feel
+      this.speed = (Math.random() * 0.02 + 0.005) * (Math.random() > 0.5 ? 1 : -1); 
+      this.distance = radius + (Math.random() * 15 - 7.5);
+      this.size = Math.random() * 2.5 + 0.5; // Slightly smaller sparks
+      this.alpha = Math.random() * 0.8 + 0.2;
+      this.life = Math.random() * 80 + 20;
+      
+      // Color variations: mostly blue, some cyan/white
+      const colorType = Math.random();
+      if(colorType > 0.9) {
+          this.color = `rgba(255, 255, 255, `; // White sparks
+      } else if (colorType > 0.6) {
+          this.color = `rgba(0, 240, 255, `; // Bright Cyan
+      } else {
+          this.color = `rgba(30, 144, 255, `; // Deep Blue
+      }
     }
     update() {
       this.angle += this.speed;
       this.life--;
       if(this.life <= 0) {
-        this.alpha -= 0.02;
+        this.alpha -= 0.015;
       }
     }
     draw(ctx) {
@@ -852,8 +862,7 @@ function initMagicPortals() {
       const y = this.centerY + Math.sin(this.angle) * this.distance;
       ctx.beginPath();
       ctx.arc(x, y, this.size, 0, Math.PI * 2);
-      // Sci-fi blue color
-      ctx.fillStyle = `rgba(56, 189, 248, ${this.alpha})`;
+      ctx.fillStyle = this.color + `${this.alpha})`;
       ctx.fill();
     }
   }
@@ -866,17 +875,28 @@ function initMagicPortals() {
     
     // Add new particles
     activePortals.forEach(portal => {
-      if (particles.length < maxParticles) {
-        const rect = portal.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        // Calculate center relative to canvas
-        const centerX = (rect.left - containerRect.left) + rect.width / 2;
-        const centerY = (rect.top - containerRect.top) + rect.height / 2;
-        
-        // Only spawn if valid coordinates
-        if(centerX > 0 && centerY > 0) {
-           particles.push(new Particle(centerX, centerY, 125)); // 125 is approx portal radius
-        }
+      // Only spawn particles if the portal has started expanding
+      if (portal.classList.contains('is-expanding') || portal.classList.contains('is-visible')) {
+          if (particles.length < maxParticles) {
+            const rect = portal.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            // Calculate center relative to canvas
+            const centerX = (rect.left - containerRect.left) + rect.width / 2;
+            const centerY = (rect.top - containerRect.top) + rect.height / 2;
+            
+            // Current scale of the portal to adjust particle spawn radius dynamically
+            const currentScale = gsap.getProperty(portal, "scale");
+            const baseRadius = 125; // Base radius of the portal
+            const currentRadius = baseRadius * currentScale;
+
+            // Only spawn if valid coordinates and radius is reasonable
+            if(centerX > 0 && centerY > 0 && currentRadius > 10) {
+               // Spawn multiple particles per frame for a thicker ring
+               for(let i=0; i<3; i++) {
+                   particles.push(new Particle(centerX, centerY, currentRadius)); 
+               }
+            }
+          }
       }
     });
 
@@ -893,61 +913,76 @@ function initMagicPortals() {
     animationFrame = requestAnimationFrame(renderParticles);
   }
 
-  // Use GSAP to create a Dr. Strange portal popping effect when scrolled into view
+  // Sequential GSAP Timeline for Dr. Strange Portal Effect
   portals.forEach((portal, index) => {
-    // Initial state: hidden and scaled down to a tiny dot
-    gsap.set(portal, { scale: 0.01, opacity: 0, rotation: -360 });
+    // Hide content initially
+    const content = portal.querySelector('.magic-content');
+    gsap.set(content, { opacity: 0, scale: 0.5 });
     
+    // Initial state of the portal ring: a tiny dot
+    gsap.set(portal, { scale: 0.05, opacity: 0 });
+
     ScrollTrigger.create({
       trigger: '#magic-portals',
-      start: 'top 75%', // trigger when top of container hits 75% of viewport
-      toggleActions: 'play none none reverse', // play on enter, reverse on leave back up
+      start: 'top 65%', // trigger slightly later so user sees it
+      toggleActions: 'play none none reverse',
       onEnter: () => {
-        // Step 1: The tiny spark appears and starts spinning
-        gsap.to(portal, {
-          opacity: 1,
-          duration: 0.5,
-          delay: index * 0.4
-        });
+        // Start rendering loop if not already
+        if(activePortals.length === 0) {
+             renderParticles();
+        }
+        activePortals.push(portal);
+          
+        const tl = gsap.timeline({ delay: index * 0.8 }); // Longer delay between portals
         
-        // Step 2: The spark expands rapidly while spinning into the full portal
-        gsap.to(portal, {
-          scale: 1,
-          rotation: 0,
-          duration: 2,
-          ease: "elastic.out(1, 0.5)",
-          delay: (index * 0.4) + 0.5, // start expanding after appearing
-          onStart: () => {
-             if(activePortals.length === 0) {
-                 renderParticles();
-             }
-             activePortals.push(portal);
-             portal.classList.add('is-expanding');
-          },
-          onComplete: () => {
-            portal.classList.remove('is-expanding');
-            portal.classList.add('is-visible');
-          }
+        // Phase 1: Small spark appears
+        tl.to(portal, {
+            opacity: 1,
+            scale: 0.1,
+            duration: 0.5,
+            ease: "power2.out",
+            onStart: () => portal.classList.add('is-expanding') // Start emitting tiny particles
+        })
+        // Phase 2: Hold the spark briefly
+        .to({}, { duration: 0.5 }) 
+        // Phase 3: Expand the portal slowly
+        .to(portal, {
+            scale: 1,
+            duration: 2.5, // Slower expansion
+            ease: "power2.inOut",
+            onComplete: () => {
+                portal.classList.remove('is-expanding');
+                portal.classList.add('is-visible');
+            }
+        })
+        // Phase 4: Hold the open portal before showing text
+        .to({}, { duration: 0.5 })
+        // Phase 5: Reveal Education/Experience text
+        .to(content, {
+            opacity: 1,
+            scale: 1,
+            duration: 1,
+            ease: "back.out(1.5)"
         });
       },
       onLeaveBack: () => {
-        // Reverse animation when scrolling back up
-        gsap.to(portal, {
-          scale: 0.01,
-          opacity: 0,
-          rotation: -360,
-          duration: 1,
-          ease: "power2.in",
-          onComplete: () => {
-            portal.classList.remove('is-visible', 'is-expanding');
-            activePortals = activePortals.filter(p => p !== portal);
-            if(activePortals.length === 0) {
-                cancelAnimationFrame(animationFrame);
-                ctx.clearRect(0, 0, width, height);
-                particles.length = 0;
-            }
-          }
-        });
+        const tl = gsap.timeline();
+        tl.to(content, { opacity: 0, scale: 0.5, duration: 0.3 })
+          .to(portal, {
+              scale: 0.01,
+              opacity: 0,
+              duration: 1,
+              ease: "power2.in",
+              onComplete: () => {
+                portal.classList.remove('is-visible', 'is-expanding');
+                activePortals = activePortals.filter(p => p !== portal);
+                if(activePortals.length === 0) {
+                    cancelAnimationFrame(animationFrame);
+                    ctx.clearRect(0, 0, width, height);
+                    particles.length = 0;
+                }
+              }
+          });
       }
     });
   });
