@@ -612,102 +612,123 @@ img { max-width: 100%; display: block; }
   50% { transform: translateY(8px); }
 }
 
-/* ======================== SKILLS ======================== */
-.skills-section { background: linear-gradient(180deg, transparent, rgba(13,13,31,0.5), transparent); }
+/* ======================== SKILLS UNIVERSE ======================== */
+.skills-section {
+  background: transparent; /* Let the 3D space background shine through */
+  padding-bottom: 6rem;
+}
 .skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
   margin-top: 4rem;
 }
 .skill-category {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 2rem;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-.bento-box:hover {
-  transform: translateY(-5px);
-  border-color: rgba(255,255,255,0.15);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  z-index: 5;
 }
 .category-header {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 .category-icon {
-  font-size: 2rem;
-  width: 50px;
-  height: 50px;
+  font-size: 1.8rem;
+  width: 45px;
+  height: 45px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 12px;
-  background: var(--surface-el);
+  border-radius: 50%;
+  background: rgba(13,13,31,0.6);
+  border: 1px solid rgba(56,189,248,0.5);
+  box-shadow: 0 0 15px rgba(56,189,248,0.5);
+  filter: grayscale(100%) sepia(100%) hue-rotate(180deg) saturate(400%) brightness(1.2); /* Turns emojis into sci-fi cyan holograms */
 }
-/* Glowing Icons */
-.glow-blue { box-shadow: 0 0 15px rgba(56,189,248,0.4); border: 1px solid rgba(56,189,248,0.5); }
-.glow-purple { box-shadow: 0 0 15px rgba(168,85,247,0.4); border: 1px solid rgba(168,85,247,0.5); }
-.glow-green { box-shadow: 0 0 15px rgba(52,211,153,0.4); border: 1px solid rgba(52,211,153,0.5); }
-.glow-orange { box-shadow: 0 0 15px rgba(249,115,22,0.4); border: 1px solid rgba(249,115,22,0.5); }
-
 .category-title {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.3rem;
-  color: var(--text);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--accent-1);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 10px rgba(56,189,248,0.3);
 }
 
-/* Badges Layout */
+/* Floating Asteroid Badges */
 .skill-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  justify-content: center;
+  gap: 1.5rem;
 }
 .skill-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background: var(--surface-el);
-  padding: 0.5rem 0.9rem;
-  border-radius: 30px;
-  border: 1px solid rgba(255,255,255,0.05);
-  font-size: 0.85rem;
+  gap: 0.8rem;
+  background: rgba(13, 13, 31, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  border: 1px solid rgba(56,189,248, 0.3);
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--text);
-  transition: all 0.3s ease;
-  cursor: default;
+  cursor: crosshair;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+  animation: zero-g-float 4s ease-in-out infinite alternate;
 }
 .skill-badge img {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.8));
+  transition: transform 0.3s ease;
 }
-.skill-badge:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+/* Stagger the animations so they float organically, not in unison */
+.skill-badge:nth-child(2n) { animation-delay: -1s; animation-duration: 5s; }
+.skill-badge:nth-child(3n) { animation-delay: -2s; animation-duration: 4.5s; }
+.skill-badge:nth-child(5n) { animation-delay: -1.5s; animation-duration: 5.5s; }
+
+@keyframes zero-g-float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-12px) rotate(1.5deg); }
 }
 
-.skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+/* Interactive Hover Zoom */
+.skill-badge:hover {
+  animation-play-state: paused;
+  transform: scale(1.25) translateY(-5px) !important;
+  z-index: 20;
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(56,189,248, 1);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 25px rgba(56,189,248, 0.6), inset 0 0 15px rgba(56,189,248,0.2);
+}
+.skill-badge:hover img {
+  transform: rotate(10deg) scale(1.1);
+}
+
+.skill-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
 .skill-tag {
-  font-family: var(--font-mono); font-size: 0.72rem;
-  padding: 0.35rem 0.8rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: 20px;
+  font-family: var(--font-mono); font-size: 0.85rem;
+  padding: 0.5rem 1.2rem;
+  background: rgba(13, 13, 31, 0.5);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(56,189,248, 0.2);
+  border-radius: 30px;
   color: var(--text-dim);
-  transition: all 0.3s;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: crosshair;
+  animation: zero-g-float 5s ease-in-out infinite alternate-reverse;
 }
 .skill-tag:hover {
-  color: var(--text);
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.15);
+  animation-play-state: paused;
+  color: #fff;
+  border-color: rgba(56,189,248, 0.8);
+  box-shadow: 0 0 20px rgba(56,189,248,0.4);
+  transform: scale(1.15) !important;
 }
 
 /* ======================== TIMELINE ======================== */
