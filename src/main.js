@@ -753,7 +753,8 @@ function initScifiTypingQuote() {
   
   if (!quoteSec || !typingTextEl) return;
 
-  const fullText = '"YOU CAN HAVE DATA WITHOUT INFORMATION, BUT YOU CANNOT HAVE INFORMATION WITHOUT DATA."';
+  // Use \u00A0 (non-breaking space) between WITHOUT and DATA so they wrap together perfectly
+  const fullText = '"YOU CAN HAVE DATA WITHOUT INFORMATION, BUT YOU CANNOT HAVE INFORMATION WITHOUT\u00A0DATA."';
   let typed = false;
 
   ScrollTrigger.create({
