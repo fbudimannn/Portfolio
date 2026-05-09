@@ -747,12 +747,12 @@ function initContactSection() {
 /* ============ QUOTE SHATTER ANIMATION ============ */
 function initQuoteShatter() {
   const quoteSec = document.getElementById('quote');
+  const shatterVideo = document.getElementById('shatter-video');
   if (!quoteSec) return;
 
   // Set initial states
   gsap.set('#shatter-shape', { opacity: 0, scale: 0.95 });
   gsap.set('#shatter-quote', { opacity: 0, y: 20 });
-  gsap.set('#comet', { top: '10%', right: '10%', opacity: 0 });
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -762,51 +762,19 @@ function initQuoteShatter() {
     }
   });
 
-  // 1. Comet zips diagonally extremely fast
-  tl.to('#comet', { opacity: 1, duration: 0.1 })
-    .to('#comet', {
-      top: '50%', right: '50%',
-      duration: 0.2, ease: 'power4.in'
+  tl.to('#shatter-shape', {
+      opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out',
+      onComplete: () => {
+        if (shatterVideo) {
+          shatterVideo.style.opacity = 1;
+          shatterVideo.play().catch(e => console.log('Video autoplay blocked:', e));
+        }
+      }
     })
-    // 2. Comet disappears on impact
-    .to('#comet', { opacity: 0, duration: 0.01 })
-    
-    // 3. Shockwave expands rapidly
-    .to('#shockwave', {
-      scale: 15, opacity: 1, duration: 0.1, ease: 'power2.out'
-    })
-    .to('#shockwave', {
-      opacity: 0, duration: 0.3, ease: 'power2.out'
-    }, '+=0.05')
-    
-    // 4. Glass shape and cracks appear INSTANTLY with a violent shake
-    .to('#shatter-shape', {
-      opacity: 1, scale: 1, duration: 0.01
-    }, '-=0.4')
-    .to('#crack-overlay', {
-      opacity: 1, duration: 0.01
-    }, '-=0.4')
-    // Instant crack appearance (not drawn slowly)
-    .to('.crack-path', {
-      strokeDasharray: '0', strokeDashoffset: '0',
-      duration: 0.01
-    }, '-=0.4')
-    
-    // Violent Camera Shake effect on the glass shape
-    .to('#shatter-shape', {
-      x: () => Math.random() * 20 - 10,
-      y: () => Math.random() * 20 - 10,
-      duration: 0.05,
-      yoyo: true,
-      repeat: 6,
-      ease: 'rough({ strength: 2, points: 20, template: power0.none, taper: none, randomize: true })'
-    }, '-=0.4')
-    .to('#shatter-shape', { x: 0, y: 0, duration: 0.05 }) // Reset position
-    
-    // 5. Quote text glitches/flickers in
+    // Text glitches/flickers in after a delay (adjust delay based on the video length)
     .to('#shatter-quote', {
-      opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'elastic.out(1, 0.4)'
-    }, '-=0.2');
+      opacity: 1, y: 0, scale: 1, duration: 1.5, ease: 'elastic.out(1, 0.4)'
+    }, '+=1.5'); // waits 1.5s after shape appears (while video is playing)
 }
 
 /* ============ MUSIC PLAYER ============ */
