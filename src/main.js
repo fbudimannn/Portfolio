@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactSection();
   initVideoBackground();
   initMusicPlayer();
+  initQuoteShatter();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -741,11 +742,50 @@ function initContactSection() {
     }
   });
 
-  // Quote fade in
-  gsap.from('.contact-quote', {
-    y: 30, opacity: 0, duration: 0.8,
-    scrollTrigger: { trigger: '.contact-quote', start: 'top 85%' }
+}
+
+/* ============ QUOTE SHATTER ANIMATION ============ */
+function initQuoteShatter() {
+  const quoteSec = document.getElementById('quote');
+  if (!quoteSec) return;
+
+  // Set initial states
+  gsap.set('#shatter-quote', { opacity: 0, scale: 0.8 });
+  gsap.set('#comet', { top: '-10%', right: '-10%', opacity: 0 });
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#quote',
+      start: 'top 50%', // triggers when the section is middle of screen
+      once: true
+    }
   });
+
+  tl.to('#comet', { opacity: 1, duration: 0.1 })
+    .to('#comet', {
+      top: '50%', right: '50%',
+      duration: 0.35, ease: 'power1.in'
+    })
+    .to('#comet', { opacity: 0, duration: 0.05 })
+    .to('#impact-flash', {
+      scale: 30, opacity: 1, duration: 0.1
+    })
+    .to('#impact-flash', {
+      opacity: 0, duration: 0.8, ease: 'power2.out'
+    })
+    .to('#crack-overlay', {
+      opacity: 1, scale: 1.1, duration: 0.1
+    }, '-=0.8')
+    .to('.crack-path', {
+      strokeDasharray: '2000', strokeDashoffset: '2000',
+      duration: 0
+    }, '-=0.9')
+    .to('.crack-path', {
+      strokeDashoffset: 0, duration: 0.3, ease: 'none'
+    }, '-=0.8')
+    .to('#shatter-quote', {
+      opacity: 1, scale: 1, duration: 1.5, ease: 'elastic.out(1, 0.5)'
+    }, '-=0.6');
 }
 
 /* ============ MUSIC PLAYER ============ */
