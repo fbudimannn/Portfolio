@@ -886,7 +886,8 @@ function initMagicPortals() {
             
             // Current scale of the portal to adjust particle spawn radius dynamically
             const currentScale = gsap.getProperty(portal, "scale");
-            const baseRadius = 125; // Base radius of the portal
+            // Set base radius to half of the base element width (280/2 = 140) to tightly hug the edge
+            const baseRadius = 140; 
             const currentRadius = baseRadius * currentScale;
 
             // Only spawn if valid coordinates and radius is reasonable
