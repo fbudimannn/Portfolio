@@ -762,44 +762,51 @@ function initQuoteShatter() {
     }
   });
 
-  // 1. Comet appears and falls (slower)
-  tl.to('#comet', { opacity: 1, duration: 0.3 })
+  // 1. Comet zips diagonally extremely fast
+  tl.to('#comet', { opacity: 1, duration: 0.1 })
     .to('#comet', {
       top: '50%', right: '50%',
-      duration: 0.8, ease: 'power2.in'
+      duration: 0.2, ease: 'power4.in'
     })
     // 2. Comet disappears on impact
-    .to('#comet', { opacity: 0, duration: 0.05 })
+    .to('#comet', { opacity: 0, duration: 0.01 })
     
-    // 3. Huge impact flash covering the shape
-    .to('#impact-flash', {
-      scale: 1, opacity: 1, duration: 0.15, ease: 'power4.out'
+    // 3. Shockwave expands rapidly
+    .to('#shockwave', {
+      scale: 15, opacity: 1, duration: 0.1, ease: 'power2.out'
     })
+    .to('#shockwave', {
+      opacity: 0, duration: 0.3, ease: 'power2.out'
+    }, '+=0.05')
     
-    // 4. Flash fades while revealing the glass shape and cracks
-    .to('#impact-flash', {
-      opacity: 0, duration: 1.5, ease: 'power2.out'
-    }, '+=0.1')
+    // 4. Glass shape and cracks appear INSTANTLY with a violent shake
     .to('#shatter-shape', {
-      opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out'
-    }, '-=1.4')
+      opacity: 1, scale: 1, duration: 0.01
+    }, '-=0.4')
     .to('#crack-overlay', {
-      opacity: 1, duration: 0.2
-    }, '-=1.4')
-    
-    // 5. Cracks animate drawing (slower cinematic feel)
+      opacity: 1, duration: 0.01
+    }, '-=0.4')
+    // Instant crack appearance (not drawn slowly)
     .to('.crack-path', {
-      strokeDasharray: '500', strokeDashoffset: '500',
-      duration: 0
-    }, '-=1.5')
-    .to('.crack-path', {
-      strokeDashoffset: 0, duration: 1.2, ease: 'power1.out'
-    }, '-=1.4')
+      strokeDasharray: '0', strokeDashoffset: '0',
+      duration: 0.01
+    }, '-=0.4')
     
-    // 6. Quote text reveals inside the cracked glass
+    // Violent Camera Shake effect on the glass shape
+    .to('#shatter-shape', {
+      x: () => Math.random() * 20 - 10,
+      y: () => Math.random() * 20 - 10,
+      duration: 0.05,
+      yoyo: true,
+      repeat: 6,
+      ease: 'rough({ strength: 2, points: 20, template: power0.none, taper: none, randomize: true })'
+    }, '-=0.4')
+    .to('#shatter-shape', { x: 0, y: 0, duration: 0.05 }) // Reset position
+    
+    // 5. Quote text glitches/flickers in
     .to('#shatter-quote', {
-      opacity: 1, y: 0, duration: 2, ease: 'power3.out'
-    }, '-=0.8');
+      opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'elastic.out(1, 0.4)'
+    }, '-=0.2');
 }
 
 /* ============ MUSIC PLAYER ============ */

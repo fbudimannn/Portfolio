@@ -525,31 +525,24 @@ img { max-width: 100%; display: block; }
 }
 .comet {
   position: absolute;
-  top: 10%; right: 10%;
-  width: 6px; height: 6px;
-  background: #fff;
+  top: -5%; right: -5%;
+  width: 150px; height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(56,189,248,0.8), #fff);
   border-radius: 50%;
   box-shadow: 0 0 20px 5px rgba(255,255,255,0.8), 0 0 40px 10px rgba(56,189,248,0.6);
   opacity: 0;
   z-index: 21;
-}
-.comet::after {
-  content: '';
-  position: absolute;
-  top: 50%; right: 50%;
-  width: 150px; height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(56,189,248,0.8), #fff);
+  transform: rotate(-45deg);
   transform-origin: right center;
-  transform: translateY(-50%);
-  border-radius: 2px;
 }
-.impact-flash {
+.shockwave {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(0);
-  width: 100%; height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(56,189,248,0.4) 30%, transparent 70%);
+  width: 50px; height: 50px;
+  border: 4px solid #fff;
   border-radius: 50%;
+  box-shadow: 0 0 50px 20px rgba(56,189,248,0.8), inset 0 0 20px 10px rgba(56,189,248,0.5);
   opacity: 0;
   z-index: 22;
   pointer-events: none;
