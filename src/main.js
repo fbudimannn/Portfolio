@@ -825,7 +825,7 @@ function initMagicPortals() {
 
   // Particle System
   const particles = [];
-  const maxParticles = 300; // More particles for a denser spark effect
+  const maxParticles = 600; // Increased significantly to support 2 dense portals simultaneously
   
   class Particle {
     constructor(x, y, radius) {
@@ -877,7 +877,6 @@ function initMagicPortals() {
     activePortals.forEach(portal => {
       // Only spawn particles if the portal has started expanding
       if (portal.classList.contains('is-expanding') || portal.classList.contains('is-visible')) {
-          if (particles.length < maxParticles) {
             const rect = portal.getBoundingClientRect();
             const containerRect = container.getBoundingClientRect();
             // Calculate center relative to canvas
@@ -893,11 +892,13 @@ function initMagicPortals() {
             // Only spawn if valid coordinates and radius is reasonable
             if(centerX > 0 && centerY > 0 && currentRadius > 10) {
                // Spawn multiple particles per frame for a thicker ring
-               for(let i=0; i<3; i++) {
-                   particles.push(new Particle(centerX, centerY, currentRadius)); 
+               for(let i=0; i<4; i++) { // Increased to 4 per frame
+                   if (particles.length < maxParticles) {
+                       particles.push(new Particle(centerX, centerY, currentRadius)); 
+                   }
                }
             }
-          }
+          // Remove the outer "if length < max" to allow fair distribution per portal
       }
     });
 
