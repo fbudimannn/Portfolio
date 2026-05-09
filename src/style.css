@@ -754,80 +754,79 @@ img.simple-icon {
 
 /* ======================== JOURNEY PORTALS ======================== */
 .journey-section { padding-top: 2rem; padding-bottom: 6rem; position: relative; }
-/* ======================== PORTAL ARENA ======================== */
-.portal-arena {
-  position: relative;
-  height: 500px;
+/* ======================== MAGIC PORTALS (DR. STRANGE STYLE) ======================== */
+.magic-portals-container {
   display: flex;
-  align-items: center;
   justify-content: center;
-  margin-top: 2rem;
-}
-
-.portal-core-ring {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  border: 2px solid var(--accent-1);
-  box-shadow: 0 0 40px var(--accent-1), inset 0 0 20px var(--accent-1);
-  opacity: 0;
-  transition: all 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-/* When triggered by IntersectionObserver */
-.portal-arena.triggered .portal-core-ring {
-  width: 300px;
-  height: 300px;
-  opacity: 1;
-  animation: pulse-ring 4s infinite alternate;
-}
-
-@keyframes pulse-ring {
-  0% { transform: scale(1); box-shadow: 0 0 20px var(--accent-1); }
-  100% { transform: scale(1.1); box-shadow: 0 0 50px var(--accent-1), inset 0 0 30px var(--accent-1); }
-}
-
-.portal-options {
-  display: flex;
-  gap: 15rem;
-  z-index: 10;
-}
-
-.portal-node {
+  gap: 10rem;
+  margin-top: 5rem;
   position: relative;
-  width: 200px;
-  height: 200px;
-  background: rgba(13,13,31,0.8);
-  border: 1px solid rgba(56,189,248, 0.5);
+}
+
+.magic-portal {
+  position: relative;
+  width: 250px;
+  height: 250px;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  /* GSAP will animate scale and opacity */
   opacity: 0;
-  transform: scale(0) translateY(50px);
-  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: scale(0);
 }
 
-.portal-arena.triggered #portal-education {
-  transition-delay: 0.8s;
-  opacity: 1;
-  transform: scale(1) translateY(0);
+.magic-ring {
+  position: absolute;
+  top: -10%; left: -10%; right: -10%; bottom: -10%;
+  border-radius: 50%;
+  border: 2px dashed rgba(56,189,248, 0.8);
+  box-shadow: 0 0 20px rgba(56,189,248, 0.4), inset 0 0 20px rgba(56,189,248, 0.4);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.5s ease;
 }
 
-.portal-arena.triggered #portal-experience {
-  transition-delay: 1.1s;
-  opacity: 1;
-  transform: scale(1) translateY(0);
+.magic-ring.ring-1 { animation: spin-right 10s linear infinite; border-style: dotted; border-width: 4px; }
+.magic-ring.ring-2 { animation: spin-left 15s linear infinite; border-color: rgba(139, 92, 246, 0.8); width: 110%; height: 110%; top: -5%; left: -5%; }
+.magic-ring.ring-3 { animation: spin-right 8s linear infinite; border: 1px solid var(--accent-1); width: 90%; height: 90%; top: 5%; left: 5%; }
+
+@keyframes spin-right { 100% { transform: rotate(360deg); } }
+@keyframes spin-left { 100% { transform: rotate(-360deg); } }
+
+/* Show rings only after GSAP entrance or hover */
+.magic-portal.is-visible .magic-ring { opacity: 0.6; }
+.magic-portal:hover .magic-ring { opacity: 1; box-shadow: 0 0 40px rgba(56,189,248, 0.8), inset 0 0 40px rgba(56,189,248, 0.8); }
+.magic-portal:hover .ring-2 { box-shadow: 0 0 40px rgba(139, 92, 246, 0.8), inset 0 0 40px rgba(139, 92, 246, 0.8); }
+
+.magic-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  background: rgba(13,13,31,0.8);
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(5px);
 }
 
-.node-icon { font-size: 3rem; filter: grayscale(1) sepia(1) hue-rotate(180deg) saturate(3); transition: all 0.3s ease; }
-.node-title { font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-1); margin-top: 1rem; transition: all 0.3s ease; letter-spacing: 0.1em; }
+.magic-icon { font-size: 4rem; filter: grayscale(1) sepia(1) hue-rotate(180deg) saturate(3); transition: all 0.3s ease; }
+.magic-title { font-family: var(--font-display); font-size: 1.4rem; color: var(--accent-1); margin-top: 1rem; letter-spacing: 0.15em; text-shadow: 0 0 10px var(--accent-1); transition: all 0.3s ease; }
 
-/* Node Hover Highlights */
-.node-highlight {
+.magic-portal:hover .magic-content {
+  background: transparent;
+  transform: scale(0.8);
+}
+.magic-portal:hover .magic-icon, .magic-portal:hover .magic-title { opacity: 0; }
+
+/* Hover Highlight Holograms */
+.magic-hologram {
   position: absolute;
   top: 50%; left: 50%;
   width: 400px; height: 400px;
@@ -840,42 +839,30 @@ img.simple-icon {
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
+  z-index: 20;
 }
 
-.portal-node:hover {
-  background: rgba(56,189,248, 0.1);
-  box-shadow: 0 0 40px rgba(56,189,248, 0.4), inset 0 0 20px rgba(56,189,248, 0.2);
-  border-color: var(--accent-1);
-}
-
-.portal-node:hover .node-icon,
-.portal-node:hover .node-title {
-  opacity: 0;
-  transform: scale(0.5);
-}
-
-.portal-node:hover .node-highlight {
+.magic-portal:hover .magic-hologram {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
 
-/* Highlight Items */
-.highlight-word, .univ-logo-text {
+.holo-badge {
   background: rgba(13,13,31,0.9);
-  border: 1px solid var(--accent-2);
-  color: var(--text);
+  border: 1px solid var(--accent-1);
+  color: var(--accent-1);
   padding: 0.6rem 1.2rem;
   border-radius: 6px;
   font-family: var(--font-mono);
-  font-size: 0.9rem;
-  box-shadow: 0 0 15px rgba(59,130,246,0.3);
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(56,189,248,0.5);
   animation: float-highlight 3s infinite alternate;
   white-space: nowrap;
 }
-.univ-logo-text { font-size: 1.2rem; border-color: var(--accent-1); color: var(--accent-1); font-weight: bold; }
 
-.highlight-word:nth-child(even) { animation-delay: -1s; }
-.univ-logo-text:nth-child(2) { animation-delay: -1.5s; }
+.holo-badge:nth-child(even) { animation-delay: -1s; border-color: rgba(139, 92, 246, 0.8); color: #fff; box-shadow: 0 0 15px rgba(139, 92, 246, 0.5); }
+.holo-badge:nth-child(3n) { animation-delay: -1.5s; }
 
 @keyframes float-highlight {
   0% { transform: translateY(0); }
@@ -883,14 +870,12 @@ img.simple-icon {
 }
 
 @media (max-width: 768px) {
-  .portal-arena { height: auto; padding: 4rem 0; flex-direction: column; }
-  .portal-core-ring { display: none; } /* Hide ring on mobile for better layout */
-  .portal-options { flex-direction: column; gap: 3rem; }
-  .portal-node { width: 150px; height: 150px; }
-  .node-icon { font-size: 2rem; }
-  .node-title { font-size: 1rem; }
-  .node-highlight { width: 250px; height: 250px; }
-  .highlight-word, .univ-logo-text { font-size: 0.7rem; padding: 0.4rem 0.8rem; }
+  .magic-portals-container { flex-direction: column; gap: 4rem; align-items: center; }
+  .magic-portal { width: 180px; height: 180px; }
+  .magic-icon { font-size: 2.5rem; }
+  .magic-title { font-size: 1rem; }
+  .magic-hologram { width: 280px; height: 280px; }
+  .holo-badge { font-size: 0.8rem; padding: 0.4rem 0.8rem; }
 }
 
 /* ======================== SCI-FI MODAL ======================== */

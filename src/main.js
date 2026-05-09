@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initVideoBackground();
   initMusicPlayer();
   initScifiTypingQuote();
-  initPortalArena();
+  initMagicPortals();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -804,21 +804,38 @@ function initMusicPlayer() {
   });
 }
 
-/* ============ PORTAL ARENA ENTRANCE ANIMATION ============ */
-function initPortalArena() {
-  const portalArena = document.getElementById('portal-arena');
-  if (!portalArena) return;
+/* ============ MAGIC PORTALS (GSAP SCROLLTRIGGER) ============ */
+function initMagicPortals() {
+  const portals = document.querySelectorAll('.magic-portal');
+  if (!portals.length) return;
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Trigger the expanding animation
-        portalArena.classList.add('triggered');
-        // Stop observing once triggered
-        observer.unobserve(portalArena);
+  // Use GSAP to create a Dr. Strange portal popping effect when scrolled into view
+  portals.forEach((portal, index) => {
+    gsap.fromTo(portal, 
+      {
+        scale: 0,
+        opacity: 0,
+        rotation: -180
+      },
+      {
+        scale: 1,
+        opacity: 1,
+        rotation: 0,
+        duration: 1.5,
+        ease: "back.out(1.5)",
+        scrollTrigger: {
+          trigger: '#magic-portals',
+          start: 'top 75%', // trigger when top of container hits 75% of viewport
+          toggleActions: 'play none none reverse' // play on enter, reverse on leave back up
+        },
+        delay: index * 0.3, // stagger the portals
+        onComplete: () => {
+          portal.classList.add('is-visible');
+        },
+        onReverseComplete: () => {
+          portal.classList.remove('is-visible');
+        }
       }
-    });
-  }, { threshold: 0.4 }); // Trigger when 40% of the arena is visible
-
-  observer.observe(portalArena);
+    );
+  });
 }
