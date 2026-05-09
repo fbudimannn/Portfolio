@@ -754,79 +754,143 @@ img.simple-icon {
 
 /* ======================== JOURNEY PORTALS ======================== */
 .journey-section { padding-top: 2rem; padding-bottom: 6rem; position: relative; }
-.portals-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  margin-top: 4rem;
-}
-
-.scifi-portal {
+/* ======================== PORTAL ARENA ======================== */
+.portal-arena {
   position: relative;
-  height: 450px;
-  border-radius: 10px;
-  clip-path: polygon(10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%, 0 10%);
-  background: rgba(13,13,31,0.8);
-  border: 1px solid rgba(56,189,248, 0.4);
-  overflow: hidden;
-  cursor: pointer;
-}
-
-/* The Door that slides away */
-.portal-door {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(8,12,24,0.95));
-  backdrop-filter: blur(5px);
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
-  transition: transform 0.6s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.5s ease;
-  border: 2px solid rgba(56,189,248, 0.2);
+  margin-top: 2rem;
 }
-.door-content {
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-.door-icon { font-size: 3rem; display: block; margin-bottom: 1rem; filter: grayscale(1) sepia(1) hue-rotate(180deg) saturate(3); }
-.door-title { font-family: var(--font-display); font-size: 2rem; color: var(--accent-1); letter-spacing: 0.2em; text-shadow: 0 0 15px rgba(56,189,248,0.5); }
-.door-glow { position: absolute; width: 100%; height: 2px; background: var(--accent-1); top: 50%; left: 0; box-shadow: 0 0 20px var(--accent-1); transform: scaleX(0); transition: transform 0.4s ease; }
 
-/* The Inside (Hologram) */
-.portal-inside {
+.portal-core-ring {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  padding: 3rem 2rem;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent-1);
+  box-shadow: 0 0 40px var(--accent-1), inset 0 0 20px var(--accent-1);
+  opacity: 0;
+  transition: all 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* When triggered by IntersectionObserver */
+.portal-arena.triggered .portal-core-ring {
+  width: 300px;
+  height: 300px;
+  opacity: 1;
+  animation: pulse-ring 4s infinite alternate;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); box-shadow: 0 0 20px var(--accent-1); }
+  100% { transform: scale(1.1); box-shadow: 0 0 50px var(--accent-1), inset 0 0 30px var(--accent-1); }
+}
+
+.portal-options {
+  display: flex;
+  gap: 15rem;
+  z-index: 10;
+}
+
+.portal-node {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  background: rgba(13,13,31,0.8);
+  border: 1px solid rgba(56,189,248, 0.5);
+  border-radius: 50%;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-  z-index: 5;
-  background: radial-gradient(circle at center, rgba(56,189,248,0.1) 0%, transparent 70%);
-}
-.inside-title { font-family: var(--font-mono); font-size: 1.2rem; color: var(--accent-1); margin-bottom: 2rem; text-transform: uppercase; border-bottom: 1px solid rgba(56,189,248,0.3); padding-bottom: 0.5rem; width: 100%; }
-.inside-list { list-style: none; padding: 0; margin: 0 0 2rem 0; width: 100%; }
-.inside-list li { margin-bottom: 1.5rem; color: var(--text); font-size: 1rem; position: relative; padding-left: 1rem; border-left: 2px solid var(--accent-2); }
-.inside-list .year { display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-1); margin-bottom: 0.2rem; }
-.inside-list strong { color: #fff; letter-spacing: 0.05em; }
-
-.portal-btn {
-  background: transparent; border: 1px solid var(--accent-1); color: var(--accent-1); font-family: var(--font-mono); padding: 0.8rem 1.5rem; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.1em; align-self: center; margin-top: auto;
-}
-.portal-btn:hover { background: rgba(56,189,248,0.2); box-shadow: 0 0 15px rgba(56,189,248,0.5); }
-
-/* Hover Animation */
-.scifi-portal:hover .portal-door {
-  transform: translateY(-100%);
+  cursor: pointer;
   opacity: 0;
+  transform: scale(0) translateY(50px);
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.scifi-portal:hover .door-glow { transform: scaleX(1); }
+
+.portal-arena.triggered #portal-education {
+  transition-delay: 0.8s;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.portal-arena.triggered #portal-experience {
+  transition-delay: 1.1s;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.node-icon { font-size: 3rem; filter: grayscale(1) sepia(1) hue-rotate(180deg) saturate(3); transition: all 0.3s ease; }
+.node-title { font-family: var(--font-display); font-size: 1.2rem; color: var(--accent-1); margin-top: 1rem; transition: all 0.3s ease; letter-spacing: 0.1em; }
+
+/* Node Hover Highlights */
+.node-highlight {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 400px; height: 400px;
+  transform: translate(-50%, -50%) scale(0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s ease;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.portal-node:hover {
+  background: rgba(56,189,248, 0.1);
+  box-shadow: 0 0 40px rgba(56,189,248, 0.4), inset 0 0 20px rgba(56,189,248, 0.2);
+  border-color: var(--accent-1);
+}
+
+.portal-node:hover .node-icon,
+.portal-node:hover .node-title {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.portal-node:hover .node-highlight {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Highlight Items */
+.highlight-word, .univ-logo-text {
+  background: rgba(13,13,31,0.9);
+  border: 1px solid var(--accent-2);
+  color: var(--text);
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  box-shadow: 0 0 15px rgba(59,130,246,0.3);
+  animation: float-highlight 3s infinite alternate;
+  white-space: nowrap;
+}
+.univ-logo-text { font-size: 1.2rem; border-color: var(--accent-1); color: var(--accent-1); font-weight: bold; }
+
+.highlight-word:nth-child(even) { animation-delay: -1s; }
+.univ-logo-text:nth-child(2) { animation-delay: -1.5s; }
+
+@keyframes float-highlight {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
 
 @media (max-width: 768px) {
-  .portals-container { grid-template-columns: 1fr; }
-  .scifi-portal { height: 350px; }
-  .door-title { font-size: 1.5rem; }
+  .portal-arena { height: auto; padding: 4rem 0; flex-direction: column; }
+  .portal-core-ring { display: none; } /* Hide ring on mobile for better layout */
+  .portal-options { flex-direction: column; gap: 3rem; }
+  .portal-node { width: 150px; height: 150px; }
+  .node-icon { font-size: 2rem; }
+  .node-title { font-size: 1rem; }
+  .node-highlight { width: 250px; height: 250px; }
+  .highlight-word, .univ-logo-text { font-size: 0.7rem; padding: 0.4rem 0.8rem; }
 }
 
 /* ======================== SCI-FI MODAL ======================== */

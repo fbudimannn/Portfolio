@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initVideoBackground();
   initMusicPlayer();
   initScifiTypingQuote();
+  initPortalArena();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -801,4 +802,23 @@ function initMusicPlayer() {
       musicToggle.classList.remove('playing');
     }
   });
+}
+
+/* ============ PORTAL ARENA ENTRANCE ANIMATION ============ */
+function initPortalArena() {
+  const portalArena = document.getElementById('portal-arena');
+  if (!portalArena) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Trigger the expanding animation
+        portalArena.classList.add('triggered');
+        // Stop observing once triggered
+        observer.unobserve(portalArena);
+      }
+    });
+  }, { threshold: 0.4 }); // Trigger when 40% of the arena is visible
+
+  observer.observe(portalArena);
 }
