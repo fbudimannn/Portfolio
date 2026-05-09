@@ -185,10 +185,7 @@
       </div>
     </section>
 
-    <!-- ====================== TIMELINE ====================== -->
-    <section id="timeline" class="section timeline-section">
-      <div class="section-container">
-    <!-- ====================== PORTAL HUB (EXPERIENCE & EDUCATION) ====================== -->
+
     <section id="journey" class="section journey-section">
       <div class="section-container">
         <div class="section-header" id="journey-header">
@@ -415,6 +412,86 @@
     <span class="bar"></span>
     <span class="bar"></span>
   </button>
+
+  <!-- ====================== SCI-FI DATA MODAL ====================== -->
+  <div class="scifi-modal-overlay" id="data-modal">
+    <div class="scifi-modal-box">
+      <div class="modal-scanline"></div>
+      <button class="close-modal" id="close-modal">✕ ABORT</button>
+      <div class="modal-header">
+        <h2 id="modal-title">ACCESSING LOGS...</h2>
+        <div class="modal-status">STATUS: DECRYPTED</div>
+      </div>
+      <div class="modal-content" id="modal-body">
+        <!-- Content injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const educationData = `
+      <div class="modal-timeline">
+        <div class="modal-timeline-item">
+          <span class="m-date">Sep 2024 – Sep 2025</span>
+          <h3>University of Warwick</h3>
+          <p class="m-role">MSc Business Analytics</p>
+          <p class="m-desc">Merit · LPDP (Indonesian Endowment Fund) Scholar. Advanced coursework in machine learning, statistical modelling, and business intelligence.</p>
+        </div>
+        <div class="modal-timeline-item">
+          <span class="m-date">2017 – 2021</span>
+          <h3>Telkom University</h3>
+          <p class="m-role">BSc International ICT Business</p>
+          <p class="m-desc">3.68 GPA · Cum Laude · Semester exchange at Korea University. Foundation in business analytics, information systems, and digital strategy.</p>
+        </div>
+      </div>
+    `;
+
+    const experienceData = `
+      <div class="modal-timeline">
+        <div class="modal-timeline-item">
+          <span class="m-date">2025 – Present</span>
+          <h3>PT Rakamin</h3>
+          <p class="m-role">Data Analyst</p>
+          <p class="m-desc">Analyzing core business metrics, generating actionable insights, and building predictive models to drive strategic business growth.</p>
+        </div>
+        <div class="modal-timeline-item">
+          <span class="m-date">Sep 2023 – Sep 2024</span>
+          <h3>RevoU</h3>
+          <p class="m-role">Team Lead — Full Stack Data Analytics</p>
+          <p class="m-desc">Led cross-functional data analytics teams. Achieved 5.0/5.0 satisfaction rating. Mentored junior analysts on SQL, Python, and dashboard design.</p>
+        </div>
+        <div class="modal-timeline-item">
+          <span class="m-date">Jan – Apr 2023</span>
+          <h3>RevoU</h3>
+          <p class="m-role">Data Analyst Associate</p>
+          <p class="m-desc">Built KPI dashboards, conducted market basket analysis, and executed A/B testing workflows for data-driven decision making.</p>
+        </div>
+      </div>
+    `;
+
+    document.querySelectorAll('.portal-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const portal = e.target.closest('.scifi-portal').id;
+        const modal = document.getElementById('data-modal');
+        const title = document.getElementById('modal-title');
+        const body = document.getElementById('modal-body');
+
+        if(portal === 'portal-education') {
+          title.innerText = 'ACADEMIC ARCHIVES';
+          body.innerHTML = educationData;
+        } else {
+          title.innerText = 'PROFESSIONAL LOGS';
+          body.innerHTML = experienceData;
+        }
+
+        modal.classList.add('active');
+      });
+    });
+
+    document.getElementById('close-modal').addEventListener('click', () => {
+      document.getElementById('data-modal').classList.remove('active');
+    });
+  </script>
 
   <script type="module" src="/src/main.js"></script>
 </body>
