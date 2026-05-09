@@ -750,42 +750,56 @@ function initQuoteShatter() {
   if (!quoteSec) return;
 
   // Set initial states
-  gsap.set('#shatter-quote', { opacity: 0, scale: 0.8 });
-  gsap.set('#comet', { top: '-10%', right: '-10%', opacity: 0 });
+  gsap.set('#shatter-shape', { opacity: 0, scale: 0.95 });
+  gsap.set('#shatter-quote', { opacity: 0, y: 20 });
+  gsap.set('#comet', { top: '10%', right: '10%', opacity: 0 });
 
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: '#quote',
-      start: 'top 50%', // triggers when the section is middle of screen
+      start: 'top 60%', // triggers when the section is at 60% of viewport
       once: true
     }
   });
 
-  tl.to('#comet', { opacity: 1, duration: 0.1 })
+  // 1. Comet appears and falls (slower)
+  tl.to('#comet', { opacity: 1, duration: 0.3 })
     .to('#comet', {
       top: '50%', right: '50%',
-      duration: 0.35, ease: 'power1.in'
+      duration: 0.8, ease: 'power2.in'
     })
+    // 2. Comet disappears on impact
     .to('#comet', { opacity: 0, duration: 0.05 })
+    
+    // 3. Huge impact flash covering the shape
     .to('#impact-flash', {
-      scale: 30, opacity: 1, duration: 0.1
+      scale: 1, opacity: 1, duration: 0.15, ease: 'power4.out'
     })
+    
+    // 4. Flash fades while revealing the glass shape and cracks
     .to('#impact-flash', {
-      opacity: 0, duration: 0.8, ease: 'power2.out'
-    })
+      opacity: 0, duration: 1.5, ease: 'power2.out'
+    }, '+=0.1')
+    .to('#shatter-shape', {
+      opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out'
+    }, '-=1.4')
     .to('#crack-overlay', {
-      opacity: 1, scale: 1.1, duration: 0.1
-    }, '-=0.8')
+      opacity: 1, duration: 0.2
+    }, '-=1.4')
+    
+    // 5. Cracks animate drawing (slower cinematic feel)
     .to('.crack-path', {
-      strokeDasharray: '2000', strokeDashoffset: '2000',
+      strokeDasharray: '500', strokeDashoffset: '500',
       duration: 0
-    }, '-=0.9')
+    }, '-=1.5')
     .to('.crack-path', {
-      strokeDashoffset: 0, duration: 0.3, ease: 'none'
-    }, '-=0.8')
+      strokeDashoffset: 0, duration: 1.2, ease: 'power1.out'
+    }, '-=1.4')
+    
+    // 6. Quote text reveals inside the cracked glass
     .to('#shatter-quote', {
-      opacity: 1, scale: 1, duration: 1.5, ease: 'elastic.out(1, 0.5)'
-    }, '-=0.6');
+      opacity: 1, y: 0, duration: 2, ease: 'power3.out'
+    }, '-=0.8');
 }
 
 /* ============ MUSIC PLAYER ============ */
