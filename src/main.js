@@ -405,8 +405,8 @@ function animateHeroEntrance() {
     '-=1.0'
   )
   .fromTo('.hero-photo',
-    { scale: 0.8, opacity: 0, filter: 'blur(20px)', x: 60 },
-    { scale: 1, opacity: 1, filter: 'blur(0px)', x: 0, duration: 1.4, ease: 'power3.out' },
+    { scale: 0.8, opacity: 0, x: 60 },
+    { scale: 1, opacity: 1, x: 0, duration: 1.4, ease: 'power3.out', clearProps: 'filter' },
     '-=1.2'
   )
   // Stage 6: Scroll indicator
