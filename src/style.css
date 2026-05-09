@@ -827,7 +827,7 @@ img.simple-icon {
 }
 
 .magic-icon { font-size: 4rem; filter: grayscale(1) sepia(1) hue-rotate(180deg) saturate(3); transition: all 0.3s ease; }
-.magic-title { font-family: var(--font-display); font-size: 1.4rem; color: var(--accent-1); margin-top: 1rem; letter-spacing: 0.15em; text-shadow: 0 0 10px var(--accent-1); transition: all 0.3s ease; }
+.magic-title { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: bold; color: var(--accent-1); margin-top: 1rem; letter-spacing: 0.2em; text-shadow: 0 0 15px var(--accent-1); transition: all 0.3s ease; text-transform: uppercase; }
 
 .magic-portal:hover .magic-content {
   background: transparent;
