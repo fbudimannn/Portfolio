@@ -615,7 +615,7 @@ img { max-width: 100%; display: block; }
 /* ======================== SKILLS UNIVERSE ======================== */
 .skills-section {
   background: transparent; /* Let the 3D space background shine through */
-  padding-bottom: 6rem;
+  padding-bottom: 0rem; /* Reduced to bring Journey section closer */
 }
 .skills-grid {
   display: flex;
@@ -753,13 +753,13 @@ img.simple-icon {
 }
 
 /* ======================== JOURNEY PORTALS ======================== */
-.journey-section { padding-top: 2rem; padding-bottom: 6rem; position: relative; }
+.journey-section { padding-top: 0rem; padding-bottom: 2rem; position: relative; } /* Reduced paddings */
 /* ======================== MAGIC PORTALS (DR. STRANGE STYLE) ======================== */
 .magic-portals-container {
   display: flex;
   justify-content: center;
   gap: 5rem; /* Reduced gap between portals */
-  margin-top: 5rem;
+  margin-top: 2rem; /* Reduced to bring portals closer to header */
   position: relative;
   padding: 2rem 0; /* Add padding so particles don't cut off */
 }
