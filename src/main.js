@@ -895,43 +895,60 @@ function initMagicPortals() {
 
   // Use GSAP to create a Dr. Strange portal popping effect when scrolled into view
   portals.forEach((portal, index) => {
-    gsap.fromTo(portal, 
-      {
-        scale: 0,
-        opacity: 0,
-        rotation: -180
-      },
-      {
-        scale: 1,
-        opacity: 1,
-        rotation: 0,
-        duration: 1.5,
-        ease: "back.out(1.5)",
-        scrollTrigger: {
-          trigger: '#magic-portals',
-          start: 'top 75%', // trigger when top of container hits 75% of viewport
-          toggleActions: 'play none none reverse' // play on enter, reverse on leave back up
-        },
-        delay: index * 0.3, // stagger the portals
-        onStart: () => {
+    // Initial state: hidden and scaled down to a tiny dot
+    gsap.set(portal, { scale: 0.01, opacity: 0, rotation: -360 });
+    
+    ScrollTrigger.create({
+      trigger: '#magic-portals',
+      start: 'top 75%', // trigger when top of container hits 75% of viewport
+      toggleActions: 'play none none reverse', // play on enter, reverse on leave back up
+      onEnter: () => {
+        // Step 1: The tiny spark appears and starts spinning
+        gsap.to(portal, {
+          opacity: 1,
+          duration: 0.5,
+          delay: index * 0.4
+        });
+        
+        // Step 2: The spark expands rapidly while spinning into the full portal
+        gsap.to(portal, {
+          scale: 1,
+          rotation: 0,
+          duration: 2,
+          ease: "elastic.out(1, 0.5)",
+          delay: (index * 0.4) + 0.5, // start expanding after appearing
+          onStart: () => {
              if(activePortals.length === 0) {
                  renderParticles();
              }
              activePortals.push(portal);
-        },
-        onComplete: () => {
-          portal.classList.add('is-visible');
-        },
-        onReverseComplete: () => {
-          portal.classList.remove('is-visible');
-          activePortals = activePortals.filter(p => p !== portal);
-          if(activePortals.length === 0) {
-              cancelAnimationFrame(animationFrame);
-              ctx.clearRect(0, 0, width, height);
-              particles.length = 0;
+             portal.classList.add('is-expanding');
+          },
+          onComplete: () => {
+            portal.classList.remove('is-expanding');
+            portal.classList.add('is-visible');
           }
-        }
+        });
+      },
+      onLeaveBack: () => {
+        // Reverse animation when scrolling back up
+        gsap.to(portal, {
+          scale: 0.01,
+          opacity: 0,
+          rotation: -360,
+          duration: 1,
+          ease: "power2.in",
+          onComplete: () => {
+            portal.classList.remove('is-visible', 'is-expanding');
+            activePortals = activePortals.filter(p => p !== portal);
+            if(activePortals.length === 0) {
+                cancelAnimationFrame(animationFrame);
+                ctx.clearRect(0, 0, width, height);
+                particles.length = 0;
+            }
+          }
+        });
       }
-    );
+    });
   });
 }
