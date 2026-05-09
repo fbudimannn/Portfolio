@@ -758,9 +758,10 @@ img.simple-icon {
 .magic-portals-container {
   display: flex;
   justify-content: center;
-  gap: 10rem;
+  gap: 5rem; /* Reduced gap between portals */
   margin-top: 5rem;
   position: relative;
+  padding: 2rem 0; /* Add padding so particles don't cut off */
 }
 
 #portal-particles {
@@ -775,8 +776,8 @@ img.simple-icon {
 
 .magic-portal {
   position: relative;
-  width: 250px;
-  height: 250px;
+  width: 280px; /* Increased base size */
+  height: 280px; /* Increased base size */
   border-radius: 50%;
   display: flex;
   flex-direction: column;

@@ -933,22 +933,22 @@ function initMagicPortals() {
         }
         activePortals.push(portal);
           
-        const tl = gsap.timeline({ delay: index * 0.8 }); // Longer delay between portals
+        const tl = gsap.timeline({ delay: index * 0.4 }); // Shorter delay between portals
         
         // Phase 1: Small spark appears
         tl.to(portal, {
             opacity: 1,
             scale: 0.1,
-            duration: 0.5,
+            duration: 0.3, // Faster spark
             ease: "power2.out",
-            onStart: () => portal.classList.add('is-expanding') // Start emitting tiny particles
+            onStart: () => portal.classList.add('is-expanding')
         })
         // Phase 2: Hold the spark briefly
-        .to({}, { duration: 0.5 }) 
-        // Phase 3: Expand the portal slowly
+        .to({}, { duration: 0.2 }) 
+        // Phase 3: Expand the portal (faster and slightly larger)
         .to(portal, {
-            scale: 1,
-            duration: 2.5, // Slower expansion
+            scale: 1.2, // Increase final size
+            duration: 1.5, // Faster expansion
             ease: "power2.inOut",
             onComplete: () => {
                 portal.classList.remove('is-expanding');
@@ -956,34 +956,16 @@ function initMagicPortals() {
             }
         })
         // Phase 4: Hold the open portal before showing text
-        .to({}, { duration: 0.5 })
+        .to({}, { duration: 0.2 })
         // Phase 5: Reveal Education/Experience text
         .to(content, {
             opacity: 1,
             scale: 1,
-            duration: 1,
+            duration: 0.8,
             ease: "back.out(1.5)"
         });
-      },
-      onLeaveBack: () => {
-        const tl = gsap.timeline();
-        tl.to(content, { opacity: 0, scale: 0.5, duration: 0.3 })
-          .to(portal, {
-              scale: 0.01,
-              opacity: 0,
-              duration: 1,
-              ease: "power2.in",
-              onComplete: () => {
-                portal.classList.remove('is-visible', 'is-expanding');
-                activePortals = activePortals.filter(p => p !== portal);
-                if(activePortals.length === 0) {
-                    cancelAnimationFrame(animationFrame);
-                    ctx.clearRect(0, 0, width, height);
-                    particles.length = 0;
-                }
-              }
-          });
       }
+      // Removed onLeaveBack to keep it open once scrolled past
     });
   });
 }
