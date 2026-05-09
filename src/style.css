@@ -502,6 +502,10 @@ img { max-width: 100%; display: block; }
   width: 100%;
   text-align: center;
   position: relative;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .scifi-quote {
   font-family: var(--font-mono);
@@ -512,16 +516,19 @@ img { max-width: 100%; display: block; }
   text-shadow: 0 0 20px rgba(56,189,248,0.6);
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  margin: 0 auto;
 }
 .scifi-cursor {
   display: inline-block;
   width: 0.6em;
-  height: 0.1em;
+  height: 0.12em;
   background: var(--accent-1);
   margin-left: 5px;
   vertical-align: bottom;
   animation: cursor-blink 1s infinite;
   box-shadow: 0 0 10px var(--accent-1);
+  position: relative;
+  top: -0.1em;
 }
 @keyframes cursor-blink {
   0%, 49% { opacity: 1; }
@@ -538,6 +545,7 @@ img { max-width: 100%; display: block; }
   letter-spacing: 0.3em;
   opacity: 0; /* Hidden initially */
   text-shadow: 0 0 10px rgba(148,163,184,0.4);
+  margin-right: -0.3em; /* offset letter-spacing so it visually centers */
 }
 .float-effect {
   animation: quote-float 6s ease-in-out infinite alternate;
