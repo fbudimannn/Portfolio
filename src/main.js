@@ -925,7 +925,8 @@ function initMagicPortals() {
     ScrollTrigger.create({
       trigger: '#magic-portals',
       start: 'top 65%', // trigger slightly later so user sees it
-      toggleActions: 'play none none reverse',
+      toggleActions: 'play none none none', // ONLY PLAY ONCE, never reverse
+      once: true, // Native GSAP ScrollTrigger way to only fire once
       onEnter: () => {
         // Start rendering loop if not already
         if(activePortals.length === 0) {

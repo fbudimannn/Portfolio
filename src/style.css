@@ -789,28 +789,7 @@ img.simple-icon {
   transform: scale(0);
 }
 
-.magic-ring {
-  position: absolute;
-  top: -10%; left: -10%; right: -10%; bottom: -10%;
-  border-radius: 50%;
-  border: 2px dashed rgba(56,189,248, 0.8);
-  box-shadow: 0 0 20px rgba(56,189,248, 0.4), inset 0 0 20px rgba(56,189,248, 0.4);
-  pointer-events: none;
-  opacity: 0;
-  transition: all 0.5s ease;
-}
-
-.magic-ring.ring-1 { animation: spin-right 10s linear infinite; border-style: dotted; border-width: 4px; }
-.magic-ring.ring-2 { animation: spin-left 15s linear infinite; border-color: rgba(139, 92, 246, 0.8); width: 110%; height: 110%; top: -5%; left: -5%; }
-.magic-ring.ring-3 { animation: spin-right 8s linear infinite; border: 1px solid var(--accent-1); width: 90%; height: 90%; top: 5%; left: 5%; }
-
-@keyframes spin-right { 100% { transform: rotate(360deg); } }
-@keyframes spin-left { 100% { transform: rotate(-360deg); } }
-
-/* Show rings only after GSAP entrance or hover */
-.magic-portal.is-visible .magic-ring { opacity: 0.6; }
-.magic-portal:hover .magic-ring { opacity: 1; box-shadow: 0 0 40px rgba(56,189,248, 0.8), inset 0 0 40px rgba(56,189,248, 0.8); }
-.magic-portal:hover .ring-2 { box-shadow: 0 0 40px rgba(139, 92, 246, 0.8), inset 0 0 40px rgba(139, 92, 246, 0.8); }
+/* Removed .magic-ring completely to rely purely on particles */
 
 .magic-content {
   position: relative;
