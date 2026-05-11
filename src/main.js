@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScifiTypingQuote();
   initMagicPortals();
   initHeaderAnimations();
+  initWarpTransition();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -1104,4 +1105,256 @@ function initHeaderAnimations() {
       }
     });
   });
+}
+
+/* ============ WARP PORTAL TRANSITION ============ */
+function initWarpTransition() {
+  const overlay = document.getElementById('warp-overlay');
+  const canvas = document.getElementById('warp-canvas');
+  if (!overlay || !canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let animFrame = null;
+  let isAnimating = false;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  // Star/particle class for warp effect
+  class WarpStar {
+    constructor(w, h) {
+      this.reset(w, h, true);
+    }
+    reset(w, h, initial = false) {
+      this.x = (Math.random() - 0.5) * w * 0.8;
+      this.y = (Math.random() - 0.5) * h * 0.8;
+      this.z = initial ? Math.random() * 1500 + 500 : 1500 + Math.random() * 500;
+      // Blue/cyan color
+      const t = Math.random();
+      if (t < 0.5) {
+        this.r = 30 + Math.random() * 40;
+        this.g = 140 + Math.random() * 80;
+        this.b = 248;
+      } else if (t < 0.8) {
+        this.r = 0;
+        this.g = 200 + Math.random() * 55;
+        this.b = 255;
+      } else {
+        this.r = 200 + Math.random() * 55;
+        this.g = 230 + Math.random() * 25;
+        this.b = 255;
+      }
+      this.size = 1 + Math.random() * 2;
+    }
+  }
+
+  const STAR_COUNT = 600;
+  const stars = [];
+  for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push(new WarpStar(canvas.width, canvas.height));
+  }
+
+  // Ring particles for the portal ring effect
+  class RingParticle {
+    constructor() {
+      this.angle = Math.random() * Math.PI * 2;
+      this.speed = 0.5 + Math.random() * 2;
+      this.radius = 0;
+      this.size = 1 + Math.random() * 3;
+      const t = Math.random();
+      if (t < 0.6) {
+        this.r = 30; this.g = 160; this.b = 255;
+      } else if (t < 0.9) {
+        this.r = 0; this.g = 220; this.b = 255;
+      } else {
+        this.r = 220; this.g = 240; this.b = 255;
+      }
+    }
+  }
+  const RING_COUNT = 200;
+  const ringParticles = [];
+  for (let i = 0; i < RING_COUNT; i++) {
+    ringParticles.push(new RingParticle());
+  }
+
+  function renderWarpFrame(progress, speed) {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    // Dark background with slight fade trail
+    ctx.fillStyle = `rgba(2, 2, 15, ${0.3 + progress * 0.4})`;
+    ctx.fillRect(0, 0, w, h);
+
+    // Portal ring (shrinks as you "enter")
+    const ringRadius = Math.max(0, (1 - progress * 0.8)) * Math.min(w, h) * 0.4;
+    const ringAlpha = Math.max(0, 1 - progress * 1.5);
+    
+    if (ringAlpha > 0) {
+      ringParticles.forEach(p => {
+        p.angle += p.speed * 0.03;
+        const spread = (Math.random() - 0.5) * 8;
+        const px = cx + Math.cos(p.angle) * (ringRadius + spread);
+        const py = cy + Math.sin(p.angle) * (ringRadius + spread);
+        
+        ctx.beginPath();
+        ctx.arc(px, py, p.size * ringAlpha, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${ringAlpha * 0.8})`;
+        ctx.fill();
+      });
+
+      // Ring glow
+      const gradient = ctx.createRadialGradient(cx, cy, ringRadius * 0.9, cx, cy, ringRadius * 1.2);
+      gradient.addColorStop(0, `rgba(30, 140, 255, 0)`);
+      gradient.addColorStop(0.7, `rgba(30, 140, 255, ${ringAlpha * 0.15})`);
+      gradient.addColorStop(1, `rgba(30, 140, 255, 0)`);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    // Warp stars — streak toward viewer
+    const warpSpeed = speed * (0.5 + progress * 2.5);
+    stars.forEach(star => {
+      const prevZ = star.z;
+      star.z -= warpSpeed;
+
+      if (star.z <= 1) {
+        star.reset(w, h);
+      }
+
+      // Project 3D to 2D
+      const sx = cx + (star.x / star.z) * 300;
+      const sy = cy + (star.y / star.z) * 300;
+      const prevSx = cx + (star.x / prevZ) * 300;
+      const prevSy = cy + (star.y / prevZ) * 300;
+
+      // Only draw if on screen
+      if (sx < -50 || sx > w + 50 || sy < -50 || sy > h + 50) return;
+
+      const depth = 1 - star.z / 2000;
+      const alpha = Math.min(1, depth * 1.5) * (0.3 + progress * 0.7);
+      const streakLength = Math.min(
+        Math.sqrt((sx - prevSx) ** 2 + (sy - prevSy) ** 2),
+        80 * progress
+      );
+
+      if (streakLength > 1 && progress > 0.1) {
+        // Draw streak line
+        ctx.beginPath();
+        ctx.moveTo(prevSx, prevSy);
+        ctx.lineTo(sx, sy);
+        ctx.strokeStyle = `rgba(${star.r}, ${star.g}, ${star.b}, ${alpha * 0.6})`;
+        ctx.lineWidth = star.size * depth;
+        ctx.stroke();
+      }
+
+      // Draw star point
+      ctx.beginPath();
+      ctx.arc(sx, sy, star.size * depth * (1 + progress), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${star.r}, ${star.g}, ${star.b}, ${alpha})`;
+      ctx.fill();
+    });
+
+    // Central vortex glow
+    if (progress > 0.3) {
+      const vortexAlpha = (progress - 0.3) * 1.4;
+      const vortexGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(w, h) * 0.3);
+      vortexGrad.addColorStop(0, `rgba(100, 180, 255, ${vortexAlpha * 0.4})`);
+      vortexGrad.addColorStop(0.5, `rgba(30, 100, 255, ${vortexAlpha * 0.15})`);
+      vortexGrad.addColorStop(1, `rgba(0, 0, 30, 0)`);
+      ctx.fillStyle = vortexGrad;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    // White flash at the end
+    if (progress > 0.85) {
+      const flashAlpha = (progress - 0.85) / 0.15;
+      ctx.fillStyle = `rgba(200, 230, 255, ${flashAlpha * 0.8})`;
+      ctx.fillRect(0, 0, w, h);
+    }
+  }
+
+  // Entry warp: fly INTO the portal
+  window.triggerWarpTransition = function(callback) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    resizeCanvas();
+    overlay.classList.add('active');
+
+    // Re-scatter stars
+    stars.forEach(s => s.reset(canvas.width, canvas.height, true));
+
+    const duration = 1800; // ms
+    const startTime = performance.now();
+
+    function animateEntry(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      renderWarpFrame(eased, 15);
+
+      if (progress < 1) {
+        animFrame = requestAnimationFrame(animateEntry);
+      } else {
+        // Warp complete — show content
+        isAnimating = false;
+        if (callback) callback();
+
+        // Keep overlay visible behind modal, fade it slowly
+        setTimeout(() => {
+          overlay.classList.remove('active');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }, 300);
+      }
+    }
+    animFrame = requestAnimationFrame(animateEntry);
+  };
+
+  // Exit warp: fly OUT of the portal (reverse)
+  window.triggerWarpExit = function(callback) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    resizeCanvas();
+    overlay.classList.add('active');
+
+    // Quickly close modal first
+    if (callback) callback();
+
+    stars.forEach(s => s.reset(canvas.width, canvas.height, true));
+
+    const duration = 1200; // ms (faster exit)
+    const startTime = performance.now();
+
+    function animateExit(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Reverse: go from bright to dark
+      const eased = 1 - (progress * progress);
+
+      renderWarpFrame(eased * 0.6, 10 * (1 - progress));
+
+      // Fade to black
+      ctx.fillStyle = `rgba(2, 2, 15, ${progress * 0.5})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (progress < 1) {
+        animFrame = requestAnimationFrame(animateExit);
+      } else {
+        isAnimating = false;
+        overlay.classList.remove('active');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    animFrame = requestAnimationFrame(animateExit);
+  };
 }

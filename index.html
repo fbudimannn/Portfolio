@@ -391,11 +391,16 @@
     </div>
   </div>
 
+  <!-- ====================== WARP TRANSITION OVERLAY ====================== -->
+  <div class="warp-overlay" id="warp-overlay">
+    <canvas id="warp-canvas"></canvas>
+  </div>
+
   <!-- ====================== SCI-FI DATA MODAL ====================== -->
   <div class="scifi-modal-overlay" id="data-modal">
     <div class="scifi-modal-box">
       <div class="modal-scanline"></div>
-      <button class="close-modal" id="close-modal">✕ ABORT</button>
+      <button class="close-modal" id="close-modal">✕ EXIT PORTAL</button>
       <div class="modal-header">
         <h2 id="modal-title">ACCESSING LOGS...</h2>
         <div class="modal-status">STATUS: DECRYPTED</div>
@@ -449,12 +454,13 @@
 
     document.querySelectorAll('.portal-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const portal = e.target.closest('.scifi-portal').id;
+        const portalEl = e.target.closest('.magic-portal');
+        const portalId = portalEl.id;
         const modal = document.getElementById('data-modal');
         const title = document.getElementById('modal-title');
         const body = document.getElementById('modal-body');
 
-        if(portal === 'portal-education') {
+        if(portalId === 'portal-education') {
           title.innerText = 'ACADEMIC ARCHIVES';
           body.innerHTML = educationData;
         } else {
@@ -462,12 +468,26 @@
           body.innerHTML = experienceData;
         }
 
-        modal.classList.add('active');
+        // Trigger warp transition, then show modal
+        if (window.triggerWarpTransition) {
+          window.triggerWarpTransition(() => {
+            modal.classList.add('active');
+          });
+        } else {
+          modal.classList.add('active');
+        }
       });
     });
 
     document.getElementById('close-modal').addEventListener('click', () => {
-      document.getElementById('data-modal').classList.remove('active');
+      const modal = document.getElementById('data-modal');
+      if (window.triggerWarpExit) {
+        window.triggerWarpExit(() => {
+          modal.classList.remove('active');
+        });
+      } else {
+        modal.classList.remove('active');
+      }
     });
   </script>
 

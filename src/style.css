@@ -935,6 +935,25 @@ img.simple-icon {
 .scifi-modal-box::-webkit-scrollbar-track { background: rgba(13,13,31,0.5); }
 .scifi-modal-box::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 3px; }
 
+/* ======================== WARP TRANSITION OVERLAY ======================== */
+.warp-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.warp-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.warp-overlay canvas {
+  width: 100%;
+  height: 100%;
+}
+
 /* ======================== PROJECTS ======================== */
 .projects-section { background: linear-gradient(180deg, transparent, rgba(13,13,31,0.4), transparent); }
 .projects-grid {
