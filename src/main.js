@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMusicPlayer();
   initScifiTypingQuote();
   initMagicPortals();
+  initHeaderAnimations();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -167,50 +168,50 @@ function initPreloader() {
     tl.add(() => {
       triggerWarp();
     })
-    .to('.radar-ring-1', { rotation: 1080, duration: 1.5, ease: 'power2.in' }, 0)
-    .to('.radar-ring-2', { rotation: -1080, duration: 1.5, ease: 'power2.in' }, 0)
-    .to('.telemetry', { opacity: 0, stagger: 0.1, duration: 0.2 }, 0)
-    // Stage 2: Logo glows intensely
-    .to('.gate-logo', {
-      textShadow: '0 0 60px rgba(56,189,248,0.8), 0 0 120px rgba(59,130,246,0.6)',
-      scale: 1.2,
-      color: '#fff',
-      duration: 0.6,
-      ease: 'power2.out',
-    }, 0.2)
-    // Stage 3: Hold for warp effect
-    .to('.gate-bar', { opacity: 0, duration: 0.3 }, '-=0.3')
-    .to('.gate-text', { opacity: 0, duration: 0.2 }, '-=0.2')
-    // Stage 4: Center content fades with warp blur
-    .to('.gate-logo-wrapper, .radar-ring', {
-      opacity: 0, scale: 2.5, filter: 'blur(10px)',
-      duration: 0.5, ease: 'power2.in',
-    })
-    .to('.gate-line', {
-      opacity: 0, duration: 0.2,
-    }, '-=0.4')
-    // Stage 5: Flash of white light
-    .to('.gate-left, .gate-right', {
-      borderColor: 'rgba(255,255,255,0.3)',
-      boxShadow: 'inset 0 0 80px rgba(255,255,255,0.05)',
-      duration: 0.3,
-    })
-    // Stage 6: Doors split apart
-    .to('.gate-left', {
-      xPercent: -100,
-      duration: 0.8,
-      ease: 'power4.inOut',
-    })
-    .to('.gate-right', {
-      xPercent: 100,
-      duration: 0.8,
-      ease: 'power4.inOut',
-    }, '-=0.8')
-    // Stage 7: Cleanup and hero entrance
-    .add(() => {
-      preloader.classList.add('hidden');
-      animateHeroEntrance();
-    });
+      .to('.radar-ring-1', { rotation: 1080, duration: 1.5, ease: 'power2.in' }, 0)
+      .to('.radar-ring-2', { rotation: -1080, duration: 1.5, ease: 'power2.in' }, 0)
+      .to('.telemetry', { opacity: 0, stagger: 0.1, duration: 0.2 }, 0)
+      // Stage 2: Logo glows intensely
+      .to('.gate-logo', {
+        textShadow: '0 0 60px rgba(56,189,248,0.8), 0 0 120px rgba(59,130,246,0.6)',
+        scale: 1.2,
+        color: '#fff',
+        duration: 0.6,
+        ease: 'power2.out',
+      }, 0.2)
+      // Stage 3: Hold for warp effect
+      .to('.gate-bar', { opacity: 0, duration: 0.3 }, '-=0.3')
+      .to('.gate-text', { opacity: 0, duration: 0.2 }, '-=0.2')
+      // Stage 4: Center content fades with warp blur
+      .to('.gate-logo-wrapper, .radar-ring', {
+        opacity: 0, scale: 2.5, filter: 'blur(10px)',
+        duration: 0.5, ease: 'power2.in',
+      })
+      .to('.gate-line', {
+        opacity: 0, duration: 0.2,
+      }, '-=0.4')
+      // Stage 5: Flash of white light
+      .to('.gate-left, .gate-right', {
+        borderColor: 'rgba(255,255,255,0.3)',
+        boxShadow: 'inset 0 0 80px rgba(255,255,255,0.05)',
+        duration: 0.3,
+      })
+      // Stage 6: Doors split apart
+      .to('.gate-left', {
+        xPercent: -100,
+        duration: 0.8,
+        ease: 'power4.inOut',
+      })
+      .to('.gate-right', {
+        xPercent: 100,
+        duration: 0.8,
+        ease: 'power4.inOut',
+      }, '-=0.8')
+      // Stage 7: Cleanup and hero entrance
+      .add(() => {
+        preloader.classList.add('hidden');
+        animateHeroEntrance();
+      });
   }
 
   window.addEventListener('load', () => {
@@ -231,7 +232,7 @@ function initVideoBackground() {
   const video = document.getElementById('bg-video');
   const container = document.querySelector('.video-container');
   if (video) {
-    video.play().catch(() => {});
+    video.play().catch(() => { });
   }
   if (container) {
     ScrollTrigger.create({
@@ -382,41 +383,41 @@ function animateHeroEntrance() {
     { opacity: 0, scale: 0.5, x: -30 },
     { opacity: 1, scale: 1, x: 0, duration: 0.8, ease: 'back.out(2)' },
   )
-  // Stage 2: Title characters stagger in
-  .fromTo('.hero-title .char',
-    { y: 60, opacity: 0 },
-    { y: 0, opacity: 1, stagger: 0.025, duration: 0.7, ease: 'back.out(1.4)' },
-    '-=0.4'
-  )
-  // Stage 3: Description fades in
-  .fromTo('.hero-desc',
-    { opacity: 0, y: 25 },
-    { opacity: 1, y: 0, duration: 0.9 },
-    '-=0.3'
-  )
-  // Stage 4: CTA button
-  .fromTo('.hero-cta',
-    { opacity: 0, y: 20, scale: 0.9 },
-    { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.7)' },
-    '-=0.5'
-  )
-  // Stage 5: Photo materializes from blur with silhouette
-  .fromTo('.photo-silhouette',
-    { scale: 0.3, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 1.5, ease: 'power2.out' },
-    '-=1.0'
-  )
-  .fromTo('.hero-photo',
-    { scale: 0.8, opacity: 0, x: 60 },
-    { scale: 1, opacity: 1, x: 0, duration: 1.4, ease: 'power3.out', clearProps: 'filter' },
-    '-=1.2'
-  )
-  // Stage 6: Scroll indicator
-  .fromTo('.scroll-indicator',
-    { opacity: 0, y: 20 },
-    { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
-    '-=0.3'
-  );
+    // Stage 2: Title characters stagger in
+    .fromTo('.hero-title .char',
+      { y: 60, opacity: 0 },
+      { y: 0, opacity: 1, stagger: 0.025, duration: 0.7, ease: 'back.out(1.4)' },
+      '-=0.4'
+    )
+    // Stage 3: Description fades in
+    .fromTo('.hero-desc',
+      { opacity: 0, y: 25 },
+      { opacity: 1, y: 0, duration: 0.9 },
+      '-=0.3'
+    )
+    // Stage 4: CTA button
+    .fromTo('.hero-cta',
+      { opacity: 0, y: 20, scale: 0.9 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.7)' },
+      '-=0.5'
+    )
+    // Stage 5: Photo materializes from blur with silhouette
+    .fromTo('.photo-silhouette',
+      { scale: 0.3, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 1.5, ease: 'power2.out' },
+      '-=1.0'
+    )
+    .fromTo('.hero-photo',
+      { scale: 0.8, opacity: 0, x: 60 },
+      { scale: 1, opacity: 1, x: 0, duration: 1.4, ease: 'power3.out', clearProps: 'filter' },
+      '-=1.2'
+    )
+    // Stage 6: Scroll indicator
+    .fromTo('.scroll-indicator',
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+      '-=0.3'
+    );
 }
 
 function initHeroAnimations() {
@@ -474,9 +475,9 @@ function initSkillBubbles() {
 
   // Positions tightly around the photo (% of container)
   const positions = [
-    { top: '2%',  left: '15%' },
-    { top: '0%',  left: '55%' },
-    { top: '8%',  left: '85%' },
+    { top: '2%', left: '15%' },
+    { top: '0%', left: '55%' },
+    { top: '8%', left: '85%' },
     { top: '22%', left: '0%' },
     { top: '20%', left: '75%' },
     { top: '40%', left: '5%' },
@@ -751,7 +752,7 @@ function initScifiTypingQuote() {
   const typingTextEl = document.getElementById('scifi-typing-text');
   const citeEl = document.getElementById('scifi-cite');
   const containerEl = document.querySelector('.scifi-quote-container');
-  
+
   if (!quoteSec || !typingTextEl) return;
 
   // Use \u00A0 (non-breaking space) between WITHOUT and DATA so they wrap together perfectly
@@ -766,7 +767,7 @@ function initScifiTypingQuote() {
       if (typed) return;
       typed = true;
       let i = 0;
-      
+
       // Fast sci-fi typing
       const interval = setInterval(() => {
         if (i <= fullText.length) {
@@ -787,7 +788,7 @@ function initScifiTypingQuote() {
 function initMusicPlayer() {
   const musicToggle = document.getElementById('music-toggle');
   const bgMusic = document.getElementById('bg-music');
-  
+
   if (!musicToggle || !bgMusic) return;
 
   // Set music volume (optional, so it's not too loud)
@@ -812,7 +813,7 @@ function initMagicPortals() {
   const canvas = document.getElementById('portal-particles');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  
+
   // Set canvas size to cover the entire portal container
   const container = document.getElementById('magic-portals');
   let width, height;
@@ -826,7 +827,7 @@ function initMagicPortals() {
   // Particle System
   const particles = [];
   const maxParticles = 600; // Increased significantly to support 2 dense portals simultaneously
-  
+
   class Particle {
     constructor(x, y, radius) {
       this.centerX = x;
@@ -834,26 +835,26 @@ function initMagicPortals() {
       this.radius = radius;
       this.angle = Math.random() * Math.PI * 2;
       // Slower rotation for a more majestic, less chaotic feel
-      this.speed = (Math.random() * 0.02 + 0.005) * (Math.random() > 0.5 ? 1 : -1); 
+      this.speed = (Math.random() * 0.02 + 0.005) * (Math.random() > 0.5 ? 1 : -1);
       this.distance = radius + (Math.random() * 15 - 7.5);
       this.size = Math.random() * 2.5 + 0.5; // Slightly smaller sparks
       this.alpha = Math.random() * 0.8 + 0.2;
       this.life = Math.random() * 80 + 20;
-      
+
       // Color variations: mostly blue, some cyan/white
       const colorType = Math.random();
-      if(colorType > 0.9) {
-          this.color = `rgba(255, 255, 255, `; // White sparks
+      if (colorType > 0.9) {
+        this.color = `rgba(255, 255, 255, `; // White sparks
       } else if (colorType > 0.6) {
-          this.color = `rgba(0, 240, 255, `; // Bright Cyan
+        this.color = `rgba(0, 240, 255, `; // Bright Cyan
       } else {
-          this.color = `rgba(30, 144, 255, `; // Deep Blue
+        this.color = `rgba(30, 144, 255, `; // Deep Blue
       }
     }
     update() {
       this.angle += this.speed;
       this.life--;
-      if(this.life <= 0) {
+      if (this.life <= 0) {
         this.alpha -= 0.015;
       }
     }
@@ -872,33 +873,33 @@ function initMagicPortals() {
 
   function renderParticles() {
     ctx.clearRect(0, 0, width, height);
-    
+
     // Add new particles
     activePortals.forEach(portal => {
       // Only spawn particles if the portal has started expanding
       if (portal.classList.contains('is-expanding') || portal.classList.contains('is-visible')) {
-            const rect = portal.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            // Calculate center relative to canvas
-            const centerX = (rect.left - containerRect.left) + rect.width / 2;
-            const centerY = (rect.top - containerRect.top) + rect.height / 2;
-            
-            // Current scale of the portal to adjust particle spawn radius dynamically
-            const currentScale = gsap.getProperty(portal, "scale");
-            // Set base radius to half of the base element width (280/2 = 140) to tightly hug the edge
-            const baseRadius = 140; 
-            const currentRadius = baseRadius * currentScale;
+        const rect = portal.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        // Calculate center relative to canvas
+        const centerX = (rect.left - containerRect.left) + rect.width / 2;
+        const centerY = (rect.top - containerRect.top) + rect.height / 2;
 
-            // Only spawn if valid coordinates and radius is reasonable
-            if(centerX > 0 && centerY > 0 && currentRadius > 10) {
-               // Spawn multiple particles per frame for a thicker ring
-               for(let i=0; i<4; i++) { // Increased to 4 per frame
-                   if (particles.length < maxParticles) {
-                       particles.push(new Particle(centerX, centerY, currentRadius)); 
-                   }
-               }
+        // Current scale of the portal to adjust particle spawn radius dynamically
+        const currentScale = gsap.getProperty(portal, "scale");
+        // Set base radius to half of the base element width (280/2 = 140) to tightly hug the edge
+        const baseRadius = 140;
+        const currentRadius = baseRadius * currentScale;
+
+        // Only spawn if valid coordinates and radius is reasonable
+        if (centerX > 0 && centerY > 0 && currentRadius > 10) {
+          // Spawn multiple particles per frame for a thicker ring
+          for (let i = 0; i < 4; i++) { // Increased to 4 per frame
+            if (particles.length < maxParticles) {
+              particles.push(new Particle(centerX, centerY, currentRadius));
             }
-          // Remove the outer "if length < max" to allow fair distribution per portal
+          }
+        }
+        // Remove the outer "if length < max" to allow fair distribution per portal
       }
     });
 
@@ -911,7 +912,7 @@ function initMagicPortals() {
         particles.splice(i, 1);
       }
     }
-    
+
     animationFrame = requestAnimationFrame(renderParticles);
   }
 
@@ -920,7 +921,7 @@ function initMagicPortals() {
     // Hide content initially
     const content = portal.querySelector('.magic-content');
     gsap.set(content, { opacity: 0, scale: 0.5 });
-    
+
     // Initial state of the portal ring: a tiny dot
     gsap.set(portal, { scale: 0.05, opacity: 0 });
 
@@ -931,44 +932,123 @@ function initMagicPortals() {
       once: true, // Native GSAP ScrollTrigger way to only fire once
       onEnter: () => {
         // Start rendering loop if not already
-        if(activePortals.length === 0) {
-             renderParticles();
+        if (activePortals.length === 0) {
+          renderParticles();
         }
         activePortals.push(portal);
-          
+
         const tl = gsap.timeline({ delay: index * 0.4 }); // Shorter delay between portals
-        
+
         // Phase 1: Small spark appears
         tl.to(portal, {
-            opacity: 1,
-            scale: 0.1,
-            duration: 0.3, // Faster spark
-            ease: "power2.out",
-            onStart: () => portal.classList.add('is-expanding')
+          opacity: 1,
+          scale: 0.1,
+          duration: 0.3, // Faster spark
+          ease: "power2.out",
+          onStart: () => portal.classList.add('is-expanding')
         })
-        // Phase 2: Hold the spark briefly
-        .to({}, { duration: 0.2 }) 
-        // Phase 3: Expand the portal (faster and slightly larger)
-        .to(portal, {
+          // Phase 2: Hold the spark briefly
+          .to({}, { duration: 0.2 })
+          // Phase 3: Expand the portal (faster and slightly larger)
+          .to(portal, {
             scale: 1.2, // Increase final size
             duration: 1.5, // Faster expansion
             ease: "power2.inOut",
             onComplete: () => {
-                portal.classList.remove('is-expanding');
-                portal.classList.add('is-visible');
+              portal.classList.remove('is-expanding');
+              portal.classList.add('is-visible');
             }
-        })
-        // Phase 4: Hold the open portal before showing text
-        .to({}, { duration: 0.2 })
-        // Phase 5: Reveal Education/Experience text
-        .to(content, {
+          })
+          // Phase 4: Hold the open portal before showing text
+          .to({}, { duration: 0.2 })
+          // Phase 5: Reveal Education/Experience text
+          .to(content, {
             opacity: 1,
             scale: 1,
             duration: 0.8,
             ease: "back.out(1.5)"
-        });
+          });
       }
       // Removed onLeaveBack to keep it open once scrolled past
+    });
+  });
+}
+
+/* ============ SECTION HEADER ANIMATIONS (SCI-FI GLOW FADE) ============ */
+function initHeaderAnimations() {
+  const sectionHeaders = document.querySelectorAll('.section-header');
+  const categoryHeaders = document.querySelectorAll('.category-header');
+
+  // Animate main section headers (What I Bring, My Universe of Skills, etc.)
+  sectionHeaders.forEach((header) => {
+    const tag = header.querySelector('.section-tag');
+    const title = header.querySelector('.section-title');
+    const subtitle = header.querySelector('.section-subtitle');
+
+    // Initial state
+    gsap.set([tag, title, subtitle], { 
+      opacity: 0, 
+      y: 40,
+      scale: 0.95,
+      textShadow: "0 0 0px rgba(56,189,248, 0)" // No glow initially
+    });
+
+    ScrollTrigger.create({
+      trigger: header,
+      start: 'top 85%',
+      once: true,
+      onEnter: () => {
+        const tl = gsap.timeline();
+        
+        // Tag pops up
+        if (tag) {
+          tl.to(tag, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.5)" });
+        }
+        
+        // Title glowing fade up
+        if (title) {
+          tl.to(title, { 
+            opacity: 1, 
+            y: 0, 
+            scale: 1, 
+            textShadow: "0 0 20px rgba(56,189,248, 0.8)", // Bright glow
+            duration: 0.6, 
+            ease: "power2.out" 
+          }, "-=0.2")
+          // Settle the glow down to normal
+          .to(title, {
+            textShadow: "0 0 10px rgba(56,189,248, 0.4)",
+            duration: 0.8,
+            ease: "power1.inOut"
+          }, "-=0.2");
+        }
+        
+        // Subtitle smooth fade
+        if (subtitle) {
+          tl.to(subtitle, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power2.out" }, "-=0.6");
+        }
+      }
+    });
+  });
+
+  // Animate sub-category headers (Data Analytics & BI, AI & ML, etc.)
+  categoryHeaders.forEach((header, index) => {
+    gsap.set(header, { opacity: 0, x: -30, textShadow: "0 0 0px rgba(56,189,248, 0)" });
+    
+    ScrollTrigger.create({
+      trigger: header,
+      start: 'top 90%',
+      once: true,
+      onEnter: () => {
+        gsap.to(header, {
+          opacity: 1,
+          x: 0,
+          textShadow: "0 0 15px rgba(56,189,248, 0.6)",
+          duration: 0.8,
+          ease: "power2.out",
+          delay: (index % 3) * 0.2 // Stagger slightly if side-by-side
+        });
+      }
     });
   });
 }
