@@ -361,6 +361,7 @@ function animateHeroEntrance() {
     onComplete: () => {
       startGreetingRotator();
       if (window.startBubbles) window.startBubbles();
+      if (window.triggerMusicUI) window.triggerMusicUI();
     }
   });
 
@@ -823,11 +824,29 @@ function initMusicPlayer() {
     });
   }
 
-  // Toast Notification Logic (Pop up gently after 3 seconds)
+  // Manual close button
+  if (closeToastBtn) {
+    closeToastBtn.addEventListener('click', () => {
+      musicToast.classList.remove('show');
+    });
+  }
+}
+
+// Called after hero animation finishes
+window.triggerMusicUI = function() {
+  const musicContainer = document.getElementById('music-container');
+  const bgMusic = document.getElementById('bg-music');
+  const musicToast = document.getElementById('music-toast');
+
+  if (musicContainer) {
+    musicContainer.classList.add('show-ui');
+  }
+
+  // Toast Notification Logic (Pop up gently after 2 seconds)
   if (musicToast) {
     setTimeout(() => {
       // Only show if they haven't manually started the music already
-      if (bgMusic.paused) {
+      if (bgMusic && bgMusic.paused) {
         musicToast.classList.add('show');
         
         // Auto-hide after 10 seconds
@@ -835,14 +854,7 @@ function initMusicPlayer() {
           musicToast.classList.remove('show');
         }, 10000);
       }
-    }, 3000);
-
-    // Manual close button
-    if (closeToastBtn) {
-      closeToastBtn.addEventListener('click', () => {
-        musicToast.classList.remove('show');
-      });
-    }
+    }, 2000);
   }
 }
 
