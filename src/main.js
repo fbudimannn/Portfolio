@@ -784,25 +784,66 @@ function initScifiTypingQuote() {
   });
 }
 
-/* ============ MUSIC PLAYER ============ */
+/* ============ MUSIC PLAYER & UI ============ */
 function initMusicPlayer() {
   const musicToggle = document.getElementById('music-toggle');
   const bgMusic = document.getElementById('bg-music');
+  const volumeSlider = document.getElementById('volume-slider');
+  const musicToast = document.getElementById('music-toast');
+  const closeToastBtn = document.getElementById('close-toast');
 
   if (!musicToggle || !bgMusic) return;
 
-  // Set music volume (optional, so it's not too loud)
-  bgMusic.volume = 0.4;
+  // Set initial music volume based on slider
+  bgMusic.volume = volumeSlider ? volumeSlider.value : 0.3;
 
+  // Toggle play/pause
   musicToggle.addEventListener('click', () => {
     if (bgMusic.paused) {
       bgMusic.play();
       musicToggle.classList.add('playing');
+      // Hide toast immediately if user plays music
+      if (musicToast) musicToast.classList.remove('show');
     } else {
       bgMusic.pause();
       musicToggle.classList.remove('playing');
     }
   });
+
+  // Handle volume change
+  if (volumeSlider) {
+    volumeSlider.addEventListener('input', (e) => {
+      bgMusic.volume = e.target.value;
+      // Automatically play if volume is increased from 0 and currently paused
+      if (bgMusic.paused && e.target.value > 0) {
+        bgMusic.play();
+        musicToggle.classList.add('playing');
+        if (musicToast) musicToast.classList.remove('show');
+      }
+    });
+  }
+
+  // Toast Notification Logic (Pop up gently after 3 seconds)
+  if (musicToast) {
+    setTimeout(() => {
+      // Only show if they haven't manually started the music already
+      if (bgMusic.paused) {
+        musicToast.classList.add('show');
+        
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+          musicToast.classList.remove('show');
+        }, 10000);
+      }
+    }, 3000);
+
+    // Manual close button
+    if (closeToastBtn) {
+      closeToastBtn.addEventListener('click', () => {
+        musicToast.classList.remove('show');
+      });
+    }
+  }
 }
 
 /* ============ MAGIC PORTALS (GSAP SCROLLTRIGGER + CANVAS PARTICLES) ============ */

@@ -370,17 +370,26 @@
   <footer class="footer">
     <p>Built with passion by <strong>Fakhri Budiman</strong> · Made in Indonesia 🇮🇩</p>
   </footer>
-  <!-- Background Music & Floating Equalizer Toggle -->
+  <!-- Background Music & Controls -->
   <audio id="bg-music" loop>
     <source src="/bg_music.mp3" type="audio/mpeg" />
   </audio>
 
-  <button class="music-toggle" id="music-toggle" aria-label="Toggle Background Music">
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-  </button>
+  <div class="music-container" id="music-container">
+    <div class="music-toast" id="music-toast">
+      <span>Audio system offline. Enable for optimal experience.</span>
+      <button id="close-toast">×</button>
+    </div>
+    <div class="music-controls">
+      <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.3" class="volume-slider">
+      <button class="music-toggle" id="music-toggle" aria-label="Toggle Background Music">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </div>
 
   <!-- ====================== SCI-FI DATA MODAL ====================== -->
   <div class="scifi-modal-overlay" id="data-modal">
