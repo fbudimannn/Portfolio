@@ -31,10 +31,6 @@ body {
   color: var(--text);
   overflow-x: hidden;
   line-height: 1.6;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-  background-size: 80px 80px;
 }
 
 ::selection { background: var(--accent-2); color: #fff; }
@@ -883,9 +879,7 @@ img.simple-icon {
   max-height: 120px;
   object-fit: contain;
   border-radius: 6px;
-  border: 1px solid rgba(56,189,248,0.4);
-  box-shadow: 0 0 20px rgba(56,189,248,0.2), inset 0 0 10px rgba(56,189,248,0.1);
-  /* Filter removed to keep original colors */
+  /* Completely original: no blue border, no glow */
 }
 
 /* --- Debris: Tags (1-2 word achievements) --- */
@@ -1151,8 +1145,7 @@ img.simple-icon {
 .space-photo {
   position: relative; 
   width: auto; max-width: 35%; max-height: 220px; object-fit: contain;
-  border-radius: 8px; border: 1px solid rgba(56,189,248,0.4);
-  box-shadow: 0 0 20px rgba(56,189,248,0.3);
+  border-radius: 8px;
   margin-right: 2rem;
   z-index: 2;
 }
