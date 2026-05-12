@@ -50,13 +50,15 @@
   <div class="cursor-dot" id="cursor-dot"></div>
   <div class="cursor-ring" id="cursor-ring"></div>
 
-  <!-- Video Background -->
+  <!-- Video Background (Temporarily disabled to use stars) -->
+  <!--
   <div class="video-container">
     <video id="bg-video" autoplay muted loop playsinline>
       <source src="/video_background.mp4" type="video/mp4" />
     </video>
     <div class="video-overlay"></div>
   </div>
+  -->
 
   <!-- Navigation -->
   <nav class="nav" id="nav">
@@ -202,10 +204,26 @@
               <span class="magic-icon">🎓</span>
               <h3 class="magic-title">EDUCATION</h3>
             </div>
-            <!-- Hover Highlight Holograms -->
+            <!-- Floating Memory Debris (Education) -->
             <div class="magic-hologram">
-              <span class="holo-badge">WARWICK</span>
-              <span class="holo-badge">TELKOM</span>
+              <!-- Logos -->
+              <img src="/foto/education/logo/cd3046da93de0b7a1db41a0d06021247.png" class="debris debris-logo float-a" style="top:-18%;left:-10%" alt="Warwick">
+              <img src="/foto/education/logo/Logo_resmi_LPDP (1).png" class="debris debris-logo float-b" style="top:30%;left:-30%" alt="LPDP">
+              <img src="/foto/education/logo/359745999_670376618443174_8847655667598609935_n-removebg-preview.png" class="debris debris-logo float-c" style="top:-22%;right:-5%" alt="Solbridge">
+              <img src="/foto/education/logo/d6de52c739a28b78beef1f26acca7358.png" class="debris debris-logo float-d" style="top:5%;right:10%">
+              
+              <!-- Photos (Max 4, no overlapping) -->
+              <img src="/foto/education/warwick.jpeg" class="debris debris-photo float-e" style="bottom:-30%;left:0%" alt="Warwick Campus">
+              <img src="/foto/education/warwick2.jpeg" class="debris debris-photo float-f" style="bottom:-20%;right:-35%" alt="Warwick Experience">
+              <img src="/foto/education/lpdp.jpeg" class="debris debris-photo float-c" style="top:45%;left:-35%" alt="LPDP">
+              <img src="/foto/education/WhatsApp%20Image%202026-05-12%20at%2016.38.54.jpeg" class="debris debris-photo float-a" style="top:-35%;right:10%" alt="Education Memory">
+
+              <!-- Achievement Tags -->
+              <span class="debris debris-tag float-a" style="bottom:10%;left:-35%">Cum Laude</span>
+              <span class="debris debris-tag float-c" style="top:55%;right:-35%">Merit</span>
+              <span class="debris debris-tag float-b" style="bottom:-20%;left:30%">LPDP Awardee</span>
+              <span class="debris debris-tag float-d" style="top:-10%;left:35%">3.68 GPA</span>
+              <span class="debris debris-tag float-e" style="top:45%;left:-25%">Exchange</span>
             </div>
           </div>
 
@@ -215,15 +233,20 @@
               <span class="magic-icon">💼</span>
               <h3 class="magic-title">EXPERIENCE</h3>
             </div>
-            <!-- Hover Highlight Holograms -->
+            <!-- Floating Memory Debris (Experience) -->
             <div class="magic-hologram">
-              <span class="holo-badge">Data Analyst</span>
-              <span class="holo-badge">Team Lead</span>
-              <span class="holo-badge">Rakamin</span>
-              <span class="holo-badge">RevoU</span>
+              <!-- Achievement Tags -->
+              <span class="debris debris-tag float-a" style="top:-18%;left:-5%">Data Analyst</span>
+              <span class="debris debris-tag float-b" style="top:25%;right:-30%">Team Lead</span>
+              <span class="debris debris-tag float-c" style="top:-15%;right:-10%">5.0 Rating</span>
+              <span class="debris debris-tag float-d" style="bottom:-10%;left:-10%">KPI Dashboard</span>
+              <span class="debris debris-tag float-e" style="bottom:5%;right:-25%">A/B Testing</span>
+              <span class="debris debris-tag float-f" style="top:45%;left:-30%">Predictive Models</span>
+              <span class="debris debris-tag float-a" style="bottom:-18%;left:35%">SQL & Python</span>
+              <span class="debris debris-tag float-c" style="top:55%;right:-20%">Mentoring</span>
             </div>
           </div>
-          <canvas id="portal-particles"></canvas>
+    
         </div>
       </div>
     </section>
@@ -366,15 +389,13 @@
     </section>
   </main>
 
-  <!-- Footer -->
+  <!-- ====================== FOOTER ====================== -->
   <footer class="footer">
-    <p>Built with passion by <strong>Fakhri Budiman</strong> · Made in Indonesia 🇮🇩</p>
+    <p>Data Logs Encrypted & Secured.</p>
+    <p>Designed and Built by <strong>Fakhri</strong> © 2026</p>
   </footer>
-  <!-- Background Music & Controls -->
-  <audio id="bg-music" loop>
-    <source src="/bg_music.mp3" type="audio/mpeg" />
-  </audio>
 
+  <!-- ====================== GLOBAL MUSIC UI ====================== -->
   <div class="music-container" id="music-container">
     <div class="music-toast" id="music-toast">
       <span>Audio system offline. Enable for optimal experience.</span>
@@ -396,54 +417,96 @@
     <canvas id="warp-canvas"></canvas>
   </div>
 
-  <!-- ====================== SCI-FI DATA MODAL ====================== -->
-  <div class="scifi-modal-overlay" id="data-modal">
-    <div class="scifi-modal-box">
-      <div class="modal-scanline"></div>
-      <button class="close-modal" id="close-modal">✕ EXIT PORTAL</button>
-      <div class="modal-header">
-        <h2 id="modal-title">ACCESSING LOGS...</h2>
-        <div class="modal-status">STATUS: DECRYPTED</div>
-      </div>
-      <div class="modal-content" id="modal-body">
+  <!-- ====================== INTERSTELLAR SPACE ROOM ====================== -->
+  <div class="space-room" id="space-room">
+    <div class="space-stars"></div>
+    <div class="space-nav">
+      <div class="space-status">STATUS: <span style="color: #10b981;">DECRYPTED</span></div>
+      <button class="close-space" id="close-space">⟵ WARP BACK</button>
+    </div>
+    <div class="space-scroll-container">
+      <div class="space-timeline" id="space-timeline">
         <!-- Content injected via JS -->
       </div>
+      <div class="space-end">END OF LOGS.</div>
     </div>
   </div>
 
+  <!-- ====================== WARP FLASH OVERLAY ====================== -->
+  <div id="warp-flash" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; z-index: 10000; opacity: 0; pointer-events: none; mix-blend-mode: screen;"></div>
+
   <script>
     const educationData = `
-      <div class="modal-timeline">
-        <div class="modal-timeline-item">
+      <div class="space-item space-title-item" data-z="0">
+        <div class="scifi-title-hud floating-element">
+          <div class="scifi-icon">🎓</div>
+          <h2 class="space-title">ACADEMIC ARCHIVES</h2>
+          <div class="scifi-telemetry">
+            <span>SYS: ONLINE</span>
+            <span>ENTRIES: 3</span>
+            <span>∑(x_i - μ)² / N</span>
+          </div>
+        </div>
+      </div>
+      <div class="space-item" data-z="-3000">
+        <img src="/foto/education/logo/cd3046da93de0b7a1db41a0d06021247.png" class="space-logo floating-element-delay" alt="Warwick">
+        <img src="/foto/education/warwick.jpeg" class="space-photo floating-element" alt="Warwick Campus">
+        <div class="space-card floating-element">
           <span class="m-date">Sep 2024 – Sep 2025</span>
           <h3>University of Warwick</h3>
           <p class="m-role">MSc Business Analytics</p>
           <p class="m-desc">Merit · LPDP (Indonesian Endowment Fund) Scholar. Advanced coursework in machine learning, statistical modelling, and business intelligence.</p>
         </div>
-        <div class="modal-timeline-item">
+      </div>
+      <div class="space-item right-align" data-z="-6000">
+        <img src="/foto/education/WhatsApp%20Image%202026-05-12%20at%2016.38.54.jpeg" class="space-photo floating-element" alt="Memory">
+        <div class="space-card floating-element">
           <span class="m-date">2017 – 2021</span>
           <h3>Telkom University</h3>
           <p class="m-role">BSc International ICT Business</p>
           <p class="m-desc">3.68 GPA · Cum Laude · Semester exchange at Korea University. Foundation in business analytics, information systems, and digital strategy.</p>
         </div>
       </div>
+      <div class="space-item" data-z="-9000">
+        <img src="/foto/education/logo/Logo_resmi_LPDP (1).png" class="space-logo floating-element-delay" alt="LPDP">
+        <img src="/foto/education/lpdp.jpeg" class="space-photo floating-element" alt="LPDP Experience">
+        <div class="space-card floating-element">
+          <h3>LPDP Scholar</h3>
+          <p class="m-desc">Awarded the highly prestigious Indonesian Endowment Fund for Education.</p>
+        </div>
+      </div>
     `;
 
     const experienceData = `
-      <div class="modal-timeline">
-        <div class="modal-timeline-item">
+      <div class="space-item space-title-item" data-z="0">
+        <div class="scifi-title-hud floating-element">
+          <div class="scifi-icon">🚀</div>
+          <h2 class="space-title">PROFESSIONAL LOGS</h2>
+          <div class="scifi-telemetry">
+            <span>AUTH: VERIFIED</span>
+            <span>ENTRIES: 3</span>
+            <span>SELECT * FROM career</span>
+          </div>
+        </div>
+      </div>
+      <div class="space-item" data-z="-3000">
+        <div class="space-card floating-element">
           <span class="m-date">2025 – Present</span>
           <h3>PT Rakamin</h3>
           <p class="m-role">Data Analyst</p>
           <p class="m-desc">Analyzing core business metrics, generating actionable insights, and building predictive models to drive strategic business growth.</p>
         </div>
-        <div class="modal-timeline-item">
+      </div>
+      <div class="space-item right-align" data-z="-6000">
+        <div class="space-card floating-element">
           <span class="m-date">Sep 2023 – Sep 2024</span>
           <h3>RevoU</h3>
           <p class="m-role">Team Lead — Full Stack Data Analytics</p>
           <p class="m-desc">Led cross-functional data analytics teams. Achieved 5.0/5.0 satisfaction rating. Mentored junior analysts on SQL, Python, and dashboard design.</p>
         </div>
-        <div class="modal-timeline-item">
+      </div>
+      <div class="space-item" data-z="-9000">
+        <div class="space-card floating-element">
           <span class="m-date">Jan – Apr 2023</span>
           <h3>RevoU</h3>
           <p class="m-role">Data Analyst Associate</p>
@@ -456,38 +519,101 @@
       btn.addEventListener('click', (e) => {
         const portalEl = e.target.closest('.magic-portal');
         const portalId = portalEl.id;
-        const modal = document.getElementById('data-modal');
-        const title = document.getElementById('modal-title');
-        const body = document.getElementById('modal-body');
+        const room = document.getElementById('space-room');
+        const body = document.getElementById('space-timeline');
+        const flash = document.getElementById('warp-flash');
 
         if(portalId === 'portal-education') {
-          title.innerText = 'ACADEMIC ARCHIVES';
           body.innerHTML = educationData;
         } else {
-          title.innerText = 'PROFESSIONAL LOGS';
           body.innerHTML = experienceData;
         }
 
-        // Trigger warp transition, then show modal
-        if (window.triggerWarpTransition) {
-          window.triggerWarpTransition(() => {
-            modal.classList.add('active');
-          });
-        } else {
-          modal.classList.add('active');
-        }
+        // --- FLY-IN ANIMATION ---
+        const portalContent = portalEl.querySelector('.magic-content');
+        if (portalContent) gsap.to(portalContent, { opacity: 0, duration: 0.3 });
+        
+        const hologram = portalEl.querySelector('.magic-hologram');
+        if (hologram) gsap.to(hologram, { opacity: 0, duration: 0.3 });
+
+        // Trigger the Three.js starfield warp from the landing page!
+        if (window.triggerWarp) window.triggerWarp();
+
+        // 1. Scale the portal up to swallow the camera
+        portalEl.style.zIndex = '9999'; 
+        gsap.to(portalEl, {
+          scale: 30,
+          duration: 1.5,
+          ease: "power2.in"
+        });
+
+        // 2. Fade in a bright white/cyan flash exactly as we hit the portal
+        gsap.to(flash, {
+          opacity: 1,
+          duration: 0.6,
+          delay: 0.9, // Starts flashing near the end of the zoom
+          ease: "power2.in",
+          onComplete: () => {
+            // ---> WE ARE NOW FULLY BLINDED BY THE FLASH <---
+            
+            // Swap out the background quietly
+            if (window.stopAllPortals) window.stopAllPortals();
+            
+            // Show the space room
+            room.classList.add('active');
+            room.querySelector('.space-scroll-container').scrollTop = 0;
+            if (window.updateSpaceRoom3D) window.updateSpaceRoom3D();
+            
+            // Reset the portal scale silently behind the space room
+            gsap.set(portalEl, { scale: 1 });
+            portalEl.style.zIndex = '';
+            if (portalContent) portalContent.style.opacity = '1';
+            if (hologram) hologram.style.opacity = '1';
+
+            // 3. Fade out the flash to reveal the Space Room!
+            gsap.to(flash, {
+              opacity: 0,
+              duration: 1.0,
+              ease: "power2.out"
+            });
+          }
+        });
       });
     });
 
-    document.getElementById('close-modal').addEventListener('click', () => {
-      const modal = document.getElementById('data-modal');
-      if (window.triggerWarpExit) {
-        window.triggerWarpExit(() => {
-          modal.classList.remove('active');
-        });
-      } else {
-        modal.classList.remove('active');
-      }
+    document.getElementById('close-space').addEventListener('click', () => {
+      const room = document.getElementById('space-room');
+      const flash = document.getElementById('warp-flash');
+      
+      // Restore body scroll
+      document.body.style.overflow = '';
+      
+      // Trigger a mini warp-out effect using the Three.js starfield behind the scenes
+      if (window.triggerWarp) window.triggerWarp();
+
+      // Flash white again to exit
+      gsap.to(flash, {
+        opacity: 1,
+        duration: 0.4,
+        ease: "power2.in",
+        onComplete: () => {
+          room.classList.remove('active');
+          if (window.startAllPortals) window.startAllPortals();
+          
+          const allPortals = document.querySelectorAll('.magic-portal');
+          gsap.fromTo(allPortals, 
+            { scale: 0.8, opacity: 0 }, 
+            { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.5)", stagger: 0.1 }
+          );
+
+          // Fade flash out to reveal landing page
+          gsap.to(flash, {
+            opacity: 0,
+            duration: 0.8,
+            ease: "power2.out"
+          });
+        }
+      });
     });
   </script>
 

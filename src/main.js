@@ -2,8 +2,13 @@ import './style.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initThreeBackground, triggerWarp } from './three-bg.js';
+import { initWarpTransition } from './warp-transition.js';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Expose GSAP globally so inline scripts in index.html can use it
+window.gsap = gsap;
+window.triggerWarp = triggerWarp;
 
 document.addEventListener('DOMContentLoaded', () => {
   initPreloader();
@@ -24,6 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initScifiTypingQuote();
   initMagicPortals();
   initHeaderAnimations();
+  initWarpTransition();
+  initSpaceRoomScroll();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -863,168 +870,199 @@ function initMagicPortals() {
   const portals = document.querySelectorAll('.magic-portal');
   if (!portals.length) return;
 
-  const canvas = document.getElementById('portal-particles');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-
-  // Set canvas size to cover the entire portal container
-  const container = document.getElementById('magic-portals');
-  let width, height;
-  function resize() {
-    width = canvas.width = container.offsetWidth;
-    height = canvas.height = container.offsetHeight || 400; // fallback height
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  // Particle System
-  const particles = [];
-  const maxParticles = 600; // Increased significantly to support 2 dense portals simultaneously
-
-  class Particle {
-    constructor(x, y, radius) {
-      this.centerX = x;
-      this.centerY = y;
-      this.radius = radius;
-      this.angle = Math.random() * Math.PI * 2;
-      // Slower rotation for a more majestic, less chaotic feel
-      this.speed = (Math.random() * 0.02 + 0.005) * (Math.random() > 0.5 ? 1 : -1);
-      this.distance = radius + (Math.random() * 15 - 7.5);
-      this.size = Math.random() * 2.5 + 0.5; // Slightly smaller sparks
-      this.alpha = Math.random() * 0.8 + 0.2;
-      this.life = Math.random() * 80 + 20;
-
-      // Color variations: mostly blue, some cyan/white
-      const colorType = Math.random();
-      if (colorType > 0.9) {
-        this.color = `rgba(255, 255, 255, `; // White sparks
-      } else if (colorType > 0.6) {
-        this.color = `rgba(0, 240, 255, `; // Bright Cyan
-      } else {
-        this.color = `rgba(30, 144, 255, `; // Deep Blue
+  // We will load the 3D portal dynamically to keep initial load fast
+  import('./portal3d.js').then(({ init3DPortal }) => {
+    const portal3DInstances = [];
+    
+    portals.forEach((portal, index) => {
+      // Create a container specifically for the 3D canvas so it sits behind the content
+      const canvasContainer = document.createElement('div');
+      canvasContainer.style.position = 'absolute';
+      canvasContainer.style.top = '50%';
+      canvasContainer.style.left = '50%';
+      canvasContainer.style.transform = 'translate(-50%, -50%)';
+      // Make it larger than the 280px portal div so the glow isn't cut off
+      canvasContainer.style.width = '600px';
+      canvasContainer.style.height = '600px';
+      canvasContainer.style.zIndex = '-1'; // Behind everything
+      canvasContainer.style.pointerEvents = 'none';
+      
+      // Add radial mask to seamlessly blend the black background of the 3D canvas into the website background
+      canvasContainer.style.maskImage = 'radial-gradient(circle at center, black 30%, transparent 60%)';
+      canvasContainer.style.webkitMaskImage = 'radial-gradient(circle at center, black 30%, transparent 60%)';
+      
+      // Make sure the portal content stays on top and is clickable
+      const magicContent = portal.querySelector('.magic-content');
+      if (magicContent) {
+        magicContent.style.position = 'relative';
+        magicContent.style.zIndex = '10';
+        magicContent.style.pointerEvents = 'auto';
+        gsap.set(magicContent, { opacity: 0, scale: 0.5 });
       }
-    }
-    update() {
-      this.angle += this.speed;
-      this.life--;
-      if (this.life <= 0) {
-        this.alpha -= 0.015;
+
+      // Make sure hologram doesn't block clicks
+      const hologram = portal.querySelector('.magic-hologram');
+      if (hologram) {
+        hologram.style.pointerEvents = 'none';
       }
-    }
-    draw(ctx) {
-      const x = this.centerX + Math.cos(this.angle) * this.distance;
-      const y = this.centerY + Math.sin(this.angle) * this.distance;
-      ctx.beginPath();
-      ctx.arc(x, y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = this.color + `${this.alpha})`;
-      ctx.fill();
-    }
-  }
 
-  let animationFrame;
-  let activePortals = [];
+      // Ensure the portal itself is clickable
+      portal.style.overflow = 'visible';
+      portal.style.cursor = 'pointer';
+      
+      portal.insertBefore(canvasContainer, portal.firstChild);
 
-  function renderParticles() {
-    ctx.clearRect(0, 0, width, height);
+      // Initialize the 3D portal inside this container
+      const portal3D = init3DPortal(canvasContainer);
+      if (!portal3D) return;
+      portal3DInstances.push(portal3D);
 
-    // Add new particles
-    activePortals.forEach(portal => {
-      // Only spawn particles if the portal has started expanding
-      if (portal.classList.contains('is-expanding') || portal.classList.contains('is-visible')) {
-        const rect = portal.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        // Calculate center relative to canvas
-        const centerX = (rect.left - containerRect.left) + rect.width / 2;
-        const centerY = (rect.top - containerRect.top) + rect.height / 2;
-
-        // Current scale of the portal to adjust particle spawn radius dynamically
-        const currentScale = gsap.getProperty(portal, "scale");
-        // Set base radius to half of the base element width (280/2 = 140) to tightly hug the edge
-        const baseRadius = 140;
-        const currentRadius = baseRadius * currentScale;
-
-        // Only spawn if valid coordinates and radius is reasonable
-        if (centerX > 0 && centerY > 0 && currentRadius > 10) {
-          // Spawn multiple particles per frame for a thicker ring
-          for (let i = 0; i < 4; i++) { // Increased to 4 per frame
-            if (particles.length < maxParticles) {
-              particles.push(new Particle(centerX, centerY, currentRadius));
-            }
+      // Use GSAP ScrollTrigger to start the 3D animation when scrolled into view
+      ScrollTrigger.create({
+        trigger: portal,
+        start: "top 85%",
+        once: true, // Only trigger the animation once!
+        onEnter: () => {
+          // Immediately set container to full scale so 3D portal dictates the expansion visually
+          gsap.set(portal, { scale: 1, opacity: 1 });
+          portal.classList.add('is-expanding');
+          
+          portal3D.start();
+          
+          // The content (text and icon) inside should fade in after the 3D portal has grown
+          if (magicContent) {
+            gsap.to(magicContent, {
+              opacity: 1,
+              scale: 1,
+              duration: 1.0,
+              delay: 1.8, // Wait for the 3D portal to mostly finish expanding
+              ease: "back.out(1.5)",
+              onComplete: () => {
+                portal.classList.remove('is-expanding');
+                portal.classList.add('is-visible');
+              }
+            });
           }
         }
-        // Remove the outer "if length < max" to allow fair distribution per portal
-      }
+      });
     });
 
-    // Update and draw
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.update();
-      p.draw(ctx);
-      if (p.alpha <= 0) {
-        particles.splice(i, 1);
-      }
-    }
+    // Expose stop/start so warp transitions can pause GPU-heavy 3D portals
+    window.stopAllPortals = () => portal3DInstances.forEach(p => p.stop());
+    window.startAllPortals = () => portal3DInstances.forEach(p => p.start());
 
-    animationFrame = requestAnimationFrame(renderParticles);
+  }).catch(err => {
+    console.error("Failed to load 3D portal:", err);
+  });
+}
+
+/* ============ SPACE ROOM PARALLAX SCROLL (3D Z-AXIS) ============ */
+function initSpaceRoomScroll() {
+  const container = document.querySelector('.space-scroll-container');
+  if (!container) return;
+
+  // We will completely bypass browser scrollbars and use a pure JS scroll state
+  // to ensure 100% cross-browser compatibility and completely hide any native scrollbars.
+  let virtualScrollY = 0;
+  container.style.overflow = 'hidden'; // Disable native scroll entirely
+
+  // A function to re-calculate layout whenever modal is opened or resized
+  window.updateSpaceRoom3D = () => {
+    const items = document.querySelectorAll('.space-timeline .space-item');
+    if(items.length === 0) return;
+
+    // Reset our virtual scroll position
+    virtualScrollY = 5000000; // Start at a huge number for infinite backward scroll
+    
+    // Hide body scrollbar to prevent double scrollbars
+    document.body.style.overflow = 'hidden';
+
+    // Force an initial layout calculation!
+    updateItemsZ();
+  };
+
+  // When closing the space room
+  const closeSpaceBtn = document.getElementById('close-space');
+  if (closeSpaceBtn) {
+    closeSpaceBtn.addEventListener('click', () => {
+      document.body.style.overflow = ''; // Restore body scroll
+    });
   }
 
-  // Sequential GSAP Timeline for Dr. Strange Portal Effect
-  portals.forEach((portal, index) => {
-    // Hide content initially
-    const content = portal.querySelector('.magic-content');
-    gsap.set(content, { opacity: 0, scale: 0.5 });
+  // The render function that calculates 3D positions based on our virtual state
+  function updateItemsZ() {
+    const items = document.querySelectorAll('.space-timeline .space-item');
+    if (items.length === 0) return;
+    
+    // Calculate infinite loop boundaries
+    const itemSpacing = 3000;
+    const totalDepth = items.length * itemSpacing;
+    
+    // The tunnel goes from Z=800 (front) to Z=-(totalDepth - 800) (back)
+    const wrapZ = gsap.utils.wrap(-(totalDepth - 800), 800);
+    
+    items.forEach(item => {
+      const baseZ = parseFloat(item.getAttribute('data-z')) || 0;
+      
+      // Calculate current Z position based on virtual scroll
+      let currentZ = baseZ + (virtualScrollY * 1.5); 
+      currentZ = wrapZ(currentZ);
 
-    // Initial state of the portal ring: a tiny dot
-    gsap.set(portal, { scale: 0.05, opacity: 0 });
-
-    ScrollTrigger.create({
-      trigger: '#magic-portals',
-      start: 'top 65%', // trigger slightly later so user sees it
-      toggleActions: 'play none none none', // ONLY PLAY ONCE, never reverse
-      once: true, // Native GSAP ScrollTrigger way to only fire once
-      onEnter: () => {
-        // Start rendering loop if not already
-        if (activePortals.length === 0) {
-          renderParticles();
-        }
-        activePortals.push(portal);
-
-        const tl = gsap.timeline({ delay: index * 0.4 }); // Shorter delay between portals
-
-        // Phase 1: Small spark appears
-        tl.to(portal, {
-          opacity: 1,
-          scale: 0.1,
-          duration: 0.3, // Faster spark
-          ease: "power2.out",
-          onStart: () => portal.classList.add('is-expanding')
-        })
-          // Phase 2: Hold the spark briefly
-          .to({}, { duration: 0.2 })
-          // Phase 3: Expand the portal (faster and slightly larger)
-          .to(portal, {
-            scale: 1.2, // Increase final size
-            duration: 1.5, // Faster expansion
-            ease: "power2.inOut",
-            onComplete: () => {
-              portal.classList.remove('is-expanding');
-              portal.classList.add('is-visible');
-            }
-          })
-          // Phase 4: Hold the open portal before showing text
-          .to({}, { duration: 0.2 })
-          // Phase 5: Reveal Education/Experience text
-          .to(content, {
-            opacity: 1,
-            scale: 1,
-            duration: 0.8,
-            ease: "back.out(1.5)"
-          });
+      // Calculate opacity and scale based on Z depth
+      let opacity = 0;
+      
+      if (currentZ > 800) {
+        opacity = 0;
+        item.style.pointerEvents = 'none';
+      } else if (currentZ > 0) {
+        opacity = 1 - (currentZ / 800);
+        item.style.pointerEvents = 'none'; 
+      } else if (currentZ > -3000) {
+        opacity = 1;
+        item.style.pointerEvents = 'auto';
+      } else if (currentZ > -9000) {
+        opacity = 1 - ((Math.abs(currentZ) - 3000) / 6000);
+        item.style.pointerEvents = 'none';
+      } else {
+        opacity = 0;
+        item.style.pointerEvents = 'none';
       }
-      // Removed onLeaveBack to keep it open once scrolled past
+
+      // Apply the 3D transform directly via GSAP
+      gsap.set(item, {
+        xPercent: -50,
+        yPercent: -50,
+        z: currentZ,
+        opacity: opacity
+      });
+
+      // Add glow when item is right in front of the camera
+      const card = item.querySelector('.space-card');
+      if (card) {
+        if (currentZ > -800 && currentZ < 200) {
+          card.style.boxShadow = `0 10px 40px rgba(56,189,248,0.3), inset 0 0 20px rgba(56,189,248,0.1)`;
+          card.style.borderColor = `rgba(56,189,248,0.6)`;
+        } else {
+          card.style.boxShadow = `0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(56,189,248,0.05)`;
+          card.style.borderColor = `rgba(56,189,248,0.2)`;
+        }
+      }
     });
-  });
+  }
+
+  // Intercept all wheel events and convert them to virtual scroll movement
+  container.addEventListener('wheel', (e) => {
+    e.preventDefault(); // Stop native scrolling
+    
+    // Normalize wheel delta (differs between Windows/Mac and mouse/trackpad)
+    const delta = e.deltaY;
+    
+    // Update our virtual position
+    virtualScrollY += delta * 1.5; 
+    
+    // Re-render the 3D tunnel
+    updateItemsZ();
+  }, { passive: false });
 }
 
 /* ============ SECTION HEADER ANIMATIONS (SCI-FI GLOW FADE) ============ */

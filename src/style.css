@@ -764,8 +764,8 @@ img.simple-icon {
 .magic-portals-container {
   display: flex;
   justify-content: center;
-  gap: 5rem; /* Reduced gap between portals */
-  margin-top: 2rem; /* Reduced to bring portals closer to header */
+  gap: 12rem; /* Increased gap between portals */
+  margin-top: 2rem;
   position: relative;
   padding: 2rem 0; /* Add padding so particles don't cut off */
 }
@@ -801,8 +801,7 @@ img.simple-icon {
   position: relative;
   z-index: 10;
   text-align: center;
-  /* Expanded soft fading background so it doesn't look hollow */
-  background: radial-gradient(circle, rgba(10, 10, 25, 0.95) 55%, rgba(10, 10, 25, 0) 85%);
+  background: transparent; /* Removed dark background as requested */
   width: 100%; height: 100%;
   border-radius: 50%;
   display: flex;
@@ -812,8 +811,8 @@ img.simple-icon {
   transition: all 0.4s ease;
 }
 
-.magic-icon { font-size: 4rem; filter: grayscale(1) sepia(1) hue-rotate(180deg) saturate(3); transition: all 0.3s ease; }
-.magic-title { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: bold; color: var(--accent-1); margin-top: 1rem; letter-spacing: 0.2em; text-shadow: 0 0 15px var(--accent-1); transition: all 0.3s ease; text-transform: uppercase; }
+.magic-icon { font-size: 4rem; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8)); transition: all 0.3s ease; }
+.magic-title { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: bold; color: #ffffff; margin-top: 1rem; letter-spacing: 0.2em; text-shadow: 0 0 10px #000000, 0 0 20px #000000; transition: all 0.3s ease; text-transform: uppercase; }
 
 .magic-portal:hover .magic-content {
   background: transparent;
@@ -825,16 +824,11 @@ img.simple-icon {
 .magic-hologram {
   position: absolute;
   top: 50%; left: 50%;
-  width: 400px; height: 400px;
+  width: 120%; height: 120%; /* Extend beyond the portal */
   transform: translate(-50%, -50%) scale(0.5);
   opacity: 0;
   pointer-events: none;
-  transition: all 0.5s ease;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 20;
 }
 
@@ -843,22 +837,113 @@ img.simple-icon {
   transform: translate(-50%, -50%) scale(1);
 }
 
-.holo-badge {
-  background: rgba(13,13,31,0.9);
-  border: 1px solid var(--accent-1);
-  color: var(--accent-1);
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  font-family: var(--font-mono);
-  font-size: 1rem;
-  font-weight: bold;
-  box-shadow: 0 0 15px rgba(56,189,248,0.5);
-  animation: float-highlight 3s infinite alternate;
-  white-space: nowrap;
+/* ====== FLOATING DEBRIS SYSTEM ====== */
+.debris {
+  position: absolute;
+  opacity: 0;
+  transform: scale(0) rotate(0deg);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  z-index: 15;
 }
 
-.holo-badge:nth-child(even) { animation-delay: -1s; border-color: rgba(139, 92, 246, 0.8); color: #fff; box-shadow: 0 0 15px rgba(139, 92, 246, 0.5); }
-.holo-badge:nth-child(3n) { animation-delay: -1.5s; }
+/* Staggered entrance on hover */
+.magic-portal:hover .debris {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+.magic-portal:hover .debris:nth-child(1) { transition-delay: 0.05s; }
+.magic-portal:hover .debris:nth-child(2) { transition-delay: 0.1s; }
+.magic-portal:hover .debris:nth-child(3) { transition-delay: 0.15s; }
+.magic-portal:hover .debris:nth-child(4) { transition-delay: 0.2s; }
+.magic-portal:hover .debris:nth-child(5) { transition-delay: 0.25s; }
+.magic-portal:hover .debris:nth-child(6) { transition-delay: 0.3s; }
+.magic-portal:hover .debris:nth-child(7) { transition-delay: 0.35s; }
+.magic-portal:hover .debris:nth-child(8) { transition-delay: 0.4s; }
+.magic-portal:hover .debris:nth-child(9) { transition-delay: 0.45s; }
+.magic-portal:hover .debris:nth-child(10) { transition-delay: 0.5s; }
+.magic-portal:hover .debris:nth-child(11) { transition-delay: 0.55s; }
+
+/* --- Debris: Logos --- */
+.debris-logo {
+  max-width: 100px;
+  max-height: 60px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(56,189,248,0.6)) brightness(1.1);
+  background: rgba(255,255,255,0.06);
+  border-radius: 6px;
+  padding: 5px 8px;
+}
+
+/* --- Debris: Photos --- */
+.debris-photo {
+  width: auto;
+  max-width: 180px;
+  height: auto;
+  max-height: 120px;
+  object-fit: contain;
+  border-radius: 6px;
+  border: 1px solid rgba(56,189,248,0.4);
+  box-shadow: 0 0 20px rgba(56,189,248,0.2), inset 0 0 10px rgba(56,189,248,0.1);
+  /* Filter removed to keep original colors */
+}
+
+/* --- Debris: Tags (1-2 word achievements) --- */
+.debris-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.95);
+  background: rgba(4, 12, 30, 0.6);
+  backdrop-filter: blur(6px);
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  border: 1px solid rgba(56,189,248,0.35);
+  box-shadow: 0 0 12px rgba(56,189,248,0.15), 0 0 4px rgba(56,189,248,0.3);
+  white-space: nowrap;
+  text-shadow: 0 0 6px rgba(56,189,248,0.5);
+}
+
+/* ====== 6 UNIQUE FLOAT ANIMATIONS ====== */
+.magic-portal:hover .float-a { animation: drift-a 5s ease-in-out infinite alternate; }
+.magic-portal:hover .float-b { animation: drift-b 6s ease-in-out infinite alternate; }
+.magic-portal:hover .float-c { animation: drift-c 4.5s ease-in-out infinite alternate; }
+.magic-portal:hover .float-d { animation: drift-d 5.5s ease-in-out infinite alternate; }
+.magic-portal:hover .float-e { animation: drift-e 7s ease-in-out infinite alternate; }
+.magic-portal:hover .float-f { animation: drift-f 4s ease-in-out infinite alternate; }
+
+@keyframes drift-a {
+  0%   { transform: translate(0, 0) rotate(-2deg) scale(1); }
+  50%  { transform: translate(8px, -12px) rotate(1deg) scale(1.05); }
+  100% { transform: translate(-5px, -18px) rotate(-3deg) scale(1); }
+}
+@keyframes drift-b {
+  0%   { transform: translate(0, 0) rotate(2deg) scale(1); }
+  50%  { transform: translate(-10px, -8px) rotate(-1deg) scale(0.97); }
+  100% { transform: translate(6px, -15px) rotate(3deg) scale(1.03); }
+}
+@keyframes drift-c {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+  50%  { transform: translate(12px, 6px) rotate(2deg) scale(1.04); }
+  100% { transform: translate(-8px, -10px) rotate(-2deg) scale(0.98); }
+}
+@keyframes drift-d {
+  0%   { transform: translate(0, 0) rotate(1deg) scale(1); }
+  50%  { transform: translate(-6px, -14px) rotate(-3deg) scale(1.06); }
+  100% { transform: translate(10px, 5px) rotate(2deg) scale(1); }
+}
+@keyframes drift-e {
+  0%   { transform: translate(0, 0) rotate(-1deg) scale(1); }
+  50%  { transform: translate(5px, -10px) rotate(2deg) scale(1.02); }
+  100% { transform: translate(-12px, -6px) rotate(-1deg) scale(1.05); }
+}
+@keyframes drift-f {
+  0%   { transform: translate(0, 0) rotate(3deg) scale(1); }
+  50%  { transform: translate(-8px, 10px) rotate(-2deg) scale(0.96); }
+  100% { transform: translate(7px, -12px) rotate(1deg) scale(1.03); }
+}
 
 @keyframes float-highlight {
   0% { transform: translateY(0); }
@@ -874,68 +959,233 @@ img.simple-icon {
   .holo-badge { font-size: 0.8rem; padding: 0.4rem 0.8rem; }
 }
 
-/* ======================== SCI-FI MODAL ======================== */
-.scifi-modal-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(8, 12, 24, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+/* ======================== INTERSTELLAR SPACE ROOM ======================== */
+.space-room {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: radial-gradient(ellipse at bottom, #0a0e1c 0%, #03050c 100%);
   z-index: 1000;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; flex-direction: column;
   opacity: 0; pointer-events: none;
-  transition: opacity 0.4s ease;
+  visibility: hidden; /* CRUCIAL: prevents invisible children from stealing clicks */
+  transition: opacity 0.6s ease, visibility 0.6s;
+  overflow: hidden;
 }
-.scifi-modal-overlay.active { opacity: 1; pointer-events: auto; }
+.space-room.active { 
+  opacity: 1; 
+  pointer-events: auto; 
+  visibility: visible; 
+}
 
-.scifi-modal-box {
-  width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto;
-  background: rgba(13, 13, 31, 0.95);
-  border: 1px solid var(--accent-1);
-  box-shadow: 0 0 30px rgba(56,189,248,0.3), inset 0 0 20px rgba(56,189,248,0.1);
-  padding: 3rem;
+/* Parallax Stars Background */
+.space-stars {
+  position: fixed; top: 0; left: 0; width: 200%; height: 200%;
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 20%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 50% 10%, rgba(56,189,248,0.8), transparent),
+    radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 20% 90%, rgba(56,189,248,0.6), transparent),
+    radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 45% 45%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 60% 70%, rgba(139,92,246,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 15% 50%, rgba(56,189,248,0.5), transparent);
+  background-size: 50vw 50vh;
+  z-index: 0;
+  pointer-events: none;
+  animation: slow-drift 120s linear infinite;
+}
+@keyframes slow-drift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-20%, -20%); }
+}
+
+/* Nav Bar */
+.space-nav {
+  position: absolute; top: 0; left: 0; width: 100%;
+  padding: 2rem 4rem;
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 10;
+  background: linear-gradient(to bottom, rgba(3,5,12,0.9), transparent);
+}
+.space-status { font-family: var(--font-mono); font-size: 0.8rem; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; }
+.close-space {
+  background: rgba(56,189,248, 0.1); color: var(--accent-1); border: 1px solid var(--accent-1);
+  padding: 0.6rem 1.2rem; font-family: var(--font-mono); font-size: 0.8rem;
+  cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.1em;
+}
+.close-space:hover { background: var(--accent-1); color: #000; box-shadow: 0 0 20px rgba(56,189,248,0.6); }
+
+/* Infinite Scroll Container (Virtual Scrollbar) */
+.space-scroll-container {
+  position: absolute; top: 0; left: 0;
+  width: 100vw; height: 100vh; 
+  overflow-y: auto; overflow-x: hidden;
+  z-index: 5;
+  /* Hide scrollbar for a clean UI */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+.space-scroll-container::-webkit-scrollbar { 
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Fixed 3D Viewport for Z-Axis Scrolling */
+.space-timeline {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  pointer-events: none; /* Let scroll container handle events */
+}
+
+/* ==================== SCI-FI HUD TITLE ==================== */
+.scifi-title-hud {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(13, 13, 31, 0.4);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(56,189,248,0.3);
+  padding: 3rem 5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 40px rgba(56,189,248,0.1), inset 0 0 20px rgba(56,189,248,0.1);
   position: relative;
-  transform: translateY(50px) scale(0.95);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  clip-path: polygon(5% 0, 100% 0, 100% 95%, 95% 100%, 0 100%, 0 5%);
 }
-.scifi-modal-overlay.active .scifi-modal-box { transform: translateY(0) scale(1); }
-
-.modal-scanline {
-  position: absolute; top: 0; left: 0; width: 100%; height: 5px;
-  background: rgba(56,189,248,0.5); box-shadow: 0 0 10px var(--accent-1);
-  animation: scanline 4s linear infinite; opacity: 0.5; pointer-events: none;
-}
-@keyframes scanline { 0% { top: 0; } 100% { top: 100%; } }
-
-.close-modal {
-  position: absolute; top: 1rem; right: 1rem; z-index: 20;
-  background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444;
-  padding: 0.5rem 1rem; font-family: var(--font-mono); font-size: 0.8rem;
-  cursor: pointer; transition: all 0.3s ease;
-}
-.close-modal:hover { background: #ef4444; color: #fff; box-shadow: 0 0 15px rgba(239,68,68,0.5); }
-
-.modal-header { border-bottom: 2px dashed var(--accent-2); padding-bottom: 1rem; margin-bottom: 2rem; }
-.modal-header h2 { font-family: var(--font-display); color: var(--accent-1); font-size: 1.8rem; letter-spacing: 0.1em; }
-.modal-status { font-family: var(--font-mono); font-size: 0.8rem; color: #10b981; margin-top: 0.5rem; }
-
-.modal-timeline-item { margin-bottom: 2rem; padding-left: 1.5rem; border-left: 2px solid var(--accent-1); position: relative; }
-.modal-timeline-item::before {
-  content: ''; position: absolute; left: -6px; top: 0;
-  width: 10px; height: 10px; background: var(--accent-1); border-radius: 50%;
+.scifi-title-hud::before {
+  content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+  width: 50%; height: 2px; background: var(--accent-1);
   box-shadow: 0 0 10px var(--accent-1);
 }
-.m-date { font-family: var(--font-mono); color: var(--accent-1); font-size: 0.85rem; display: block; margin-bottom: 0.5rem; }
-.modal-timeline-item h3 { color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem; }
-.m-role { color: var(--accent-2); font-size: 0.95rem; margin-bottom: 0.5rem; font-style: italic; }
-.m-desc { color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; }
+.scifi-title-hud::after {
+  content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+  width: 50%; height: 2px; background: var(--accent-1);
+  box-shadow: 0 0 10px var(--accent-1);
+}
+.scifi-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 15px rgba(56,189,248,0.8));
+}
+.space-title {
+  text-align: center; font-family: var(--font-display); color: var(--accent-1);
+  font-size: 4rem; letter-spacing: 0.2em;
+  text-shadow: 0 0 30px rgba(56,189,248,0.8);
+  white-space: nowrap;
+  margin-bottom: 1.5rem;
+}
+.scifi-telemetry {
+  display: flex;
+  gap: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: rgba(56,189,248,0.7);
+  letter-spacing: 0.1em;
+  border-top: 1px dashed rgba(56,189,248,0.3);
+  padding-top: 1rem;
+}
 
-/* Custom scrollbar for modal */
-.scifi-modal-box::-webkit-scrollbar { width: 6px; }
-.scifi-modal-box::-webkit-scrollbar-track { background: rgba(13,13,31,0.5); }
-.scifi-modal-box::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 3px; }
+/* ==================== FLOATING ANIMATIONS ==================== */
+/* Safe floating animations applied to children so they don't break GSAP parent Z transforms */
+.floating-element {
+  animation: float-safe 5s infinite alternate ease-in-out;
+}
+.floating-element-delay {
+  animation: float-safe 6s infinite alternate ease-in-out;
+  animation-delay: -2s;
+}
+@keyframes float-safe {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-15px); }
+}
 
-/* ======================== WARP TRANSITION OVERLAY ======================== */
+.space-item {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%); /* Base centering before GSAP applies Z */
+  width: 100%; max-width: 1000px;
+  display: flex; align-items: center; justify-content: flex-start;
+  pointer-events: auto; /* Re-enable clicks for cards */
+  will-change: transform, opacity;
+}
+.space-title-item {
+  justify-content: center;
+}
+.space-item.right-align {
+  justify-content: flex-end;
+}
+
+.space-card {
+  width: 45%;
+  background: rgba(13, 13, 31, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-left: 3px solid var(--accent-1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(56,189,248,0.05);
+  padding: 2.5rem;
+  position: relative;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.space-card:hover {
+  transform: scale(1.02) translateY(-5px);
+  border-color: rgba(56,189,248,0.6);
+}
+
+.space-item.right-align .space-card {
+  border-left: 1px solid rgba(56,189,248,0.2);
+  border-right: 3px solid var(--accent-1);
+  text-align: right;
+}
+
+.space-logo {
+  position: relative;
+  width: 80px; height: 80px; object-fit: contain;
+  background: rgba(4, 12, 30, 0.8); backdrop-filter: blur(4px);
+  border-radius: 50%; padding: 15px;
+  border: 1px solid rgba(56,189,248,0.4);
+  box-shadow: 0 0 20px rgba(56,189,248,0.3);
+  margin-right: 2rem;
+  z-index: 2;
+}
+
+.space-photo {
+  position: relative; 
+  width: auto; max-width: 35%; max-height: 220px; object-fit: contain;
+  border-radius: 8px; border: 1px solid rgba(56,189,248,0.4);
+  box-shadow: 0 0 20px rgba(56,189,248,0.3);
+  margin-right: 2rem;
+  z-index: 2;
+}
+
+.space-item.right-align {
+  flex-direction: row-reverse;
+}
+.space-item.right-align .space-logo,
+.space-item.right-align .space-photo {
+  margin-right: 0;
+  margin-left: 2rem;
+}
+
+.m-date { font-family: var(--font-mono); color: var(--accent-1); font-size: 0.9rem; display: block; margin-bottom: 0.8rem; }
+.space-card h3 { color: #fff; font-size: 1.5rem; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+.m-role { color: var(--accent-2); font-size: 1.1rem; margin-bottom: 1rem; font-style: italic; }
+.m-desc { color: var(--text-dim); font-size: 1rem; line-height: 1.6; }
+
+.space-end {
+  text-align: center; font-family: var(--font-mono); color: rgba(255,255,255,0.3);
+  margin-top: 8rem; margin-bottom: 4rem; letter-spacing: 0.2em;
+}
+
+@media (max-width: 768px) {
+  .space-card { width: 85%; padding: 1.5rem; }
+  .space-item { justify-content: center !important; margin-bottom: 3rem; }
+  .space-timeline::before { left: 5%; }
+  .space-item.right-align .space-card { text-align: left; border-right: 1px solid rgba(56,189,248,0.2); border-left: 3px solid var(--accent-1); }
+  .space-logo, .space-photo { display: none; }
+  .space-nav { padding: 1.5rem; }
+}
+
+/* ======================== WARP TRANSITION OVERLAY (PURE CSS) ======================== */
 .warp-overlay {
   position: fixed;
   top: 0; left: 0;
@@ -943,15 +1193,88 @@ img.simple-icon {
   z-index: 9999;
   pointer-events: none;
   opacity: 0;
+  background: black;
+  /* Simulated space tunnel using repeating gradients */
+  background-image: repeating-radial-gradient(
+    circle at center,
+    rgba(255,255,255,0) 0%,
+    rgba(56,189,248,0.05) 5%,
+    rgba(255,255,255,0) 10%
+  );
+  background-size: 200% 200%;
+  background-position: center;
   transition: opacity 0.3s ease;
 }
-.warp-overlay.active {
+
+/* Hide the old canvas completely */
+.warp-overlay canvas { display: none; }
+
+/* WARP ENTER ANIMATION */
+.warp-overlay.warp-enter {
   opacity: 1;
   pointer-events: auto;
+  animation: warp-tunnel-in 1.2s cubic-bezier(0.5, 0, 0.2, 1) forwards;
 }
-.warp-overlay canvas {
-  width: 100%;
-  height: 100%;
+
+/* WARP ENTER DONE (Fading out after flash) */
+.warp-overlay.warp-enter-done {
+  opacity: 1;
+  pointer-events: none;
+  animation: warp-fade-out 0.5s ease-out forwards;
+}
+
+/* WARP EXIT (Reverse) ANIMATION */
+.warp-overlay.warp-exit {
+  opacity: 1;
+  pointer-events: auto;
+  animation: warp-tunnel-out 0.8s cubic-bezier(0.5, 0, 0.2, 1) forwards;
+}
+
+/* WARP EXIT DONE */
+.warp-overlay.warp-exit-done {
+  opacity: 1;
+  pointer-events: none;
+  animation: warp-fade-out 0.5s ease-out forwards;
+}
+
+@keyframes warp-tunnel-in {
+  0% {
+    background-size: 100% 100%;
+    filter: brightness(1) blur(0px);
+  }
+  70% {
+    background-size: 500% 500%;
+    filter: brightness(3) blur(8px);
+    background-color: rgba(56,189,248,0.2);
+  }
+  100% {
+    background-size: 1000% 1000%;
+    filter: brightness(10) blur(20px);
+    background-color: white;
+  }
+}
+
+@keyframes warp-tunnel-out {
+  0% {
+    background-size: 1000% 1000%;
+    filter: brightness(10) blur(20px);
+    background-color: white;
+  }
+  70% {
+    background-size: 500% 500%;
+    filter: brightness(3) blur(8px);
+    background-color: rgba(56,189,248,0.2);
+  }
+  100% {
+    background-size: 100% 100%;
+    filter: brightness(1) blur(0px);
+    background-color: black;
+  }
+}
+
+@keyframes warp-fade-out {
+  0% { opacity: 1; filter: brightness(10); background-color: white; }
+  100% { opacity: 0; filter: brightness(1); background-color: transparent; }
 }
 
 /* ======================== PROJECTS ======================== */
@@ -1339,7 +1662,7 @@ img.simple-icon {
   .magic-portals-container {
     flex-direction: column;
     align-items: center;
-    gap: 8rem; /* Large gap for mobile stacking */
+    gap: 12rem; /* Large gap for mobile stacking */
     padding-bottom: 5rem; /* Ensure canvas has space to render bottom portal */
   }
 }
