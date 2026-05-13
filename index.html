@@ -442,8 +442,10 @@
       <button class="lightbox-prev" id="lightbox-prev">◀</button>
       <div class="lightbox-content">
         <img src="" class="lightbox-img" id="lightbox-img" />
+        <p class="lightbox-caption" id="lightbox-caption"></p>
       </div>
       <button class="lightbox-next" id="lightbox-next">▶</button>
+      <div class="lightbox-counter" id="lightbox-counter"></div>
     </div>
   </div>
 
@@ -466,9 +468,9 @@
         
         <div class="space-item" data-z="-3000">
           <img src="/foto/education/logo/cd3046da93de0b7a1db41a0d06021247.png" class="space-logo floating-element-delay" alt="Warwick">
-          <div class="photo-container floating-element" data-gallery='["/foto/education/warwick_graduate.jpeg", "/foto/education/warwick_graduate_2.jpeg", "/foto/education/business_cohort.jpeg"]'>
-            <img src="/foto/education/warwick_graduate.jpeg" class="space-photo" alt="Warwick Graduate">
-            <div class="photo-indicator">📸 View Gallery (3)</div>
+          <div class="photo-container floating-element" data-gallery='[{"src":"/foto/education/Warwick academics/warwick_graduate.jpeg","caption":"Warwick Graduation Day"},{"src":"/foto/education/Warwick academics/warwick_graduate_2.jpeg","caption":"MSc Business Analytics — Merit Graduate"},{"src":"/foto/education/Warwick academics/business_cohort.jpeg","caption":"Business Analytics Cohort 2024/25"}]'>
+            <img src="/foto/education/Warwick academics/warwick_graduate.jpeg" class="space-photo" alt="Warwick Graduate">
+            <span class="photo-caption">Warwick Graduation Day</span>
           </div>
           <div class="space-card floating-element">
             <span class="m-date">Sep 2024 – Sep 2025</span>
@@ -481,9 +483,9 @@
         </div>
 
         <div class="space-item right-align" data-z="-6000">
-          <div class="photo-container floating-element-delay" data-gallery='["/foto/education/hackathon_final.jpeg", "/foto/education/hackathon_cohort.jpeg", "/foto/education/sql_academy.jpeg", "/foto/education/lpdp.jpeg", "/foto/education/lpdp_2.jpeg"]'>
-            <img src="/foto/education/hackathon_final.jpeg" class="space-photo" alt="Hackathon">
-            <div class="photo-indicator">📸 View Gallery (5)</div>
+          <div class="photo-container floating-element-delay" data-gallery='[{"src":"/foto/education/Warwick highlights/hackathon_final.jpeg","caption":"Final Presentation — Gillmore Finance Hackathon"},{"src":"/foto/education/Warwick highlights/hackathon_cohort.jpeg","caption":"Indonesian Cohort at Gillmore Hackathon"},{"src":"/foto/education/Warwick highlights/sql_academy.jpeg","caption":"SQL Academy — PPI UK Education Initiative"},{"src":"/foto/education/Warwick highlights/lpdp.jpeg","caption":"LPDP Awardee PK 239"},{"src":"/foto/education/Warwick highlights/lpdp_2.jpeg","caption":"Indonesia Endowment Fund Scholars"}]'>
+            <img src="/foto/education/Warwick highlights/hackathon_final.jpeg" class="space-photo" alt="Hackathon">
+            <span class="photo-caption">Gillmore Finance Hackathon</span>
           </div>
           <div class="space-card floating-element">
             <span class="m-date">Impact & Scholarships</span>
@@ -496,9 +498,9 @@
 
         <div class="space-item" data-z="-9000">
           <img src="/foto/education/logo/d6de52c739a28b78beef1f26acca7358.png" class="space-logo floating-element-delay" alt="Telkom">
-          <div class="photo-container floating-element" data-gallery='["/foto/education/telkom_graduate.jpg"]'>
-            <img src="/foto/education/telkom_graduate.jpg" class="space-photo" alt="Telkom Graduate">
-            <div class="photo-indicator">📸 View Photo</div>
+          <div class="photo-container floating-element" data-gallery='[{"src":"/foto/education/Telkomacademic/telkom_graduate.jpg","caption":"Telkom University Graduation — Cum Laude"}]'>
+            <img src="/foto/education/Telkomacademic/telkom_graduate.jpg" class="space-photo" alt="Telkom Graduate">
+            <span class="photo-caption">Cum Laude Graduate</span>
           </div>
           <div class="space-card floating-element">
             <span class="m-date">Aug 2017 – Aug 2021</span>
@@ -510,9 +512,9 @@
         </div>
 
         <div class="space-item right-align" data-z="-12000">
-          <div class="photo-container floating-element-delay" data-gallery='["/foto/education/solbridge_cultural.jpg", "/foto/education/solbridge.jpg"]'>
-            <img src="/foto/education/solbridge_cultural.jpg" class="space-photo" alt="Solbridge">
-            <div class="photo-indicator">📸 View Gallery (2)</div>
+          <div class="photo-container floating-element-delay" data-gallery='[{"src":"/foto/education/Telkom Highlights/solbridge_cultural.jpg","caption":"Cultural Festival Representative — South Korea"},{"src":"/foto/education/Telkom Highlights/solbridge.jpg","caption":"Solbridge International School of Business"}]'>
+            <img src="/foto/education/Telkom Highlights/solbridge_cultural.jpg" class="space-photo" alt="Solbridge">
+            <span class="photo-caption">Cultural Festival, South Korea</span>
           </div>
           <div class="space-card floating-element">
             <span class="m-date">2018 Global Exposure</span>
@@ -662,6 +664,100 @@
         }
       });
     });
+
+    // ====================== LIGHTBOX GALLERY LOGIC ======================
+    (function initLightbox() {
+      let currentGallery = [];
+      let currentIdx = 0;
+      
+      const lightbox = document.getElementById('hologram-lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxCaption = document.getElementById('lightbox-caption');
+      const lightboxCounter = document.getElementById('lightbox-counter');
+      const lightboxClose = document.getElementById('lightbox-close');
+      const lightboxPrev = document.getElementById('lightbox-prev');
+      const lightboxNext = document.getElementById('lightbox-next');
+      const lightboxOverlay = document.getElementById('lightbox-overlay');
+
+      if (!lightbox || !lightboxImg) return;
+
+      // Event delegation — works on dynamically injected content
+      document.addEventListener('click', (e) => {
+        const photoContainer = e.target.closest('.photo-container');
+        if (!photoContainer || !photoContainer.dataset.gallery) return;
+        
+        try {
+          currentGallery = JSON.parse(photoContainer.dataset.gallery);
+          if (currentGallery.length > 0) {
+            currentIdx = 0;
+            showSlide();
+            lightbox.classList.add('active');
+          }
+        } catch(err) {
+          console.error("Gallery parse error", err);
+        }
+      });
+
+      function showSlide() {
+        const item = currentGallery[currentIdx];
+        lightboxImg.src = item.src;
+        lightboxCaption.textContent = item.caption || '';
+        lightboxCounter.textContent = currentGallery.length > 1 
+          ? (currentIdx + 1) + ' / ' + currentGallery.length 
+          : '';
+        // Show/hide nav arrows
+        lightboxPrev.style.display = currentGallery.length > 1 ? 'flex' : 'none';
+        lightboxNext.style.display = currentGallery.length > 1 ? 'flex' : 'none';
+      }
+
+      function animateToSlide() {
+        gsap.to(lightboxImg, { 
+          scale: 0.3, opacity: 0, rotation: -15, duration: 0.2, 
+          onComplete: () => {
+            showSlide();
+            gsap.fromTo(lightboxImg, 
+              { scale: 0.3, opacity: 0, rotation: 15 },
+              { scale: 1, opacity: 1, rotation: 0, duration: 0.45, ease: "back.out(1.4)" }
+            );
+          }
+        });
+      }
+
+      function closeLightbox() { lightbox.classList.remove('active'); }
+
+      lightboxClose.addEventListener('click', closeLightbox);
+      lightboxOverlay.addEventListener('click', closeLightbox);
+      
+      lightboxNext.addEventListener('click', () => {
+        currentIdx = (currentIdx + 1) % currentGallery.length;
+        animateToSlide();
+      });
+      
+      lightboxPrev.addEventListener('click', () => {
+        currentIdx = (currentIdx - 1 + currentGallery.length) % currentGallery.length;
+        animateToSlide();
+      });
+
+      // Keyboard nav
+      document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('active')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') { currentIdx = (currentIdx + 1) % currentGallery.length; animateToSlide(); }
+        if (e.key === 'ArrowLeft') { currentIdx = (currentIdx - 1 + currentGallery.length) % currentGallery.length; animateToSlide(); }
+      });
+
+      // Touch swipe for mobile lightbox
+      let lbTouchStartX = 0;
+      lightbox.addEventListener('touchstart', (e) => { lbTouchStartX = e.touches[0].clientX; }, { passive: true });
+      lightbox.addEventListener('touchend', (e) => {
+        const diff = lbTouchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) { currentIdx = (currentIdx + 1) % currentGallery.length; }
+          else { currentIdx = (currentIdx - 1 + currentGallery.length) % currentGallery.length; }
+          animateToSlide();
+        }
+      });
+    })();
   </script>
 
   <script type="module" src="/src/main.js"></script>
