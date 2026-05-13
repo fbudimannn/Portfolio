@@ -1169,8 +1169,8 @@ img.simple-icon {
   margin-top: 8rem; margin-bottom: 4rem; letter-spacing: 0.2em;
 }
 
-/* ==================== PHOTO GALLERY & LIGHTBOX ==================== */
-.photo-container {
+/* ==================== PHOTO SLIDESHOW & LIGHTBOX ==================== */
+.photo-slideshow {
   position: relative;
   cursor: pointer;
   margin-right: 2rem;
@@ -1179,9 +1179,26 @@ img.simple-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 200px;
+  max-width: 45%;
 }
-.photo-container:hover { transform: scale(1.05) translateY(-5px); }
-.photo-container .space-photo { margin-right: 0; max-width: 100%; }
+.photo-slideshow:hover { transform: scale(1.05) translateY(-5px); }
+
+.slide-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: auto; max-height: 300px;
+  object-fit: contain;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+.slide-img.active {
+  position: relative;
+  opacity: 1;
+  pointer-events: auto;
+}
 
 /* Caption below photo in the portal */
 .photo-caption {
@@ -1259,8 +1276,8 @@ img.simple-icon {
   .space-item.right-align .space-card { text-align: center; border-right: 1px solid rgba(56,189,248,0.4); border-left: 1px solid rgba(56,189,248,0.4); }
   .space-logo, .space-photo { display: block; margin: 0 auto; max-width: 80%; }
   .space-item.right-align .space-logo, .space-item.right-align .space-photo { margin: 0 auto; }
-  .photo-container { margin-right: 0; margin-left: 0; }
-  .space-item.right-align .photo-container { margin-right: 0; margin-left: 0; }
+  .photo-slideshow { margin-right: 0; margin-left: 0; max-width: 90%; }
+  .space-item.right-align .photo-slideshow { margin-right: 0; margin-left: 0; }
   .space-nav { padding: 1.5rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
   .lightbox-prev { left: 0.5rem; width: 40px; height: 40px; font-size: 1.2rem; }
   .lightbox-next { right: 0.5rem; width: 40px; height: 40px; font-size: 1.2rem; }
