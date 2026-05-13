@@ -1063,6 +1063,21 @@ function initSpaceRoomScroll() {
     // Re-render the 3D tunnel
     updateItemsZ();
   }, { passive: false });
+
+  // Mobile Touch Support
+  let touchStartY = 0;
+  container.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  container.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const touchY = e.touches[0].clientY;
+    const delta = touchStartY - touchY;
+    virtualScrollY += delta * 4; // Touch multiplier for better feel
+    touchStartY = touchY;
+    updateItemsZ();
+  }, { passive: false });
 }
 
 /* ============ SECTION HEADER ANIMATIONS (SCI-FI GLOW FADE) ============ */
