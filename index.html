@@ -796,12 +796,14 @@
       }, 3000);
     }
 
-    // Start slideshows whenever space room opens
-    const origUpdateSpaceRoom = window.updateSpaceRoom3D;
-    window.updateSpaceRoom3D = function() {
-      if (origUpdateSpaceRoom) origUpdateSpaceRoom();
-      setTimeout(startSlideshows, 500);
-    };
+    // Hook slideshow start directly into portal button clicks
+    // (updateSpaceRoom3D is defined later by main.js module, so we can't override it here)
+    document.querySelectorAll('.portal-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Wait for the space room to fully open, then start slideshows
+        setTimeout(startSlideshows, 2500);
+      });
+    });
 
     // ====================== NAV LINKS FROM INSIDE SPACE ROOM ======================
     document.querySelectorAll('.nav-link').forEach(link => {

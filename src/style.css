@@ -1185,19 +1185,18 @@ img.simple-icon {
 .photo-slideshow:hover { transform: scale(1.05) translateY(-5px); }
 
 .slide-img {
-  position: absolute;
-  top: 0; left: 0;
+  display: none;
   width: 100%; height: auto; max-height: 300px;
   object-fit: contain;
   border-radius: 8px;
-  opacity: 0;
-  transition: opacity 0.8s ease;
-  pointer-events: none;
 }
 .slide-img.active {
-  position: relative;
-  opacity: 1;
-  pointer-events: auto;
+  display: block;
+  animation: slideFadeIn 0.8s ease;
+}
+@keyframes slideFadeIn {
+  from { opacity: 0.3; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* Caption below photo in the portal */
