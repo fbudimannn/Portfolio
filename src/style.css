@@ -1171,6 +1171,17 @@ img.simple-icon {
   margin-left: 2rem;
 }
 
+.portal-logo {
+  transform: translateY(40px); /* Push logos down on desktop */
+}
+
+@media (max-width: 768px) {
+  .portal-logo {
+    transform: none; /* Reset translation on mobile */
+    margin-bottom: 1rem; /* Add spacing when stacked */
+  }
+}
+
 /* Debris Slideshow on Landing Page */
 .debris-photo-container {
   width: 120px;
