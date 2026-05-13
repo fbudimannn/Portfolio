@@ -435,52 +435,94 @@
       </div>
       <div class="space-end">END OF LOGS.</div>
     </div>
+    <!-- ====================== HOLOGRAM LIGHTBOX ====================== -->
+    <div class="hologram-lightbox" id="hologram-lightbox">
+      <div class="lightbox-overlay" id="lightbox-overlay"></div>
+      <button class="lightbox-close" id="lightbox-close">✖</button>
+      <button class="lightbox-prev" id="lightbox-prev">◀</button>
+      <div class="lightbox-content">
+        <img src="" class="lightbox-img" id="lightbox-img" />
+      </div>
+      <button class="lightbox-next" id="lightbox-next">▶</button>
+    </div>
   </div>
 
   <!-- ====================== WARP FLASH OVERLAY ====================== -->
   <div id="warp-flash" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; z-index: 10000; opacity: 0; pointer-events: none; mix-blend-mode: screen;"></div>
 
   <script>
-    const educationData = `
-      <div class="space-item space-title-item" data-z="0">
-        <div class="scifi-title-hud floating-element">
-          <div class="scifi-icon">🎓</div>
-          <h2 class="space-title">ACADEMIC ARCHIVES</h2>
-          <div class="scifi-telemetry">
-            <span>SYS: ONLINE</span>
-            <span>ENTRIES: 3</span>
-            <span>∑(x_i - μ)² / N</span>
+      const educationData = `
+        <div class="space-item space-title-item" data-z="0">
+          <div class="scifi-title-hud floating-element">
+            <div class="scifi-icon">🎓</div>
+            <h2 class="space-title">ACADEMIC ARCHIVES</h2>
+            <div class="scifi-telemetry">
+              <span>SYS: ONLINE</span>
+              <span>ENTRIES: 4</span>
+              <span>TIMELINE: 2017 - 2025</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="space-item" data-z="-3000">
-        <img src="/foto/education/logo/cd3046da93de0b7a1db41a0d06021247.png" class="space-logo floating-element-delay" alt="Warwick">
-        <img src="/foto/education/warwick.jpeg" class="space-photo floating-element" alt="Warwick Campus">
-        <div class="space-card floating-element">
-          <span class="m-date">Sep 2024 – Sep 2025</span>
-          <h3>University of Warwick</h3>
-          <p class="m-role">MSc Business Analytics</p>
-          <p class="m-desc">Merit · LPDP (Indonesian Endowment Fund) Scholar. Advanced coursework in machine learning, statistical modelling, and business intelligence.</p>
+        
+        <div class="space-item" data-z="-3000">
+          <img src="/foto/education/logo/cd3046da93de0b7a1db41a0d06021247.png" class="space-logo floating-element-delay" alt="Warwick">
+          <div class="photo-container floating-element" data-gallery='["/foto/education/wRWICK GRADUATE.jpeg", "/foto/education/wRWICK GRADUATE_.jpeg", "/foto/education/bUSINESS ANALYTICS COHORTS.jpeg"]'>
+            <img src="/foto/education/wRWICK GRADUATE.jpeg" class="space-photo" alt="Warwick Graduate">
+            <div class="photo-indicator">📸 View Gallery (3)</div>
+          </div>
+          <div class="space-card floating-element">
+            <span class="m-date">Sep 2024 – Sep 2025</span>
+            <h3>University of Warwick</h3>
+            <p class="m-role">MSc in Business Analytics, Merit Graduate</p>
+            <p class="m-desc">
+              Achieved Distinction and Merit in key analytical and application-based modules, including <strong>Generative AI, Advanced Data Analytics, Business Statistics, Advanced Analytics Models, Data Management, and Forecasting</strong>.
+            </p>
+          </div>
         </div>
-      </div>
-      <div class="space-item right-align" data-z="-6000">
-        <img src="/foto/education/WhatsApp%20Image%202026-05-12%20at%2016.38.54.jpeg" class="space-photo floating-element" alt="Memory">
-        <div class="space-card floating-element">
-          <span class="m-date">2017 – 2021</span>
-          <h3>Telkom University</h3>
-          <p class="m-role">BSc International ICT Business</p>
-          <p class="m-desc">3.68 GPA · Cum Laude · Semester exchange at Korea University. Foundation in business analytics, information systems, and digital strategy.</p>
+
+        <div class="space-item right-align" data-z="-6000">
+          <div class="photo-container floating-element-delay" data-gallery='["/foto/education/FINAL PRESENTATION gilmoe.jpeg", "/foto/education/indonesian cohort gilmore.jpeg", "/foto/education/sql academy.jpeg", "/foto/education/lpdp.jpeg", "/foto/education/lpdp (2).jpeg"]'>
+            <img src="/foto/education/FINAL PRESENTATION gilmoe.jpeg" class="space-photo" alt="Hackathon">
+            <div class="photo-indicator">📸 View Gallery (5)</div>
+          </div>
+          <div class="space-card floating-element">
+            <span class="m-date">Impact & Scholarships</span>
+            <h3>Warwick Highlights</h3>
+            <p class="m-desc" style="margin-bottom: 0.5rem;">• Awardee of <strong>Indonesia Endowment Fund for Education Scholarship (LPDP PK 239)</strong>.</p>
+            <p class="m-desc" style="margin-bottom: 0.5rem;">• Participated in the <strong>Gillmore Hackathon</strong> with Warwick Enterprise.</p>
+            <p class="m-desc">• Contributed as an <strong>SQL educator</strong> for Indonesian students in the UK (SQL Academy PPI UK).</p>
+          </div>
         </div>
-      </div>
-      <div class="space-item" data-z="-9000">
-        <img src="/foto/education/logo/Logo_resmi_LPDP (1).png" class="space-logo floating-element-delay" alt="LPDP">
-        <img src="/foto/education/lpdp.jpeg" class="space-photo floating-element" alt="LPDP Experience">
-        <div class="space-card floating-element">
-          <h3>LPDP Scholar</h3>
-          <p class="m-desc">Awarded the highly prestigious Indonesian Endowment Fund for Education.</p>
+
+        <div class="space-item" data-z="-9000">
+          <img src="/foto/education/logo/d6de52c739a28b78beef1f26acca7358.png" class="space-logo floating-element-delay" alt="Telkom">
+          <div class="photo-container floating-element" data-gallery='["/foto/education/telkom graduate.jpg"]'>
+            <img src="/foto/education/telkom graduate.jpg" class="space-photo" alt="Telkom Graduate">
+            <div class="photo-indicator">📸 View Photo</div>
+          </div>
+          <div class="space-card floating-element">
+            <span class="m-date">Aug 2017 – Aug 2021</span>
+            <h3>Telkom University</h3>
+            <p class="m-role">BSc in International ICT Business</p>
+            <p class="m-desc" style="margin-bottom: 0.5rem;">• <strong>3.68/4.00 GPA</strong> — Graduated with Cumlaude / Honours Predicate.</p>
+            <p class="m-desc">• Published national journal related to quantitative analysis.</p>
+          </div>
         </div>
-      </div>
-    `;
+
+        <div class="space-item right-align" data-z="-12000">
+          <div class="photo-container floating-element-delay" data-gallery='["/foto/education/solbridge cutural festival representative.jpg", "/foto/education/solbridge%27.jpg"]'>
+            <img src="/foto/education/solbridge cutural festival representative.jpg" class="space-photo" alt="Solbridge">
+            <div class="photo-indicator">📸 View Gallery (2)</div>
+          </div>
+          <div class="space-card floating-element">
+            <span class="m-date">2018 Global Exposure</span>
+            <h3>Solbridge International School</h3>
+            <p class="m-role">South Korea Exchange Program</p>
+            <p class="m-desc" style="margin-bottom: 0.5rem;">• Participant as Student Exchange in South Korea.</p>
+            <p class="m-desc">• Recipient of 2018 Internal Student Exchange Scholarship from Telkom University.</p>
+          </div>
+        </div>
+      `;
 
     const experienceData = `
       <div class="space-item space-title-item" data-z="0">
