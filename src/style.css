@@ -1107,6 +1107,7 @@ img.simple-icon {
 }
 .space-item.right-align {
   justify-content: flex-end;
+  flex-direction: row-reverse;
 }
 
 .space-card {
@@ -1141,6 +1142,10 @@ img.simple-icon {
   margin-right: 2rem;
   z-index: 2;
 }
+.space-item.right-align .space-logo {
+  margin-right: 0;
+  margin-left: 2rem;
+}
 
 .space-photo {
   position: relative; 
@@ -1148,6 +1153,22 @@ img.simple-icon {
   border-radius: 8px;
   margin-right: 2rem;
   z-index: 2;
+}
+.space-item.right-align .space-photo {
+  margin-right: 0;
+  margin-left: 2rem;
+}
+
+.logo-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 2rem;
+  z-index: 2;
+}
+.space-item.right-align .logo-group {
+  margin-right: 0;
+  margin-left: 2rem;
 }
 
 /* Debris Slideshow on Landing Page */
@@ -1204,6 +1225,10 @@ img.simple-icon {
   align-items: center;
   min-width: 200px;
   max-width: 45%;
+}
+.space-item.right-align .photo-slideshow {
+  margin-right: 0;
+  margin-left: 2rem;
 }
 .photo-slideshow:hover { transform: scale(1.05) translateY(-5px); }
 
