@@ -208,15 +208,21 @@
             <div class="magic-hologram">
               <!-- Logos -->
               <img src="/foto/education/logo/cd3046da93de0b7a1db41a0d06021247.png" class="debris debris-logo float-a" style="top:-18%;left:-10%" alt="Warwick">
-              <img src="/foto/education/logo/Logo_resmi_LPDP (1).png" class="debris debris-logo float-b" style="top:30%;left:-30%" alt="LPDP">
-              <img src="/foto/education/logo/359745999_670376618443174_8847655667598609935_n-removebg-preview.png" class="debris debris-logo float-c" style="top:-22%;right:-5%" alt="Solbridge">
+              <img src="/foto/education/logo/logo_lpdp.png" class="debris debris-logo float-b" style="top:30%;left:-30%" alt="LPDP">
+              <img src="/foto/education/logo/logo_solbridge.png" class="debris debris-logo float-c" style="top:-22%;right:-5%" alt="Solbridge">
               <img src="/foto/education/logo/d6de52c739a28b78beef1f26acca7358.png" class="debris debris-logo float-d" style="top:5%;right:10%">
               
               <!-- Photos (Max 4, no overlapping) -->
-              <img src="/foto/education/warwick.jpeg" class="debris debris-photo float-e" style="bottom:-30%;left:0%" alt="Warwick Campus">
-              <img src="/foto/education/warwick2.jpeg" class="debris debris-photo float-f" style="bottom:-20%;right:-35%" alt="Warwick Experience">
-              <img src="/foto/education/lpdp.jpeg" class="debris debris-photo float-c" style="top:45%;left:-35%" alt="LPDP">
-              <img src="/foto/education/WhatsApp%20Image%202026-05-12%20at%2016.38.54.jpeg" class="debris debris-photo float-a" style="top:-35%;right:10%" alt="Education Memory">
+              <div class="debris debris-photo-container float-e" style="bottom:-30%;left:0%">
+                <img src="/foto/education/warwick_academics/warwick_graduate.jpeg" class="debris-slide active" alt="Warwick Campus">
+                <img src="/foto/education/warwick_highlights/hackathon_final.jpeg" class="debris-slide" alt="Warwick Hackathon">
+              </div>
+              <div class="debris debris-photo-container float-f" style="bottom:-20%;right:-35%">
+                <img src="/foto/education/warwick_highlights/hackathon_cohort.jpeg" class="debris-slide active" alt="Warwick Experience">
+                <img src="/foto/education/telkom_academic/telkom_graduate.jpg" class="debris-slide" alt="Telkom Graduate">
+              </div>
+              <img src="/foto/education/warwick_highlights/lpdp.jpeg" class="debris debris-photo float-c" style="top:45%;left:-35%" alt="LPDP">
+              <img src="/foto/education/warwick_highlights/lpdp_2.jpeg" class="debris debris-photo float-a" style="top:-35%;right:10%" alt="Education Memory">
 
               <!-- Achievement Tags -->
               <span class="debris debris-tag float-a" style="bottom:10%;left:-35%">Cum Laude</span>
@@ -782,19 +788,42 @@
           
           let activeIdx = -1;
           slides.forEach((s, i) => { if (s.classList.contains('active')) activeIdx = i; });
-          const nextIdx = (activeIdx + 1) % slides.length;
           
-          // Crossfade
-          slides[activeIdx].classList.remove('active');
-          slides[nextIdx].classList.add('active');
-          
-          // Update caption
-          if (caption && gallery[nextIdx]) {
-            caption.textContent = gallery[nextIdx].caption || '';
+          if (activeIdx !== -1) {
+            const nextIdx = (activeIdx + 1) % slides.length;
+            // Crossfade
+            slides[activeIdx].classList.remove('active');
+            slides[nextIdx].classList.add('active');
+            
+            // Update caption
+            if (caption && gallery[nextIdx]) {
+              caption.textContent = gallery[nextIdx].caption || '';
+            }
+          } else if (slides.length > 0) {
+            slides[0].classList.add('active');
           }
         });
       }, 3000);
     }
+
+    // Debris Slideshow cycling (Landing Page)
+    setInterval(() => {
+      document.querySelectorAll('.debris-photo-container').forEach(container => {
+        const slides = container.querySelectorAll('.debris-slide');
+        if (slides.length <= 1) return;
+        
+        let activeIdx = -1;
+        slides.forEach((s, i) => { if (s.classList.contains('active')) activeIdx = i; });
+        
+        if (activeIdx !== -1) {
+          const nextIdx = (activeIdx + 1) % slides.length;
+          slides[activeIdx].classList.remove('active');
+          slides[nextIdx].classList.add('active');
+        } else if (slides.length > 0) {
+          slides[0].classList.add('active');
+        }
+      });
+    }, 4000);
 
     // Hook slideshow start directly into portal button clicks
     // (updateSpaceRoom3D is defined later by main.js module, so we can't override it here)

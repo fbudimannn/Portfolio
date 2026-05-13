@@ -1150,6 +1150,29 @@ img.simple-icon {
   z-index: 2;
 }
 
+/* Debris Slideshow on Landing Page */
+.debris-photo-container {
+  width: 120px;
+  height: 80px;
+  position: absolute;
+  z-index: 5;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid rgba(56,189,248,0.4);
+  box-shadow: 0 0 15px rgba(56,189,248,0.2);
+}
+.debris-slide {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.debris-slide.active {
+  opacity: 1;
+}
+
 .space-item.right-align {
   flex-direction: row-reverse;
 }
