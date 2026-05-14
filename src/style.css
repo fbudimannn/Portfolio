@@ -1104,6 +1104,10 @@ img.simple-icon {
   justify-content: center;
   transform: translate(-50%, -50%); /* Titles stay centered */
 }
+
+.push-down {
+  margin-top: 100px; /* Force specific items lower */
+}
 .space-item.right-align {
   justify-content: flex-end;
   flex-direction: row-reverse;
