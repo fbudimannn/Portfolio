@@ -1020,8 +1020,11 @@ function initSpaceRoomScroll() {
       } else if (currentZ > -3000) {
         opacity = 1;
         item.style.pointerEvents = 'auto';
-      } else if (currentZ > -9000) {
-        opacity = 1 - ((Math.abs(currentZ) - 3000) / 6000);
+      } else if (currentZ > -totalDepth) {
+        // Fade out as it goes towards the back end of the tunnel
+        const fadeStart = -3000;
+        const fadeEnd = -totalDepth;
+        opacity = 1 - ((Math.abs(currentZ) - Math.abs(fadeStart)) / (Math.abs(fadeEnd) - Math.abs(fadeStart)));
         item.style.pointerEvents = 'none';
       } else {
         opacity = 0;
