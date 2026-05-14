@@ -972,7 +972,7 @@ function initSpaceRoomScroll() {
     if(items.length === 0) return;
 
     // Reset our virtual scroll position
-    virtualScrollY = 5000000; // Start at a huge number for infinite backward scroll
+    virtualScrollY = 0; // Start at the beginning (Z=0)
     
     // Hide body scrollbar to prevent double scrollbars
     document.body.style.overflow = 'hidden';
