@@ -1106,7 +1106,11 @@ img.simple-icon {
 }
 
 .push-down {
-  margin-top: 160px; /* Increased to lower taller cards further */
+  margin-top: 100px; /* Standard offset for short cards like KMI */
+}
+
+.push-down-lg {
+  margin-top: 160px; /* Larger offset for very tall cards like RevoU Team Lead */
 }
 .space-item.right-align {
   justify-content: flex-end;
