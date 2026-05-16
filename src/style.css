@@ -1841,3 +1841,83 @@ img.simple-icon {
   .bubbles-container { inset: 0% -5% 0% -5%; }
   .bubble { font-size: 0.45rem; padding: 0.2rem 0.4rem; border-width: 1px; }
 }
+/* Project Categories Hub */
+.project-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.category-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.category-card span {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.3s;
+}
+
+.category-card:hover, .category-card.active {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-1);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.category-card.active span {
+  color: var(--accent-1);
+}
+
+/* Category Icons (Hologram Placeholders) */
+.category-icon-anim {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-icon-anim::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--accent-1);
+  border-radius: inherit;
+  animation: hologram-pulse 2s infinite;
+}
+
+@keyframes hologram-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Specific Animations for Icons */
+.icon-customer::after { content: '📊'; font-size: 1.2rem; }
+.icon-ml::after { content: '🤖'; font-size: 1.2rem; }
+.icon-ai::after { content: '🧠'; font-size: 1.2rem; }
+.icon-db::after { content: '🗄️'; font-size: 1.2rem; }
+.icon-viz::after { content: '📈'; font-size: 1.2rem; }
+.icon-all::after { content: '📁'; font-size: 1.2rem; }
+
+/* Filter Transitions */
+.project-card {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}

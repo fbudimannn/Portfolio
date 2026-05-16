@@ -336,8 +336,36 @@
           <p class="section-subtitle">End-to-end data projects from analysis to deployment.</p>
         </div>
 
+        <!-- Project Category Hub -->
+        <div class="project-categories">
+          <div class="category-card active" data-filter="all">
+            <div class="category-icon-anim icon-all"></div>
+            <span>All Projects</span>
+          </div>
+          <div class="category-card" data-filter="customer">
+            <div class="category-icon-anim icon-customer"></div>
+            <span>Customer Behaviour</span>
+          </div>
+          <div class="category-card" data-filter="ml">
+            <div class="category-icon-anim icon-ml"></div>
+            <span>Machine Learning</span>
+          </div>
+          <div class="category-card" data-filter="gen-ai">
+            <div class="category-icon-anim icon-ai"></div>
+            <span>Generative AI</span>
+          </div>
+          <div class="category-card" data-filter="database">
+            <div class="category-icon-anim icon-db"></div>
+            <span>Database Building</span>
+          </div>
+          <div class="category-card" data-filter="viz">
+            <div class="category-icon-anim icon-viz"></div>
+            <span>Data Visualization</span>
+          </div>
+        </div>
+
         <div class="projects-grid">
-          <div class="project-card" data-accent="1">
+          <div class="project-card" data-accent="1" data-categories="customer">
             <div class="card-number">01</div>
             <h3 class="card-title">RFM Segmentation</h3>
             <p class="card-desc">Customer segmentation for EcommerceU using RFM analysis, uncovering high-value customer
@@ -348,7 +376,7 @@
             <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
           </div>
 
-          <div class="project-card" data-accent="2">
+          <div class="project-card" data-accent="2" data-categories="customer">
             <div class="card-number">02</div>
             <h3 class="card-title">End-to-End Analysis</h3>
             <p class="card-desc">Multi-industry data pipelines — from raw data ingestion to actionable insights
@@ -359,7 +387,7 @@
             <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
           </div>
 
-          <div class="project-card" data-accent="3">
+          <div class="project-card" data-accent="3" data-categories="ml">
             <div class="card-number">03</div>
             <h3 class="card-title">Unsupervised Learning</h3>
             <p class="card-desc">Clustering models for customer segmentation and anomaly detection using K-Means and
@@ -370,7 +398,7 @@
             <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
           </div>
 
-          <div class="project-card" data-accent="1">
+          <div class="project-card" data-accent="1" data-categories="ml">
             <div class="card-number">04</div>
             <h3 class="card-title">Supervised Learning</h3>
             <p class="card-desc">Predictive modelling with classification and regression — feature engineering, model
@@ -381,7 +409,7 @@
             <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
           </div>
 
-          <div class="project-card" data-accent="2">
+          <div class="project-card" data-accent="2" data-categories="gen-ai">
             <div class="card-number">05</div>
             <h3 class="card-title">Generative AI</h3>
             <p class="card-desc">LLM fine-tuning and Retrieval-Augmented Generation (RAG) pipelines for domain-specific
@@ -392,7 +420,7 @@
             <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
           </div>
 
-          <div class="project-card" data-accent="3">
+          <div class="project-card" data-accent="3" data-categories="database">
             <div class="card-number">06</div>
             <h3 class="card-title">Database Engineering</h3>
             <p class="card-desc">End-to-end database design — ERD modelling, normalization, and query optimization for
@@ -403,7 +431,7 @@
             <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
           </div>
 
-          <div class="project-card" data-accent="1">
+          <div class="project-card" data-accent="1" data-categories="customer">
             <div class="card-number">07</div>
             <h3 class="card-title">A/B Testing</h3>
             <p class="card-desc">Statistical hypothesis testing for product experiments — sample sizing, significance
@@ -414,7 +442,7 @@
             <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
           </div>
 
-          <div class="project-card" data-accent="2">
+          <div class="project-card" data-accent="2" data-categories="viz">
             <div class="card-number">08</div>
             <h3 class="card-title">Data Visualization</h3>
             <p class="card-desc">Interactive dashboards and visual storytelling across Tableau, Power BI, and Looker
@@ -425,7 +453,7 @@
             <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
           </div>
 
-          <div class="project-card" data-accent="3">
+          <div class="project-card" data-accent="3" data-categories="customer">
             <div class="card-number">09</div>
             <h3 class="card-title">Customer Behaviour</h3>
             <p class="card-desc">9 side projects analysing customer behaviour — purchase patterns, retention, and
@@ -1083,6 +1111,41 @@
   </script>
 
   <script type="module" src="/src/main.js"></script>
+  <!-- Project Filtering Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const categoryCards = document.querySelectorAll('.category-card');
+      const projectCards = document.querySelectorAll('.project-card');
+
+      categoryCards.forEach(card => {
+        card.addEventListener('click', () => {
+          // Update active category
+          categoryCards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+
+          const filter = card.getAttribute('data-filter');
+
+          // Filter projects
+          projectCards.forEach(project => {
+            const categories = project.getAttribute('data-categories').split(' ');
+            if (filter === 'all' || categories.includes(filter)) {
+              project.style.display = 'block';
+              setTimeout(() => {
+                project.style.opacity = '1';
+                project.style.transform = 'scale(1)';
+              }, 10);
+            } else {
+              project.style.opacity = '0';
+              project.style.transform = 'scale(0.95)';
+              setTimeout(() => {
+                project.style.display = 'none';
+              }, 300);
+            }
+          });
+        });
+      });
+    });
+  </script>
 </body>
 
 </html>
