@@ -1110,7 +1110,7 @@ img.simple-icon {
 }
 
 .push-down-lg {
-  margin-top: 160px; /* Larger offset for very tall cards like RevoU Team Lead */
+  margin-top: 130px; /* Reduced to raise the card slightly */
 }
 .space-item.right-align {
   justify-content: flex-end;
