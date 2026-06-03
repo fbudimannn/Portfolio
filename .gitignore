@@ -31,3 +31,7 @@ npm-debug.log*
 /*.jpg
 /*.png
 /*.mp4
+# Internal / sensitive files
+cv_parsed.txt
+fakhri_portfolio_plan.md
+pdfminer_dummy.py
