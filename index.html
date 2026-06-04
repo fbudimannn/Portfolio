@@ -248,7 +248,7 @@
           <!-- EDUCATION PORTAL -->
           <div class="magic-portal portal-btn" id="portal-education">
             <div class="magic-content">
-              <span class="magic-icon">🎓</span>
+              <div class="magic-icon lottie-container" id="lottie-education"></div>
               <h3 class="magic-title">EDUCATION</h3>
             </div>
             <!-- Floating Memory Debris (Education) -->
@@ -293,7 +293,7 @@
           <!-- EXPERIENCE PORTAL -->
           <div class="magic-portal portal-btn" id="portal-experience">
             <div class="magic-content">
-              <div class="magic-icon">💼</div>
+              <div class="magic-icon lottie-container" id="lottie-experience"></div>
               <h3 class="magic-title">EXPERIENCE</h3>
             </div>
             
@@ -339,130 +339,378 @@
         <!-- Project Category Hub -->
         <div class="project-categories">
           <div class="category-card active" data-filter="all">
-            <div class="category-icon-anim icon-all"></div>
+            <div class="category-icon-anim" id="lottie-cat-all"></div>
             <span>All Projects</span>
           </div>
           <div class="category-card" data-filter="customer">
-            <div class="category-icon-anim icon-customer"></div>
+            <div class="category-icon-anim" id="lottie-cat-customer"></div>
             <span>Customer Behaviour</span>
           </div>
+          <div class="category-card" data-filter="end-to-end">
+            <div class="category-icon-anim" id="lottie-cat-end-to-end"></div>
+            <span>End-to-End</span>
+          </div>
           <div class="category-card" data-filter="ml">
-            <div class="category-icon-anim icon-ml"></div>
+            <div class="category-icon-anim" id="lottie-cat-ml"></div>
             <span>Machine Learning</span>
           </div>
-          <div class="category-card" data-filter="gen-ai">
-            <div class="category-icon-anim icon-ai"></div>
-            <span>Generative AI</span>
+          <div class="category-card" data-filter="ai">
+            <div class="category-icon-anim" id="lottie-cat-ai"></div>
+            <span>Applied AI</span>
           </div>
           <div class="category-card" data-filter="database">
-            <div class="category-icon-anim icon-db"></div>
+            <div class="category-icon-anim" id="lottie-cat-database"></div>
             <span>Database Building</span>
           </div>
+          <div class="category-card" data-filter="ab">
+            <div class="category-icon-anim" id="lottie-cat-ab"></div>
+            <span>A/B Testing</span>
+          </div>
           <div class="category-card" data-filter="viz">
-            <div class="category-icon-anim icon-viz"></div>
+            <div class="category-icon-anim" id="lottie-cat-viz"></div>
             <span>Data Visualization</span>
+          </div>
+          <div class="category-card" data-filter="impact">
+            <div class="category-icon-anim" id="lottie-cat-impact"></div>
+            <span>Impact Projects</span>
           </div>
         </div>
 
-        <div class="projects-grid">
-          <div class="project-card" data-accent="1" data-categories="customer">
-            <div class="card-number">01</div>
-            <h3 class="card-title">RFM Segmentation</h3>
-            <p class="card-desc">Customer segmentation for EcommerceU using RFM analysis, uncovering high-value customer
-              clusters and churn patterns.</p>
-            <div class="card-tags">
-              <span class="tag">Python</span><span class="tag">BigQuery</span><span class="tag">Tableau</span>
+        <!-- Space-Optimized Horizontal Carousel -->
+        <div class="projects-carousel-wrapper">
+          <button class="carousel-arrow prev" id="carousel-prev" aria-label="Previous Projects">◀</button>
+          
+          <div class="projects-carousel-container" id="projects-carousel-container">
+            
+            <!-- 1. RFM Segmentation -->
+            <div class="project-card" data-id="rfm_segmentation" data-accent="1" data-categories="customer" style="--accent-color: var(--accent-customer); --accent-rgb: 168, 85, 247;">
+              <div class="card-meta">
+                <span class="card-number">01</span>
+                <span class="card-category">Customer Behaviour</span>
+              </div>
+              <h3 class="card-title">RFM Segmentation</h3>
+              <p class="card-desc">Segmenting customer bases to identify high-value clusters and optimize personalized marketing efforts.</p>
+              <div class="card-tags">
+                <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Tableau</span>
+              </div>
             </div>
-            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
+
+            <!-- 2. Funnel Application Journey -->
+            <div class="project-card" data-id="funnel_analysis" data-accent="2" data-categories="customer" style="--accent-color: var(--accent-customer); --accent-rgb: 168, 85, 247;">
+              <div class="card-meta">
+                <span class="card-number">02</span>
+                <span class="card-category">Customer Behaviour</span>
+              </div>
+              <h3 class="card-title">Funnel Apps Analysis</h3>
+              <p class="card-desc">Analyzing application transaction dropouts and exit bottlenecks to optimize user conversions.</p>
+              <div class="card-tags">
+                <span class="tag">SQL</span><span class="tag">Tableau</span><span class="tag">Figma</span>
+              </div>
+            </div>
+
+            <!-- 3. Market Basket Analysis -->
+            <div class="project-card" data-id="market_basket" data-accent="3" data-categories="customer" style="--accent-color: var(--accent-customer); --accent-rgb: 168, 85, 247;">
+              <div class="card-meta">
+                <span class="card-number">03</span>
+                <span class="card-category">Customer Behaviour</span>
+              </div>
+              <h3 class="card-title">Market Basket Analysis</h3>
+              <p class="card-desc">Implementing the Apriori algorithm to discover product purchase affinities and design bundle offers.</p>
+              <div class="card-tags">
+                <span class="tag">Python</span><span class="tag">Apriori</span><span class="tag">Association Rules</span>
+              </div>
+            </div>
+
+            <!-- 4. NYC Traffic Accident -->
+            <div class="project-card" data-id="nyc_accident" data-accent="1" data-categories="end-to-end" style="--accent-color: var(--accent-customer); --accent-rgb: 168, 85, 247;">
+              <div class="card-meta">
+                <span class="card-number">04</span>
+                <span class="card-category">End-to-End Analysis</span>
+              </div>
+              <h3 class="card-title">NYC Accident Analysis</h3>
+              <p class="card-desc">Investigating NYC traffic casualty trends, lockdown variations, and infrastructure risk factors.</p>
+              <div class="card-tags">
+                <span class="tag">BigQuery</span><span class="tag">Python</span><span class="tag">Tableau</span>
+              </div>
+            </div>
+
+            <!-- 5. Company Annual Report -->
+            <div class="project-card" data-id="annual_report" data-accent="2" data-categories="end-to-end" style="--accent-color: var(--accent-customer); --accent-rgb: 168, 85, 247;">
+              <div class="card-meta">
+                <span class="card-number">05</span>
+                <span class="card-category">End-to-End Analysis</span>
+              </div>
+              <h3 class="card-title">Annual Performance Report</h3>
+              <p class="card-desc">Analyzing annual company performance trends and evaluating product retention metrics.</p>
+              <div class="card-tags">
+                <span class="tag">SQL</span><span class="tag">Python</span><span class="tag">Tableau</span>
+              </div>
+            </div>
+
+            <!-- 6. Popular Category Analysis -->
+            <div class="project-card" data-id="socia_buzz" data-accent="3" data-categories="end-to-end" style="--accent-color: var(--accent-customer); --accent-rgb: 168, 85, 247;">
+              <div class="card-meta">
+                <span class="card-number">06</span>
+                <span class="card-category">End-to-End Analysis</span>
+              </div>
+              <h3 class="card-title">Popular Curation Analysis</h3>
+              <p class="card-desc">Mapping content performance and response weightings across social platforms.</p>
+              <div class="card-tags">
+                <span class="tag">BigQuery</span><span class="tag">Excel</span><span class="tag">Tableau</span>
+              </div>
+            </div>
+
+            <!-- 7. F1 Bayesian Predictor -->
+            <div class="project-card" data-id="f1_predictor" data-accent="1" data-categories="ml" style="--accent-color: var(--accent-ml); --accent-rgb: 0, 240, 255;">
+              <div class="card-meta">
+                <span class="card-number">07</span>
+                <span class="card-category">Machine Learning</span>
+              </div>
+              <h3 class="card-title">F1 Bayesian Predictor</h3>
+              <p class="card-desc">Simulating F1 qualifying and races under 2026 guidelines using LightGBM and Monte Carlo runs.</p>
+              <div class="card-tags">
+                <span class="tag">Python</span><span class="tag">LightGBM</span><span class="tag">Monte Carlo</span>
+              </div>
+            </div>
+
+            <!-- 8. K-Means Mutual Fund -->
+            <div class="project-card" data-id="kmeans_mutual_fund" data-accent="2" data-categories="ml" style="--accent-color: var(--accent-ml); --accent-rgb: 0, 240, 255;">
+              <div class="card-meta">
+                <span class="card-number">08</span>
+                <span class="card-category">Machine Learning</span>
+              </div>
+              <h3 class="card-title">Mutual Fund K-Means</h3>
+              <p class="card-desc">Segmenting investors to optimize target communication channels for government bonds.</p>
+              <div class="card-tags">
+                <span class="tag">Python</span><span class="tag">K-Means</span><span class="tag">Scikit-learn</span>
+              </div>
+            </div>
+
+            <!-- 9. Bond Purchasing Prediction -->
+            <div class="project-card" data-id="bond_purchasing" data-accent="3" data-categories="ml" style="--accent-color: var(--accent-ml); --accent-rgb: 0, 240, 255;">
+              <div class="card-meta">
+                <span class="card-number">09</span>
+                <span class="card-category">Machine Learning</span>
+              </div>
+              <h3 class="card-title">Bond Purchase Model</h3>
+              <p class="card-desc">Building a Logistic Regression model to identify prospective bond buyers and evaluate campaign ROI.</p>
+              <div class="card-tags">
+                <span class="tag">Python</span><span class="tag">Regression</span><span class="tag">ROI Matrix</span>
+              </div>
+            </div>
+
+            <!-- 10. Rating Predictions -->
+            <div class="project-card" data-id="rating_predictions" data-accent="1" data-categories="ml" style="--accent-color: var(--accent-ml); --accent-rgb: 0, 240, 255;">
+              <div class="card-meta">
+                <span class="card-number">10</span>
+                <span class="card-category">Machine Learning</span>
+              </div>
+              <h3 class="card-title">eCommerce Review Predictor</h3>
+              <p class="card-desc">Tuning non-linear classifiers to predict positive client feedback on eCommerce platforms.</p>
+              <div class="card-tags">
+                <span class="tag">Python</span><span class="tag">Random Forest</span><span class="tag">SHAP</span>
+              </div>
+            </div>
+
+            <!-- 11. Talent Match Intelligence -->
+            <div class="project-card" data-id="talent_match" data-accent="2" data-categories="ai" style="--accent-color: var(--accent-ai); --accent-rgb: 16, 185, 129;">
+              <div class="card-meta">
+                <span class="card-number">11</span>
+                <span class="card-category">Applied AI</span>
+              </div>
+              <h3 class="card-title">Talent Match Intelligence</h3>
+              <p class="card-desc">HR talent-sourcing app using Llama 3 (OpenRouter) for JD profiling and PostgreSQL matching formulas.</p>
+              <div class="card-tags">
+                <span class="tag">Python</span><span class="tag">Llama 3</span><span class="tag">Postgres</span>
+              </div>
+            </div>
+
+            <!-- 12. Financial Text Summarization -->
+            <div class="project-card" data-id="text_summarization" data-accent="3" data-categories="ai" style="--accent-color: var(--accent-ai); --accent-rgb: 16, 185, 129;">
+              <div class="card-meta">
+                <span class="card-number">12</span>
+                <span class="card-category">Applied AI</span>
+              </div>
+              <h3 class="card-title">Financial Summarization</h3>
+              <p class="card-desc">Fine-tuning a Longformer Encoder-Decoder (LED) model in PyTorch to summarize long 10-K filings.</p>
+              <div class="card-tags">
+                <span class="tag">PyTorch</span><span class="tag">Hugging Face</span><span class="tag">GPU</span>
+              </div>
+            </div>
+
+            <!-- 13. Advanced RAG System -->
+            <div class="project-card" data-id="rag_system" data-accent="1" data-categories="ai" style="--accent-color: var(--accent-ai); --accent-rgb: 16, 185, 129;">
+              <div class="card-meta">
+                <span class="card-number">13</span>
+                <span class="card-category">Applied AI</span>
+              </div>
+              <h3 class="card-title">Advanced Medical RAG</h3>
+              <p class="card-desc">Building a medical RAG pipeline using semantic chunking, re-ranking, and RAGAS evaluations.</p>
+              <div class="card-tags">
+                <span class="tag">LlamaIndex</span><span class="tag">RAGAS</span><span class="tag">Mistral-7B</span>
+              </div>
+            </div>
+
+            <!-- 14. E-Ticketing System Database -->
+            <div class="project-card" data-id="e_ticketing_db" data-accent="2" data-categories="database" style="--accent-color: var(--accent-db); --accent-rgb: 59, 130, 246;">
+              <div class="card-meta">
+                <span class="card-number">14</span>
+                <span class="card-category">Database Building</span>
+              </div>
+              <h3 class="card-title">E-Ticketing Database</h3>
+              <p class="card-desc">Designing an normalized relational database and setting up operational SQL query schemas.</p>
+              <div class="card-tags">
+                <span class="tag">SQLite</span><span class="tag">ERD Design</span><span class="tag">SQL</span>
+              </div>
+            </div>
+
+            <!-- 15. Loan Approval A/B Testing -->
+            <div class="project-card" data-id="loan_ab_testing" data-accent="3" data-categories="ab" style="--accent-color: var(--accent-ab); --accent-rgb: 236, 72, 153;">
+              <div class="card-meta">
+                <span class="card-number">15</span>
+                <span class="card-category">A/B Testing</span>
+              </div>
+              <h3 class="card-title">Loan Approval A/B Test</h3>
+              <p class="card-desc">Running Welch\'s t-tests in RStudio to evaluate model accuracy in loan approvals.</p>
+              <div class="card-tags">
+                <span class="tag">RStudio</span><span class="tag">ggplot2</span><span class="tag">t-test</span>
+              </div>
+            </div>
+
+            <!-- 16. Tata Online Retail Dashboard -->
+            <div class="project-card" data-id="tata_retail" data-accent="1" data-categories="viz" style="--accent-color: var(--accent-viz); --accent-rgb: 20, 184, 166;">
+              <div class="card-meta">
+                <span class="card-number">16</span>
+                <span class="card-category">Data Visualization</span>
+              </div>
+              <h3 class="card-title">Tata Online Retail</h3>
+              <p class="card-desc">Visualizing global retail activity and consumer demographics using Power BI.</p>
+              <div class="card-tags">
+                <span class="tag">Power BI</span><span class="tag">Geo Map</span>
+              </div>
+            </div>
+
+            <!-- 17. RevoU Labs KPI Dashboard -->
+            <div class="project-card" data-id="revou_labs_kpi" data-accent="2" data-categories="viz" style="--accent-color: var(--accent-viz); --accent-rgb: 20, 184, 166;">
+              <div class="card-meta">
+                <span class="card-number">17</span>
+                <span class="card-category">Data Visualization</span>
+              </div>
+              <h3 class="card-title">RevoU KPI Dashboard</h3>
+              <p class="card-desc">Interactive KPI tracking dashboards designed for Executive, Manager, and Operational levels.</p>
+              <div class="card-tags">
+                <span class="tag">Tableau</span><span class="tag">BigQuery</span>
+              </div>
+            </div>
+
+            <!-- 18. Customer Segmentation Dashboard -->
+            <div class="project-card" data-id="kpmg_segmentation" data-accent="3" data-categories="viz" style="--accent-color: var(--accent-viz); --accent-rgb: 20, 184, 166;">
+              <div class="card-meta">
+                <span class="card-number">18</span>
+                <span class="card-category">Data Visualization</span>
+              </div>
+              <h3 class="card-title">KPMG Customer Segmentation</h3>
+              <p class="card-desc">Segmenting customer demographics and profiles using the RFM method in Tableau.</p>
+              <div class="card-tags">
+                <span class="tag">Tableau</span><span class="tag">RFM EDA</span>
+              </div>
+            </div>
+
+            <!-- 19. Content Performance Dashboard -->
+            <div class="project-card" data-id="accenture_content" data-accent="1" data-categories="viz" style="--accent-color: var(--accent-viz); --accent-rgb: 20, 184, 166;">
+              <div class="card-meta">
+                <span class="card-number">19</span>
+                <span class="card-category">Data Visualization</span>
+              </div>
+              <h3 class="card-title">Content Performance Viz</h3>
+              <p class="card-desc">Analyzing content engagement metrics and category trends in SociaBuzz using Tableau.</p>
+              <div class="card-tags">
+                <span class="tag">Tableau</span><span class="tag">SQL</span>
+              </div>
+            </div>
+
+            <!-- 20. NYC Traffic Accident Dashboard -->
+            <div class="project-card" data-id="nyc_accident_viz" data-accent="2" data-categories="viz" style="--accent-color: var(--accent-viz); --accent-rgb: 20, 184, 166;">
+              <div class="card-meta">
+                <span class="card-number">20</span>
+                <span class="card-category">Data Visualization</span>
+              </div>
+              <h3 class="card-title">NYC Accident Dashboard</h3>
+              <p class="card-desc">Evaluating accident frequency and injury severity metrics geographically across NYC.</p>
+              <div class="card-tags">
+                <span class="tag">Tableau</span><span class="tag">Mapping</span>
+              </div>
+            </div>
+
+            <!-- 21. COVID-19 Vaccine Distribution Dashboard -->
+            <div class="project-card" data-id="covid_vaccine" data-accent="3" data-categories="viz" style="--accent-color: var(--accent-viz); --accent-rgb: 20, 184, 166;">
+              <div class="card-meta">
+                <span class="card-number">21</span>
+                <span class="card-category">Data Visualization</span>
+              </div>
+              <h3 class="card-title">Vaccine Distribution</h3>
+              <p class="card-desc">Tracking international COVID-19 vaccine distribution progress and immunization rates.</p>
+              <div class="card-tags">
+                <span class="tag">Tableau</span><span class="tag">Global Maps</span>
+              </div>
+            </div>
+
+            <!-- 22. Airbnb Singapore Listing Dashboard -->
+            <div class="project-card" data-id="airbnb_singapore" data-accent="1" data-categories="viz" style="--accent-color: var(--accent-viz); --accent-rgb: 20, 184, 166;">
+              <div class="card-meta">
+                <span class="card-number">22</span>
+                <span class="card-category">Data Visualization</span>
+              </div>
+              <h3 class="card-title">Airbnb Singapore Listing</h3>
+              <p class="card-desc">Analyzing listing price distributions, host behaviors, and reviews in Singapore.</p>
+              <div class="card-tags">
+                <span class="tag">Tableau</span><span class="tag">Hospitality</span>
+              </div>
+            </div>
+
+            <!-- 23. Kemensos Social Aid Distribution -->
+            <div class="project-card" data-id="kemensos_bansos" data-accent="2" data-categories="impact" style="--accent-color: var(--accent-impact); --accent-rgb: 245, 158, 11;">
+              <div class="card-meta">
+                <span class="card-number">23</span>
+                <span class="card-category">Impact Projects</span>
+              </div>
+              <h3 class="card-title">Kemensos Social Aid</h3>
+              <p class="card-desc">Refining and mapping 1.5 million social aid records for district and province levels with Tableau Prep & Python.</p>
+              <div class="card-tags">
+                <span class="tag">Python</span><span class="tag">Tableau Prep</span><span class="tag">Looker Studio</span>
+              </div>
+            </div>
+
+            <!-- 24. LPDP PK 239 Centralized Database Management -->
+            <div class="project-card" data-id="lpdp_pk239" data-accent="3" data-categories="impact" style="--accent-color: var(--accent-impact); --accent-rgb: 245, 158, 11;">
+              <div class="card-meta">
+                <span class="card-number">24</span>
+                <span class="card-category">Impact Projects</span>
+              </div>
+              <h3 class="card-title">LPDP PK 239 Database</h3>
+              <p class="card-desc">Designing a centralized database for 316 participants using Excel, Google Sheets, and SQL query functions.</p>
+              <div class="card-tags">
+                <span class="tag">Google Sheets</span><span class="tag">Excel</span><span class="tag">Star Schema</span>
+              </div>
+            </div>
+
+            <!-- 25. SQL Academy PPI UK Curriculum & Mentorship -->
+            <div class="project-card" data-id="sql_academy" data-accent="1" data-categories="impact" style="--accent-color: var(--accent-impact); --accent-rgb: 245, 158, 11;">
+              <div class="card-meta">
+                <span class="card-number">25</span>
+                <span class="card-category">Impact Projects</span>
+              </div>
+              <h3 class="card-title">SQL Academy PPI UK</h3>
+              <p class="card-desc">Instructing UK-based Indonesian students in advanced SQL and designing retail learning databases.</p>
+              <div class="card-tags">
+                <span class="tag">BigQuery</span><span class="tag">SQL Education</span><span class="tag">Mentorship</span>
+              </div>
+            </div>
+
           </div>
 
-          <div class="project-card" data-accent="2" data-categories="customer">
-            <div class="card-number">02</div>
-            <h3 class="card-title">End-to-End Analysis</h3>
-            <p class="card-desc">Multi-industry data pipelines — from raw data ingestion to actionable insights
-              dashboards.</p>
-            <div class="card-tags">
-              <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Analytics</span>
-            </div>
-            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
-          </div>
-
-          <div class="project-card" data-accent="3" data-categories="ml">
-            <div class="card-number">03</div>
-            <h3 class="card-title">Unsupervised Learning</h3>
-            <p class="card-desc">Clustering models for customer segmentation and anomaly detection using K-Means and
-              hierarchical methods.</p>
-            <div class="card-tags">
-              <span class="tag">Python</span><span class="tag">Scikit-learn</span><span class="tag">Clustering</span>
-            </div>
-            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
-          </div>
-
-          <div class="project-card" data-accent="1" data-categories="ml">
-            <div class="card-number">04</div>
-            <h3 class="card-title">Supervised Learning</h3>
-            <p class="card-desc">Predictive modelling with classification and regression — feature engineering, model
-              tuning, and evaluation.</p>
-            <div class="card-tags">
-              <span class="tag">Python</span><span class="tag">ML</span><span class="tag">XGBoost</span>
-            </div>
-            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
-          </div>
-
-          <div class="project-card" data-accent="2" data-categories="gen-ai">
-            <div class="card-number">05</div>
-            <h3 class="card-title">Generative AI</h3>
-            <p class="card-desc">LLM fine-tuning and Retrieval-Augmented Generation (RAG) pipelines for domain-specific
-              AI applications.</p>
-            <div class="card-tags">
-              <span class="tag">Python</span><span class="tag">LLM</span><span class="tag">RAG</span>
-            </div>
-            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
-          </div>
-
-          <div class="project-card" data-accent="3" data-categories="database">
-            <div class="card-number">06</div>
-            <h3 class="card-title">Database Engineering</h3>
-            <p class="card-desc">End-to-end database design — ERD modelling, normalization, and query optimization for
-              production systems.</p>
-            <div class="card-tags">
-              <span class="tag">SQL</span><span class="tag">PostgreSQL</span><span class="tag">ERD</span>
-            </div>
-            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
-          </div>
-
-          <div class="project-card" data-accent="1" data-categories="customer">
-            <div class="card-number">07</div>
-            <h3 class="card-title">A/B Testing</h3>
-            <p class="card-desc">Statistical hypothesis testing for product experiments — sample sizing, significance
-              testing, and business recommendations.</p>
-            <div class="card-tags">
-              <span class="tag">Python</span><span class="tag">Statistics</span><span class="tag">Analytics</span>
-            </div>
-            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
-          </div>
-
-          <div class="project-card" data-accent="2" data-categories="viz">
-            <div class="card-number">08</div>
-            <h3 class="card-title">Data Visualization</h3>
-            <p class="card-desc">Interactive dashboards and visual storytelling across Tableau, Power BI, and Looker
-              Studio.</p>
-            <div class="card-tags">
-              <span class="tag">Tableau</span><span class="tag">Power BI</span><span class="tag">Looker</span>
-            </div>
-            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
-          </div>
-
-          <div class="project-card" data-accent="3" data-categories="customer">
-            <div class="card-number">09</div>
-            <h3 class="card-title">Customer Behaviour</h3>
-            <p class="card-desc">9 side projects analysing customer behaviour — purchase patterns, retention, and
-              lifetime value modelling.</p>
-            <div class="card-tags">
-              <span class="tag">Python</span><span class="tag">Analytics</span><span class="tag">EDA</span>
-            </div>
-            <a href="#" class="card-link" target="_blank" rel="noopener">View Project →</a>
-          </div>
+          <button class="carousel-arrow next" id="carousel-next" aria-label="Next Projects">▶</button>
+          <div class="projects-page-indicator" id="projects-page-indicator"></div>
         </div>
       </div>
     </section>
@@ -540,14 +788,12 @@
   <div class="space-room" id="space-room">
     <div class="space-stars"></div>
     <div class="space-nav">
-      <div class="space-status">STATUS: <span style="color: #10b981;">DECRYPTED</span></div>
       <button class="close-space" id="close-space">⟵ WARP BACK</button>
     </div>
     <div class="space-scroll-container">
       <div class="space-timeline" id="space-timeline">
         <!-- Content injected via JS -->
       </div>
-      <div class="space-end">END OF LOGS.</div>
     </div>
     <!-- ====================== HOLOGRAM LIGHTBOX ====================== -->
     <div class="hologram-lightbox" id="hologram-lightbox">
@@ -572,7 +818,7 @@
     const educationData = `
         <div class="space-item space-title-item" data-z="0">
           <div class="scifi-title-hud floating-element">
-            <div class="scifi-icon">🎓</div>
+            <div class="scifi-icon lottie-container" id="lottie-space-education"></div>
             <h2 class="space-title">ACADEMIC ARCHIVES</h2>
             <div class="scifi-telemetry">
               <span>SYS: ONLINE</span>
@@ -584,7 +830,7 @@
         
         <div class="space-item" data-z="-3000">
           <img src="/foto/education/logo/cd3046da93de0b7a1db41a0d06021247.png" class="space-logo floating-element-delay" alt="Warwick">
-          <div class="photo-slideshow floating-element" data-gallery='[{"src":"/foto/education/warwick_academics/warwick_graduate.jpeg","caption":"Warwick Graduation Day"},{"src":"/foto/education/warwick_academics/warwick_graduate_2.jpeg","caption":"MSc Business Analytics — Merit Graduate"},{"src":"/foto/education/warwick_academics/business_cohort.jpeg","caption":"Business Analytics Cohort 2024/25"}]'>
+          <div class="photo-slideshow floating-element" data-gallery='[{"src":"/foto/education/warwick_academics/warwick_graduate.jpeg","caption":"Warwick Graduation Day"},{"src":"/foto/education/warwick_academics/warwick_graduate_2.jpeg","caption":"MSc Business Analytics Merit Graduate"},{"src":"/foto/education/warwick_academics/business_cohort.jpeg","caption":"Business Analytics Cohort 2024/25"}]'>
             <img src="/foto/education/warwick_academics/warwick_graduate.jpeg" class="slide-img active" alt="Warwick Graduate">
             <img src="/foto/education/warwick_academics/warwick_graduate_2.jpeg" class="slide-img" alt="Merit Graduate">
             <img src="/foto/education/warwick_academics/business_cohort.jpeg" class="slide-img" alt="BA Cohort">
@@ -594,9 +840,13 @@
             <span class="m-date">Sep 2024 – Sep 2025</span>
             <h3>University of Warwick</h3>
             <p class="m-role">MSc in Business Analytics, Merit Graduate</p>
-            <p class="m-desc">
-              Achieved Distinction and Merit in key analytical and application-based modules, including <strong>Generative AI, Advanced Data Analytics, Business Statistics, Advanced Analytics Models, Data Management, and Forecasting</strong>.
-            </p>
+            
+            <div class="m-desc-wrapper">
+  <p class="m-desc">
+                Achieved Distinction and Merit in key analytical and application-based modules, including <strong>Generative AI, Advanced Data Analytics, Business Statistics, Advanced Analytics Models, Data Management, and Forecasting</strong>.
+              </p>
+            </div>
+
           </div>
         </div>
 
@@ -605,7 +855,7 @@
             <img src="/foto/education/logo/cd3046da93de0b7a1db41a0d06021247.png" class="space-logo" alt="Warwick">
             <img src="/foto/education/logo/logo_lpdp.png" class="space-logo" alt="LPDP" style="margin-top: 1rem;">
           </div>
-          <div class="photo-slideshow floating-element-delay" data-gallery='[{"src":"/foto/education/warwick_highlights/hackathon_final.jpeg","caption":"Final Presentation — Gillmore Finance Hackathon"},{"src":"/foto/education/warwick_highlights/hackathon_cohort.jpeg","caption":"Indonesian Cohort at Gillmore Hackathon"},{"src":"/foto/education/warwick_highlights/sql_academy.jpeg","caption":"SQL Academy — PPI UK Education Initiative"},{"src":"/foto/education/warwick_highlights/lpdp.jpeg","caption":"LPDP Awardee PK 239"},{"src":"/foto/education/warwick_highlights/lpdp_2.jpeg","caption":"Indonesia Endowment Fund Scholars"}]'>
+          <div class="photo-slideshow floating-element-delay" data-gallery='[{"src":"/foto/education/warwick_highlights/hackathon_final.jpeg","caption":"Gillmore Finance Hackathon"},{"src":"/foto/education/warwick_highlights/hackathon_cohort.jpeg","caption":"Indonesian Cohort at Gillmore Hackathon"},{"src":"/foto/education/warwick_highlights/sql_academy.jpeg","caption":"SQL Academy PPI UK Education Initiative"},{"src":"/foto/education/warwick_highlights/lpdp.jpeg","caption":"LPDP Awardee PK 239"},{"src":"/foto/education/warwick_highlights/lpdp_2.jpeg","caption":"Indonesia Endowment Fund Scholars"}]'>
             <img src="/foto/education/warwick_highlights/hackathon_final.jpeg" class="slide-img active" alt="Hackathon">
             <img src="/foto/education/warwick_highlights/hackathon_cohort.jpeg" class="slide-img" alt="Cohort">
             <img src="/foto/education/warwick_highlights/sql_academy.jpeg" class="slide-img" alt="SQL Academy">
@@ -616,15 +866,19 @@
           <div class="space-card floating-element">
             <span class="m-date">Impact & Scholarships</span>
             <h3>Warwick Highlights</h3>
-            <p class="m-desc" style="margin-bottom: 0.5rem;">• Awardee of <strong>Indonesia Endowment Fund for Education Scholarship (LPDP PK 239)</strong>.</p>
-            <p class="m-desc" style="margin-bottom: 0.5rem;">• Participated in the <strong>Gillmore Hackathon</strong> with Warwick Enterprise.</p>
-            <p class="m-desc">• Contributed as an <strong>SQL educator</strong> for Indonesian students in the UK (SQL Academy PPI UK).</p>
+            
+            <div class="m-desc-wrapper">
+  <p class="m-desc" style="margin-bottom: 0.5rem;">• Awardee of <strong>Indonesia Endowment Fund for Education Scholarship (LPDP PK 239)</strong>.</p>
+              <p class="m-desc" style="margin-bottom: 0.5rem;">• Participated in the <strong>Gillmore Hackathon</strong> with Warwick Enterprise.</p>
+              <p class="m-desc">• Contributed as an <strong>SQL educator</strong> for Indonesian students in the UK (SQL Academy PPI UK).</p>
+            </div>
+
           </div>
         </div>
 
         <div class="space-item" data-z="-9000">
           <img src="/foto/education/logo/d6de52c739a28b78beef1f26acca7358.png" class="space-logo portal-logo floating-element-delay" alt="Telkom">
-          <div class="photo-slideshow floating-element" data-gallery='[{"src":"/foto/education/telkom_academic/telkom_graduate.jpg","caption":"Telkom University Graduation — Cum Laude"}]'>
+          <div class="photo-slideshow floating-element" data-gallery='[{"src":"/foto/education/telkom_academic/telkom_graduate.jpg","caption":"Cum Laude Graduate"}]'>
             <img src="/foto/education/telkom_academic/telkom_graduate.jpg" class="slide-img active" alt="Telkom Graduate">
             <span class="photo-caption">Cum Laude Graduate</span>
           </div>
@@ -632,14 +886,18 @@
             <span class="m-date">Aug 2017 – Aug 2021</span>
             <h3>Telkom University</h3>
             <p class="m-role">BSc in International ICT Business</p>
-            <p class="m-desc" style="margin-bottom: 0.5rem;">• <strong>3.68/4.00 GPA</strong> — Graduated with Cumlaude / Honours Predicate.</p>
-            <p class="m-desc">• Published national journal related to quantitative analysis.</p>
+            
+            <div class="m-desc-wrapper">
+  <p class="m-desc" style="margin-bottom: 0.5rem;">• <strong>3.68/4.00 GPA</strong> — Graduated with Cumlaude / Honours Predicate.</p>
+              <p class="m-desc">• Published national journal related to quantitative analysis.</p>
+            </div>
+
           </div>
         </div>
 
         <div class="space-item right-align" data-z="-12000">
           <img src="/foto/education/logo/logo_solbridge.png" class="space-logo portal-logo floating-element-delay" alt="Solbridge">
-          <div class="photo-slideshow floating-element-delay" data-gallery='[{"src":"/foto/education/telkom_highlights/solbridge_cultural.jpg","caption":"Cultural Festival Representative — South Korea"},{"src":"/foto/education/telkom_highlights/solbridge.jpg","caption":"Solbridge International School of Business"}]'>
+          <div class="photo-slideshow floating-element-delay" data-gallery='[{"src":"/foto/education/telkom_highlights/solbridge_cultural.jpg","caption":"Cultural Festival South Korea"},{"src":"/foto/education/telkom_highlights/solbridge.jpg","caption":"Solbridge International School of Business"}]'>
             <img src="/foto/education/telkom_highlights/solbridge_cultural.jpg" class="slide-img active" alt="Solbridge Cultural">
             <img src="/foto/education/telkom_highlights/solbridge.jpg" class="slide-img" alt="Solbridge">
             <span class="photo-caption">Cultural Festival, South Korea</span>
@@ -648,8 +906,12 @@
             <span class="m-date">2018 Global Exposure</span>
             <h3>Solbridge International School</h3>
             <p class="m-role">South Korea Exchange Program</p>
-            <p class="m-desc" style="margin-bottom: 0.5rem;">• Participant as Student Exchange in South Korea.</p>
-            <p class="m-desc">• Recipient of 2018 Internal Student Exchange Scholarship from Telkom University.</p>
+            
+            <div class="m-desc-wrapper">
+  <p class="m-desc" style="margin-bottom: 0.5rem;">• Participant as Student Exchange in South Korea.</p>
+              <p class="m-desc">• Recipient of 2018 Internal Student Exchange Scholarship from Telkom University.</p>
+            </div>
+
           </div>
         </div>
       `;
@@ -657,7 +919,7 @@
     const experienceData = `
       <div class="space-item space-title-item" data-z="0">
         <div class="scifi-title-hud floating-element">
-          <div class="scifi-icon">🚀</div>
+          <div class="scifi-icon lottie-container" id="lottie-space-experience"></div>
           <h2 class="space-title">PROFESSIONAL LOGS</h2>
           <div class="scifi-telemetry">
             <span>AUTH: VERIFIED</span>
@@ -670,7 +932,7 @@
       <!-- PROFESSIONAL: RAKAMIN -->
       <div class="space-item" data-z="-3000">
         <img src="/foto/expereince/logo rakamin.png" class="space-logo portal-logo floating-element" alt="Rakamin Logo">
-        <div class="photo-slideshow floating-element" data-gallery='[{"src":"/foto/expereince/professional_experience/rakamin/epdd_team_rakamin.jpeg","caption":"EPDD Team — Rakamin Academy"}]'>
+        <div class="photo-slideshow floating-element" data-gallery='[{"src":"/foto/expereince/professional_experience/rakamin/epdd_team_rakamin.jpeg","caption":"EPDD Team"}]'>
           <img src="/foto/expereince/professional_experience/rakamin/epdd_team_rakamin.jpeg" class="slide-img active" alt="Rakamin">
           <span class="photo-caption">EPDD Team</span>
         </div>
@@ -678,16 +940,20 @@
           <span class="m-date">Dec 2025 – Present</span>
           <h3>PT Rakamin Kolektif Madani</h3>
           <p class="m-role">Data Analyst — Freelance/Project-Based</p>
-          <p class="m-desc">• Collaborated with cross-functional teams (Consultants, PMs, BAs) to re-architect an end-to-end job matching pipeline using LLMs (JD generation → role alignment → skill extraction), enabling scalable talent mapping across 1,000+ roles for external clients like Paragon.</p>
-          <p class="m-desc">• Developed integrated analytics dashboards and automated reporting pipelines for recruitment and monitoring feature releases by writing complex PostgreSQL queries to extract and process over 100,000+ data points, reducing 80% manual workload across stakeholders, either internally or externally.</p>
-          <p class="m-desc">• Standardized the talent framework by translating 1,400+ Mercer skill definitions and redesigning JD generation from 12k Mercer roles, increasing matching accuracy while reducing LLM cost through a hybrid approach that balances performance and operational efficiency.</p>
+          
+            <div class="m-desc-wrapper">
+  <p class="m-desc">• Collaborated with cross-functional teams (Consultants, PMs, BAs) to re-architect an end-to-end job matching pipeline using LLMs (JD generation → role alignment → skill extraction), enabling scalable talent mapping across 1,000+ roles for external clients like Paragon.</p>
+            <p class="m-desc">• Developed integrated analytics dashboards and automated reporting pipelines for recruitment and monitoring feature releases by writing complex PostgreSQL queries to extract and process over 100,000+ data points, reducing 80% manual workload across stakeholders, either internally or externally.</p>
+            <p class="m-desc">• Standardized the talent framework by translating 1,400+ Mercer skill definitions and redesigning JD generation from 12k Mercer roles, increasing matching accuracy while reducing LLM cost through a hybrid approach that balances performance and operational efficiency.</p>
+            </div>
+
         </div>
       </div>
 
       <!-- PROFESSIONAL: REVOU TEAM LEAD -->
-      <div class="space-item right-align push-down-lg" data-z="-6000">
+      <div class="space-item right-align" data-z="-6000">
         <img src="/foto/expereince/logo revou.png" class="space-logo portal-logo floating-element-delay" alt="RevoU Logo">
-        <div class="photo-slideshow floating-element-delay" data-gallery='[{"src":"/foto/expereince/professional_experience/team_lead_revou/revou_teamlead.jpeg","caption":"Team Lead Session — RevoU"},{"src":"/foto/expereince/professional_experience/team_lead_revou/revou_teamlead_2.jpeg","caption":"RevoU Team Lead Session"},{"src":"/foto/expereince/professional_experience/team_lead_revou/revou_teamlead_3.jpeg","caption":"RevoU Team Lead Session"}]'>
+        <div class="photo-slideshow floating-element-delay" data-gallery='[{"src":"/foto/expereince/professional_experience/team_lead_revou/revou_teamlead.jpeg","caption":"RevoU Team Lead Session"},{"src":"/foto/expereince/professional_experience/team_lead_revou/revou_teamlead_2.jpeg","caption":"RevoU Team Lead Session"},{"src":"/foto/expereince/professional_experience/team_lead_revou/revou_teamlead_3.jpeg","caption":"RevoU Team Lead Session"}]'>
           <img src="/foto/expereince/professional_experience/team_lead_revou/revou_teamlead.jpeg" class="slide-img active" alt="RevoU TL">
           <img src="/foto/expereince/professional_experience/team_lead_revou/revou_teamlead_2.jpeg" class="slide-img" alt="RevoU TL 2">
           <img src="/foto/expereince/professional_experience/team_lead_revou/revou_teamlead_3.jpeg" class="slide-img" alt="RevoU TL 3">
@@ -697,17 +963,21 @@
           <span class="m-date">Sep 2023 – Aug 2024</span>
           <h3>PT Revolusi Cita Edukasi (RevoU)</h3>
           <p class="m-role">Team Lead — Full Stack Data Analytics Program</p>
-          <p class="m-desc">• Monitored daily and weekly student performance, conducting analyses on both academic and soft skills.</p>
-          <p class="m-desc">• Spearheaded the development of a new Tableau data visualization key answers through a dashboard adopted by over 400 students and mentors, lifting material satisfaction scores to 4.5/5.0.</p>
-          <p class="m-desc">• Managed the end-to-end project lifecycle for 60+ student data analysis projects with an average of 15 student projects per batch, acting as an internal consultant from scoping to final presentation, delivering predictive models and dashboards across 6+ industries.</p>
-          <p class="m-desc">• Led and mentored cohorts of 60+ students with an average of 13-15 students per batch, applying effective client/stakeholder management techniques to achieve a perfect 5.0/5.0 satisfaction rating consistently.</p>
+          
+            <div class="m-desc-wrapper">
+  <p class="m-desc">• Monitored daily and weekly student performance, conducting analyses on both academic and soft skills.</p>
+            <p class="m-desc">• Spearheaded the development of a new Tableau data visualization key answers through a dashboard adopted by over 400 students and mentors, lifting material satisfaction scores to 4.5/5.0.</p>
+            <p class="m-desc">• Managed the end-to-end project lifecycle for 60+ student data analysis projects with an average of 15 student projects per batch, acting as an internal consultant from scoping to final presentation, delivering predictive models and dashboards across 6+ industries.</p>
+            <p class="m-desc">• Led and mentored cohorts of 60+ students with an average of 13-15 students per batch, applying effective client/stakeholder management techniques to achieve a perfect 5.0/5.0 satisfaction rating consistently.</p>
+            </div>
+
         </div>
       </div>
 
       <!-- PROFESSIONAL: KALTIM METHANOL -->
-      <div class="space-item push-down" data-z="-9000">
+      <div class="space-item" data-z="-9000">
         <img src="/foto/expereince/logo kaltim methanol indsutri.jpg" class="space-logo portal-logo floating-element" alt="KMI Logo">
-        <div class="photo-slideshow floating-element" data-gallery='[{"src":"/foto/expereince/professional_experience/ict_and_mis_intern/site_visit(_kaltim_methanol).jpg","caption":"Site Visit — Kaltim Methanol Industri"},{"src":"/foto/expereince/professional_experience/ict_and_mis_intern/with_supervisor.jpg","caption":"With ICT Supervisor"}]'>
+        <div class="photo-slideshow floating-element" data-gallery='[{"src":"/foto/expereince/professional_experience/ict_and_mis_intern/site_visit(_kaltim_methanol).jpg","caption":"ICT & MIS Internship"},{"src":"/foto/expereince/professional_experience/ict_and_mis_intern/with_supervisor.jpg","caption":"With ICT Supervisor"}]'>
           <img src="/foto/expereince/professional_experience/ict_and_mis_intern/site_visit(_kaltim_methanol).jpg" class="slide-img active" alt="KMI">
           <img src="/foto/expereince/professional_experience/ict_and_mis_intern/with_supervisor.jpg" class="slide-img" alt="Supervisor">
           <span class="photo-caption">ICT & MIS Internship</span>
@@ -716,15 +986,19 @@
           <span class="m-date">Apr 2021 – May 2021</span>
           <h3>PT Kaltim Methanol Industri</h3>
           <p class="m-role">ICT and MIS Intern</p>
-          <p class="m-desc">• Developed a UI/UX prototype for a mobile-based Document Management System (DMS) and internal digital library, improving document storage and retrieval efficiency by up to 80%.</p>
-          <p class="m-desc">• Evaluated the existing system and identified four key improvement areas: interface design, accessibility, file archiving, and internal document tracking, providing technical recommendations for further development.</p>
+          
+            <div class="m-desc-wrapper">
+  <p class="m-desc">• Developed a UI/UX prototype for a mobile-based Document Management System (DMS) and internal digital library, improving document storage and retrieval efficiency by up to 80%.</p>
+            <p class="m-desc">• Evaluated the existing system and identified four key improvement areas: interface design, accessibility, file archiving, and internal document tracking, providing technical recommendations for further development.</p>
+            </div>
+
         </div>
       </div>
 
       <!-- PROJECT ARCHIVES SECTION -->
       <div class="space-item space-title-item" data-z="-12000">
         <div class="scifi-title-hud floating-element">
-          <div class="scifi-icon">📁</div>
+          <div class="scifi-icon lottie-container" id="lottie-space-project-archives"></div>
           <h2 class="space-title">PROJECT ARCHIVES</h2>
           <div class="scifi-telemetry">
             <span>DATABASE: ACCESSED</span>
@@ -740,21 +1014,25 @@
           <img src="/foto/expereince/project_experience/sql_academy/sql_academy.jpeg" class="slide-img active" alt="SQL Academy">
           <img src="/foto/expereince/project_experience/sql_academy/sql_academy_teaching_process.png" class="slide-img" alt="Teaching">
           <img src="/foto/expereince/project_experience/sql_academy/sql_academy_querey_process.png" class="slide-img" alt="Query">
-          <span class="photo-caption">SQL Academy — Education Impact</span>
+          <span class="photo-caption">SQL Academy Team</span>
         </div>
         <div class="space-card floating-element">
           <span class="m-date">May 2025 – July 2025</span>
           <h3>SQL Academy PPI UK</h3>
           <p class="m-role">SQL Instructor and Curriculum Developer</p>
-          <p class="m-desc">• Designed and delivered an Advanced SQL curriculum (covering CTEs, Window Functions, and business case studies) to 32 students across the UK, boosting technical proficiency by 80-90% and achieving a 4.5/5 average satisfaction rating.</p>
-          <p class="m-desc">• Authored curriculum, program development, and contributed to the refinement of 4 others in collaboration with a team of 5 senior data experts.</p>
-          <p class="m-desc">• Initiated and managed a daily mentoring system via WhatsApp and direct chat, improving learning effectiveness by 80% for active participants.</p>
+          
+            <div class="m-desc-wrapper">
+  <p class="m-desc">• Designed and delivered an Advanced SQL curriculum (covering CTEs, Window Functions, and business case studies) to 32 students across the UK, boosting technical proficiency by 80-90% and achieving a 4.5/5 average satisfaction rating.</p>
+            <p class="m-desc">• Authored curriculum, program development, and contributed to the refinement of 4 others in collaboration with a team of 5 senior data experts.</p>
+            <p class="m-desc">• Initiated and managed a daily mentoring system via WhatsApp and direct chat, improving learning effectiveness by 80% for active participants.</p>
+            </div>
+
         </div>
       </div>
 
       <!-- PROJECT: PK 239 -->
       <div class="space-item right-align" data-z="-18000">
-        <div class="photo-slideshow floating-element-delay" data-gallery='[{"src":"/foto/expereince/project_experience/head_of_database_pk_239/database_team.png","caption":"Head of Database — PK 239"}]'>
+        <div class="photo-slideshow floating-element-delay" data-gallery='[{"src":"/foto/expereince/project_experience/head_of_database_pk_239/database_team.png","caption":"PK 239 LPDP Database Team"}]'>
           <img src="/foto/expereince/project_experience/head_of_database_pk_239/database_team.png" class="slide-img active" alt="Database">
           <span class="photo-caption">PK 239 LPDP Database Team</span>
         </div>
@@ -762,16 +1040,20 @@
           <span class="m-date">Jun 2024 – Aug 2024</span>
           <h3>PK 239 LPDP</h3>
           <p class="m-role">Head of Database Management</p>
-          <p class="m-desc">• Directed a 5-member team to design and implement a centralized database system using Google Sheets for 316 participant records, resulting in a 70% increase in cross-divisional efficiency and achieving 100% data accuracy.</p>
-          <p class="m-desc">• Architected the database using a star schema model to effectively integrate and structure diverse participant data across five categories (demographics, employment, health, etc.).</p>
-          <p class="m-desc">• Automated the weekly data update workflow by integrating Google Form submissions into the master database, providing all divisions with real-time access to the latest information.</p>
+          
+            <div class="m-desc-wrapper">
+  <p class="m-desc">• Directed a 5-member team to design and implement a centralized database system using Google Sheets for 316 participant records, resulting in a 70% increase in cross-divisional efficiency and achieving 100% data accuracy.</p>
+            <p class="m-desc">• Architected the database using a star schema model to effectively integrate and structure diverse participant data across five categories (demographics, employment, health, etc.).</p>
+            <p class="m-desc">• Automated the weekly data update workflow by integrating Google Form submissions into the master database, providing all divisions with real-time access to the latest information.</p>
+            </div>
+
         </div>
       </div>
 
       <!-- PROJECT: REVOU ASSOCIATE -->
       <div class="space-item" data-z="-21000">
         <img src="/foto/expereince/logo revou.png" class="space-logo portal-logo floating-element" alt="RevoU Logo">
-        <div class="photo-slideshow floating-element" data-gallery='[{"src":"/foto/expereince/project_experience/data_analyst_associate/cdata_analyst_associate_certificate.jpg","caption":"RevoU Labs Program Certificate"},{"src":"/foto/expereince/project_experience/data_analyst_associate/data_analyst_associate_team.jpg","caption":"RevoU Data Analyst Associate Team"}]'>
+        <div class="photo-slideshow floating-element" data-gallery='[{"src":"/foto/expereince/project_experience/data_analyst_associate/cdata_analyst_associate_certificate.jpg","caption":"RevoU Data Analyst Associate"},{"src":"/foto/expereince/project_experience/data_analyst_associate/data_analyst_associate_team.jpg","caption":"RevoU Data Analyst Associate Team"}]'>
           <img src="/foto/expereince/project_experience/data_analyst_associate/cdata_analyst_associate_certificate.jpg" class="slide-img active" alt="Cert">
           <img src="/foto/expereince/project_experience/data_analyst_associate/data_analyst_associate_team.jpg" class="slide-img" alt="Team">
           <span class="photo-caption">RevoU Data Analyst Associate</span>
@@ -780,15 +1062,19 @@
           <span class="m-date">Jan 2023 – Apr 2023</span>
           <h3>PT Revolusi Cita Edukasi (RevoU)</h3>
           <p class="m-role">Data Analyst Associate — Apprenticeship (Remote)</p>
-          <p class="m-desc">• Designed and developed three interactive dashboards in Tableau for executive, managerial, and operational levels, visualizing over 300,000 retail data points to track core KPIs, including GMV, AOV, and customer retention.</p>
-          <p class="m-desc">• Conducted in-depth analyses (RFM, Funnel Analysis) and market basket analysis to diagnose the root cause of the GMV decline and identify key customer journey bottlenecks.</p>
-          <p class="m-desc">• Formulated strategic, data-driven recommendations (UX, promotion, and retention) for evaluating annual company performance, including revenue growth and app performance.</p>
+          
+            <div class="m-desc-wrapper">
+  <p class="m-desc">• Designed and developed three interactive dashboards in Tableau for executive, managerial, and operational levels, visualizing over 300,000 retail data points to track core KPIs, including GMV, AOV, and customer retention.</p>
+            <p class="m-desc">• Conducted in-depth analyses (RFM, Funnel Analysis) and market basket analysis to diagnose the root cause of the GMV decline and identify key customer journey bottlenecks.</p>
+            <p class="m-desc">• Formulated strategic, data-driven recommendations (UX, promotion, and retention) for evaluating annual company performance, including revenue growth and app performance.</p>
+            </div>
+
         </div>
       </div>
 
       <!-- PROJECT: BANSOS -->
       <div class="space-item right-align" data-z="-24000">
-        <div class="photo-slideshow floating-element-delay" data-gallery='[{"src":"/foto/expereince/project_experience/bansos/dashboard_overview_bansos.png","caption":"BANSOS Distribution Dashboard"}]'>
+        <div class="photo-slideshow floating-element-delay" data-gallery='[{"src":"/foto/expereince/project_experience/bansos/dashboard_overview_bansos.png","caption":"Bansos Dashboard Overview"}]'>
           <img src="/foto/expereince/project_experience/bansos/dashboard_overview_bansos.png" class="slide-img active" alt="Bansos">
           <span class="photo-caption">Bansos Dashboard Overview</span>
         </div>
@@ -796,12 +1082,53 @@
           <span class="m-date">Dec 2022 – Apr 2023</span>
           <h3>Kementerian Sosial Kabupaten Sukoharjo</h3>
           <p class="m-role">Bantuan Sosial Distribution Analyst</p>
-          <p class="m-desc">• Managed and transformed 1.5 million demographic and geospatial records of social aid recipients using Python and Tableau Prep, achieving 100% data accuracy aligned with Ministry of Social Affairs data.</p>
-          <p class="m-desc">• Developed two distinct monitoring dashboards: a Tableau dashboard for annual distribution analysis across 1 province and a Looker Studio dashboard for daily operational tracking in Sukoharjo Regency.</p>
-          <p class="m-desc">• Implemented a day-to-day distribution monitoring system for the Sukoharjo government, which was adopted by social services officials and increased monitoring effectiveness by 80%.</p>
+          
+            <div class="m-desc-wrapper">
+  <p class="m-desc">• Managed and transformed 1.5 million demographic and geospatial records of social aid recipients using Python and Tableau Prep, achieving 100% data accuracy aligned with Ministry of Social Affairs data.</p>
+            <p class="m-desc">• Developed two distinct monitoring dashboards: a Tableau dashboard for annual distribution analysis across 1 province and a Looker Studio dashboard for daily operational tracking in Sukoharjo Regency.</p>
+            <p class="m-desc">• Implemented a day-to-day distribution monitoring system for the Sukoharjo government, which was adopted by social services officials and increased monitoring effectiveness by 80%.</p>
+            </div>
+
         </div>
       </div>
     `;
+
+    function initSpaceLottie(portalId) {
+      if (typeof lottie === 'undefined') return;
+      if (portalId === 'portal-education') {
+        const container = document.getElementById('lottie-space-education');
+        if (container) {
+          lottie.loadAnimation({
+            container: container,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/foto/education/icon_education.json'
+          });
+        }
+      } else if (portalId === 'portal-experience') {
+        const container = document.getElementById('lottie-space-experience');
+        if (container) {
+          lottie.loadAnimation({
+            container: container,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/foto/expereince/icon experience.json'
+          });
+        }
+        const archivesContainer = document.getElementById('lottie-space-project-archives');
+        if (archivesContainer) {
+          lottie.loadAnimation({
+            container: archivesContainer,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/foto/expereince/icon project archives.json'
+          });
+        }
+      }
+    }
 
     document.querySelectorAll('.portal-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -813,8 +1140,10 @@
 
         if (portalId === 'portal-education') {
           body.innerHTML = educationData;
+          initSpaceLottie('portal-education');
         } else {
           body.innerHTML = experienceData;
+          initSpaceLottie('portal-experience');
         }
 
         // --- FLY-IN ANIMATION ---
@@ -827,9 +1156,19 @@
         // Trigger the Three.js starfield warp from the landing page!
         if (window.triggerWarp) window.triggerWarp();
 
-        // 1. Scale the portal up to swallow the camera
+        // 1. Scale the portal up to swallow the camera, translating it to center
         portalEl.style.zIndex = '9999';
+        const rect = portalEl.getBoundingClientRect();
+        const portalCenterX = rect.left + rect.width / 2;
+        const portalCenterY = rect.top + rect.height / 2;
+        const windowCenterX = window.innerWidth / 2;
+        const windowCenterY = window.innerHeight / 2;
+        const moveX = windowCenterX - portalCenterX;
+        const moveY = windowCenterY - portalCenterY;
+
         gsap.to(portalEl, {
+          x: moveX,
+          y: moveY,
           scale: 30,
           duration: 1.5,
           ease: "power2.in"
@@ -852,8 +1191,8 @@
             room.querySelector('.space-scroll-container').scrollTop = 0;
             if (window.updateSpaceRoom3D) window.updateSpaceRoom3D();
 
-            // Reset the portal scale silently behind the space room
-            gsap.set(portalEl, { scale: 1 });
+            // Reset the portal scale and translation silently behind the space room
+            gsap.set(portalEl, { scale: 1, x: 0, y: 0 });
             portalEl.style.zIndex = '';
             if (portalContent) portalContent.style.opacity = '1';
             if (hologram) hologram.style.opacity = '1';
@@ -887,6 +1226,11 @@
         onComplete: () => {
           room.classList.remove('active');
           if (window.startAllPortals) window.startAllPortals();
+
+          // Refresh ScrollTrigger to recalculate trigger boundaries
+          if (window.gsap && window.gsap.ScrollTrigger) {
+            window.gsap.ScrollTrigger.refresh();
+          }
 
           const allPortals = document.querySelectorAll('.magic-portal');
           gsap.fromTo(allPortals,
@@ -1088,6 +1432,11 @@
             room.classList.remove('active');
             if (window.startAllPortals) window.startAllPortals();
 
+            // Refresh ScrollTrigger to recalculate trigger boundaries before scrolling
+            if (window.gsap && window.gsap.ScrollTrigger) {
+              window.gsap.ScrollTrigger.refresh();
+            }
+
             const allPortals = document.querySelectorAll('.magic-portal');
             gsap.fromTo(allPortals,
               { scale: 0.8, opacity: 0 },
@@ -1109,43 +1458,20 @@
       });
     });
   </script>
+  <!-- ====================== PROJECT DETAILS DRAWER OVERLAY ====================== -->
+  <div class="details-drawer-overlay" id="details-drawer-overlay">
+    <div class="details-drawer-panel" id="details-drawer-panel">
+      <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close details">×</button>
+      <div class="drawer-content-body" id="drawer-content-body">
+        <!-- Injected dynamically via JS -->
+      </div>
+    </div>
+  </div>
 
+  <!-- Lottie Player CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
   <script type="module" src="/src/main.js"></script>
-  <!-- Project Filtering Logic -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const categoryCards = document.querySelectorAll('.category-card');
-      const projectCards = document.querySelectorAll('.project-card');
-
-      categoryCards.forEach(card => {
-        card.addEventListener('click', () => {
-          // Update active category
-          categoryCards.forEach(c => c.classList.remove('active'));
-          card.classList.add('active');
-
-          const filter = card.getAttribute('data-filter');
-
-          // Filter projects
-          projectCards.forEach(project => {
-            const categories = project.getAttribute('data-categories').split(' ');
-            if (filter === 'all' || categories.includes(filter)) {
-              project.style.display = 'block';
-              setTimeout(() => {
-                project.style.opacity = '1';
-                project.style.transform = 'scale(1)';
-              }, 10);
-            } else {
-              project.style.opacity = '0';
-              project.style.transform = 'scale(0.95)';
-              setTimeout(() => {
-                project.style.display = 'none';
-              }, 300);
-            }
-          });
-        });
-      });
-    });
-  </script>
+  <!-- Project Filtering Logic is managed inside main.js -->
 </body>
 
 </html>

@@ -35,3 +35,11 @@ npm-debug.log*
 cv_parsed.txt
 fakhri_portfolio_plan.md
 pdfminer_dummy.py
+
+# PRD and diagnostic files
+docs/prd/
+scripts/
+portfolio_extracted_text.txt
+prd_prompt.txt
+project_mockup.html
+portal/

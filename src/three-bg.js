@@ -10,6 +10,15 @@ let warpSpeed = 0;
 let stars = null;
 let starsMaterial = null;
 let camera = null;
+let isPaused = false;
+
+export function pauseThreeBackground() {
+  isPaused = true;
+}
+
+export function resumeThreeBackground() {
+  isPaused = false;
+}
 
 export function triggerWarp() {
   warpActive = true;
@@ -147,6 +156,7 @@ export function initThreeBackground() {
 
   function animate() {
     requestAnimationFrame(animate);
+    if (isPaused) return;
 
     const elapsed = clock.getElapsedTime();
     starsMaterial.uniforms.uTime.value = elapsed;

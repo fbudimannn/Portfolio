@@ -1,8 +1,20 @@
 import './style.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { initThreeBackground, triggerWarp } from './three-bg.js';
+import { initThreeBackground, triggerWarp, pauseThreeBackground, resumeThreeBackground } from './three-bg.js';
 import { initWarpTransition } from './warp-transition.js';
+import { projectsData } from './projectsData.js';
+
+// Import category hub Lottie JSONs as ESM modules
+import allProjectsLottie from './icon_project_archives.json';
+import customerBehaviorLottie from '../projects/Customer Behavior Analysis/customer behaviour analysis.json';
+import endToEndLottie from '../projects/END to end analysis/end to end analysis.json';
+import machineLearningLottie from '../projects/machine learning/machine learning.json';
+import appliedAiLottie from '../projects/Applied AI & Intelligent Systems/APPLIED AI AND INTELLIGENT.json';
+import databaseBuildingLottie from '../projects/Database Building/databasebuilding.json';
+import abTestingLottie from '../projects/AB Testing/ab testing.json';
+import dataVizLottie from '../projects/Data Visualization/dataviz.json';
+import impactProjectsLottie from '../projects/impac projects/impact.json';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeaderAnimations();
   initWarpTransition();
   initSpaceRoomScroll();
+  initLottieAnimations();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -674,6 +687,79 @@ function initTimelineAnimations() {
   });
 }
 
+/* ============ LIGHT MODE ACCENT COLORS ============ */
+const lightAccents = {
+  all: '#38bdf8',
+  customer: '#a855f7',
+  'end-to-end': '#3b82f6',
+  ml: '#0891b2',
+  ai: '#059669',
+  database: '#2563eb',
+  ab: '#db2777',
+  viz: '#0d9488',
+  impact: '#d97706'
+};
+
+/* ============ PROJECT IMAGES MAPPING ============ */
+const projectImages = {
+  rfm_segmentation: [
+    { src: '/projects/Customer Behavior Analysis/RFM SEGMETATION/SEGMENTATION OVERVIEW.png', caption: 'RFM Customer Segmentation Distribution Overview' },
+    { src: '/projects/Customer Behavior Analysis/RFM SEGMETATION/ANALYSIS OVERVIEW 1.png', caption: 'RFM Segmentation Analysis Overview 1' },
+    { src: '/projects/Customer Behavior Analysis/RFM SEGMETATION/ANALYSIS OVERVIEW 2.png', caption: 'RFM Segmentation Analysis Overview 2' },
+    { src: '/projects/Customer Behavior Analysis/RFM SEGMETATION/ANALYSIS OVERVIEW 3.png', caption: 'RFM Segmentation Analysis Overview 3' },
+    { src: '/projects/Customer Behavior Analysis/RFM SEGMETATION/ANALYSIS OVERVIEW 4.png', caption: 'RFM Segmentation Analysis Overview 4' }
+  ],
+  funnel_analysis: [
+    { src: '/projects/Customer Behavior Analysis/Funnel analysis/UI IMPROVEMENT OVERVEW.png', caption: 'UI/UX Improvement Recommendations' },
+    { src: '/projects/Customer Behavior Analysis/Funnel analysis/AANALYSIS OVERVEIW 1_FUNNELOVERVIEW.png', caption: 'Application Conversion Funnel Analysis' },
+    { src: '/projects/Customer Behavior Analysis/Funnel analysis/ANALYSIS OVERVIEW_FUNNEL OVERVIEW.png', caption: 'User Flow and Funnel Breakdown' },
+    { src: '/projects/Customer Behavior Analysis/Funnel analysis/ANALYSIS OVERVIEW_FUNNEL OVERVIEW 2.png', caption: 'Conversion and Exit Rates Analysis 2' },
+    { src: '/projects/Customer Behavior Analysis/Funnel analysis/ANALYSIS OVERVIEW_FUNNEL OVERVIEW 3.png', caption: 'Conversion and Exit Rates Analysis 3' },
+    { src: '/projects/Customer Behavior Analysis/Funnel analysis/ANALYSIS OVERVIEW_FUNNEL OVERVIEW 4.png', caption: 'Conversion and Exit Rates Analysis 4' }
+  ],
+  market_basket: [
+    { src: '/projects/Customer Behavior Analysis/Market basket analysis/glimpse of analysis overview 1.png', caption: 'Apriori Analysis Association Rules Overview 1' },
+    { src: '/projects/Customer Behavior Analysis/Market basket analysis/glimpse of analysis overview 2.png', caption: 'Apriori Analysis Association Rules Overview 2' },
+    { src: '/projects/Customer Behavior Analysis/Market basket analysis/glimpse of python script 1.png', caption: 'Python script executing Apriori algorithm 1' },
+    { src: '/projects/Customer Behavior Analysis/Market basket analysis/glimpse of python script 2.png', caption: 'Python script executing Apriori algorithm 2' }
+  ],
+  nyc_accident: [
+    { src: '/projects/END to end analysis/traffic/dashboard.png', caption: 'NYC Traffic Accident Interactive Tableau Dashboard' },
+    { src: '/projects/END to end analysis/traffic/analysis overview 1.png', caption: 'Accident Analysis Overview 1' },
+    { src: '/projects/END to end analysis/traffic/analysis overview 2.png', caption: 'Accident Analysis Overview 2' },
+    { src: '/projects/END to end analysis/traffic/analysis overview 3.png', caption: 'Accident Analysis Overview 3' },
+    { src: '/projects/END to end analysis/traffic/analysis overview 4.png', caption: 'Accident Analysis Overview 4' },
+    { src: '/projects/END to end analysis/traffic/analysis overview 5.png', caption: 'Accident Analysis Overview 5' },
+    { src: '/projects/END to end analysis/traffic/analysis overview 6.png', caption: 'Accident Analysis Overview 6' },
+    { src: '/projects/END to end analysis/traffic/analysis overview 7.png', caption: 'Accident Analysis Overview 7' },
+    { src: '/projects/END to end analysis/traffic/analysis overview 8.png', caption: 'Accident Analysis Overview 8' },
+    { src: '/projects/END to end analysis/traffic/analysis overview 9.png', caption: 'Accident Analysis Overview 9' },
+    { src: '/projects/END to end analysis/traffic/TEAM GROUP N.png', caption: 'Project Team Group' }
+  ],
+  kemensos_bansos: [
+    { src: '/projects/impac projects/bansos/province level tableau.png', caption: 'Province Level Social Aid Distribution Map in Tableau' },
+    { src: '/projects/impac projects/bansos/district level looker.png', caption: 'District Level Daily Operational Tracker in Looker Studio' },
+    { src: '/projects/impac projects/bansos/data cleaning ang mainpulation with python.png', caption: 'Python Pandas Data Cleaning Script' },
+    { src: '/projects/impac projects/bansos/Data cleaning and manipulation with spreadsheet.png', caption: 'Spreadsheet Preprocessing' },
+    { src: '/projects/impac projects/bansos/gambar kabpuaten sukoharjo.jpg', caption: 'Sukoharjo Regency Administrative Area Map' },
+    { src: '/projects/impac projects/bansos/foto mas deri afianto.png', caption: 'Collaborative session with Sukoharjo Social Affairs Official Deri Afianto' }
+  ],
+  lpdp_pk239: [
+    { src: '/projects/impac projects/pk 239/sipatuo sipatokong logo pk 239.png', caption: 'LPDP PK 239 Logo & Identity' },
+    { src: '/projects/impac projects/pk 239/ERD and database.png', caption: 'Star Schema Relational ERD Database Design' },
+    { src: '/projects/impac projects/pk 239/Table and functions usage 1.png', caption: 'Google Sheets Automated Query Tables 1' },
+    { src: '/projects/impac projects/pk 239/Table and functions usage 2.png', caption: 'Google Sheets Automated Query Tables 2' },
+    { src: '/projects/impac projects/pk 239/database team ( aku yang pojok kiri duduk) klo bisa ga usah di tampilin as main image cuman optional page aja atua gimana.png', caption: 'LPDP PK 239 Database Management Team' }
+  ],
+  sql_academy: [
+    { src: '/projects/impac projects/SQL ACADEMY/ppi uk.png', caption: 'PPI UK Education Initiative SQL Academy' },
+    { src: '/projects/impac projects/SQL ACADEMY/SQL ACADEMY PROGRAM TEAM.png', caption: 'SQL Academy Instructor and Developer Team' },
+    { src: '/projects/impac projects/SQL ACADEMY/teaching.png', caption: 'Interactive Teaching Session' },
+    { src: '/projects/impac projects/SQL ACADEMY/erd database.png', caption: 'Retail-Based Learning Database ERD Schema' },
+    { src: '/projects/impac projects/SQL ACADEMY/bigquery highlight.png', caption: 'Google BigQuery Live Demonstration' }
+  ]
+};
+
 /* ============ PROJECT CARDS ============ */
 function initProjectCards() {
   gsap.from('#projects-header', {
@@ -681,16 +767,241 @@ function initProjectCards() {
     scrollTrigger: { trigger: '#projects', start: 'top 80%' }
   });
 
-  // Cards stagger in
-  gsap.from('.project-card', {
-    y: 80, opacity: 0, duration: 0.6,
-    stagger: 0.1,
-    ease: 'back.out(1.4)',
-    scrollTrigger: { trigger: '.projects-grid', start: 'top 80%' }
+  // Stagger category cards in
+  gsap.from('.category-card', {
+    y: 30, opacity: 0, duration: 0.5,
+    stagger: 0.05,
+    ease: 'power2.out',
+    scrollTrigger: { trigger: '.project-categories', start: 'top 85%' }
   });
 
-  // 3D tilt on hover
-  document.querySelectorAll('.project-card').forEach(card => {
+  // Animate the projects carousel wrapper as a whole to prevent card hover/parallax scrolling bugs
+  gsap.from('.projects-carousel-wrapper', {
+    y: 50, opacity: 0, duration: 0.8,
+    ease: 'power2.out',
+    scrollTrigger: { trigger: '.projects-carousel-wrapper', start: 'top 85%' }
+  });
+
+  // ─── CAROUSEL & PAGINATION STATE ───
+  const carousel = document.getElementById('projects-carousel-container');
+  const prevBtn = document.getElementById('carousel-prev');
+  const nextBtn = document.getElementById('carousel-next');
+  const categoryCards = document.querySelectorAll('.category-card');
+  const projectCards = document.querySelectorAll('.project-card');
+  const pageIndicator = document.getElementById('projects-page-indicator');
+
+  let activeCategory = 'all';
+  let currentPage = 1;
+  let projectsPerPage = 9;
+
+  function updateProjectsPerPage() {
+    if (window.innerWidth <= 600) {
+      projectsPerPage = 3;
+    } else if (window.innerWidth <= 950) {
+      projectsPerPage = 6;
+    } else {
+      projectsPerPage = 9;
+    }
+  }
+
+  // Update on resize
+  window.addEventListener('resize', () => {
+    const oldPerPage = projectsPerPage;
+    updateProjectsPerPage();
+    if (oldPerPage !== projectsPerPage) {
+      currentPage = 1;
+      renderFilteredProjects(false);
+    }
+  });
+
+  // Call initially
+  updateProjectsPerPage();
+
+  // ─── PAGINATED RENDER ENGINE ───
+  function renderFilteredProjects(animate = true) {
+    if (!carousel) return;
+
+    const performUpdate = () => {
+      const filtered = Array.from(projectCards).filter(project => {
+        const categories = project.getAttribute('data-categories').split(' ');
+        return activeCategory === 'all' || categories.includes(activeCategory);
+      });
+
+      if (activeCategory === 'all') {
+        carousel.classList.add('grid-layout');
+        carousel.parentElement.classList.add('grid-active');
+      } else {
+        carousel.classList.remove('grid-layout');
+        carousel.parentElement.classList.remove('grid-active');
+      }
+
+      if (activeCategory === 'all') {
+        const totalPages = Math.ceil(filtered.length / projectsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * projectsPerPage;
+        const endIndex = currentPage * projectsPerPage;
+        const visible = filtered.slice(startIndex, endIndex);
+
+        projectCards.forEach(project => {
+          const isVisible = visible.includes(project);
+          if (isVisible) {
+            project.style.display = 'flex';
+            project.style.opacity = '1';
+            project.style.transform = 'scale(1)';
+          } else {
+            project.style.display = 'none';
+            project.style.opacity = '0';
+            project.style.transform = 'scale(0.95)';
+          }
+        });
+
+        if (pageIndicator) {
+          pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+        }
+        updateArrowStatesGrid(currentPage, totalPages);
+      } else {
+        projectCards.forEach(project => {
+          const isMatch = filtered.includes(project);
+          if (isMatch) {
+            project.style.display = 'flex';
+            project.style.opacity = '1';
+            project.style.transform = 'scale(1)';
+          } else {
+            project.style.display = 'none';
+            project.style.opacity = '0';
+            project.style.transform = 'scale(0.95)';
+          }
+        });
+
+        carousel.scrollLeft = 0;
+        updateArrowStatesCarousel();
+      }
+    };
+
+    if (animate) {
+      gsap.to(carousel, {
+        opacity: 0,
+        duration: 0.15,
+        onComplete: () => {
+          performUpdate();
+          gsap.to(carousel, {
+            opacity: 1,
+            duration: 0.3,
+            ease: 'power2.out'
+          });
+        }
+      });
+    } else {
+      performUpdate();
+      carousel.style.opacity = '1';
+    }
+  }
+
+  function updateArrowStatesGrid(page, total) {
+    if (page <= 1) {
+      if (prevBtn) prevBtn.classList.add('disabled');
+    } else {
+      if (prevBtn) prevBtn.classList.remove('disabled');
+    }
+
+    if (page >= total) {
+      if (nextBtn) nextBtn.classList.add('disabled');
+    } else {
+      if (nextBtn) nextBtn.classList.remove('disabled');
+    }
+  }
+
+  function updateArrowStatesCarousel() {
+    if (!carousel) return;
+    const scrollLeft = carousel.scrollLeft;
+    const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+
+    if (maxScrollLeft <= 5) {
+      if (prevBtn) prevBtn.classList.add('disabled');
+      if (nextBtn) nextBtn.classList.add('disabled');
+      return;
+    }
+
+    if (scrollLeft <= 5) {
+      if (prevBtn) prevBtn.classList.add('disabled');
+    } else {
+      if (prevBtn) prevBtn.classList.remove('disabled');
+    }
+
+    if (scrollLeft >= maxScrollLeft - 5) {
+      if (nextBtn) nextBtn.classList.add('disabled');
+    } else {
+      if (nextBtn) nextBtn.classList.remove('disabled');
+    }
+  }
+
+  // ─── CAROUSEL BUTTONS CLICK EVENTS ───
+  if (carousel && prevBtn && nextBtn) {
+    const scrollAmount = 374; // 350px card width + 24px gap
+
+    nextBtn.addEventListener('click', () => {
+      if (activeCategory === 'all') {
+        const filtered = Array.from(projectCards);
+        const totalPages = Math.ceil(filtered.length / projectsPerPage);
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderFilteredProjects(true);
+        }
+      } else {
+        carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (activeCategory === 'all') {
+        if (currentPage > 1) {
+          currentPage--;
+          renderFilteredProjects(true);
+        }
+      } else {
+        carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      }
+    });
+
+    carousel.addEventListener('scroll', () => {
+      if (activeCategory === 'all') return;
+      updateArrowStatesCarousel();
+    });
+
+    // Touch Swipe/Drag Scrolling Support (disabled in grid layout mode)
+    let isDown = false;
+    let startX;
+    let scrollLeftVal;
+
+    carousel.addEventListener('mousedown', (e) => {
+      if (activeCategory === 'all') return;
+      if (e.target.closest('a') || e.target.closest('button')) return;
+      isDown = true;
+      startX = e.pageX - carousel.offsetLeft;
+      scrollLeftVal = carousel.scrollLeft;
+    });
+
+    carousel.addEventListener('mouseleave', () => {
+      isDown = false;
+    });
+
+    carousel.addEventListener('mouseup', () => {
+      isDown = false;
+    });
+
+    carousel.addEventListener('mousemove', (e) => {
+      if (!isDown || activeCategory === 'all') return;
+      e.preventDefault();
+      const x = e.pageX - carousel.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      carousel.scrollLeft = scrollLeftVal - walk;
+    });
+  }
+
+  // ─── 3D TILT ON HOVER ───
+  projectCards.forEach(card => {
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5;
@@ -712,6 +1023,364 @@ function initProjectCards() {
         ease: 'elastic.out(1, 0.5)',
       });
     });
+
+    // ─── CLICK TO OPEN DETAILS DRAWER ───
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('a') || e.target.closest('button')) return;
+
+      const projectId = card.getAttribute('data-id');
+      const proj = projectsData[projectId];
+      if (!proj) return;
+
+      openProjectDetails(projectId, proj);
+    });
+  });
+
+  // ─── DETAILS PANEL DRAWER CLOSE TRIGGERS ───
+  const overlay = document.getElementById('details-drawer-overlay');
+  const panel = document.getElementById('details-drawer-panel');
+  const closeBtn = document.getElementById('drawer-close-btn');
+
+  if (overlay && panel && closeBtn) {
+    closeBtn.addEventListener('click', closeProjectDetails);
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        closeProjectDetails();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('active')) {
+        closeProjectDetails();
+      }
+    });
+  }
+
+  // ─── CATEGORY FILTER HUB TRIGGERS ───
+  categoryCards.forEach(card => {
+    card.addEventListener('click', () => {
+      // Update active category
+      categoryCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+
+      activeCategory = card.getAttribute('data-filter');
+      currentPage = 1; // Reset to page 1
+      renderFilteredProjects(true);
+    });
+  });
+
+  // ─── INITIAL RENDER ───
+  renderFilteredProjects(false);
+}
+
+/* ============ OPEN DETAILS DRAWER DETAILS ============ */
+function openProjectDetails(id, proj) {
+  const overlay = document.getElementById('details-drawer-overlay');
+  const panel = document.getElementById('details-drawer-panel');
+  const content = document.getElementById('drawer-content-body');
+
+  if (!overlay || !panel || !content) return;
+
+  // Determine light mode accent color
+  const filterKey = proj.category.toLowerCase().replace(/\s+/g, '-');
+  const accentColor = lightAccents[filterKey] || '#111827';
+  panel.style.setProperty('--accent-color-light', accentColor);
+
+  let html = '';
+  const images = projectImages[id] || [];
+
+  // Generate media HTML for image slideshow
+  let mediaHtml = '';
+  if (images.length > 0) {
+    mediaHtml = `
+      <div class="detail-section">
+        <h3 class="detail-section-title">Analysis & Visual Overview</h3>
+        <div class="drawer-slideshow">
+          ${images.map((img, idx) => `
+            <img src="${img.src}" class="${idx === 0 ? 'active' : ''}" alt="${img.caption || ''}" data-idx="${idx}" />
+          `).join('')}
+          ${images.length > 1 ? `
+            <button class="drawer-slideshow-prev" id="drawer-slide-prev">◀</button>
+            <button class="drawer-slideshow-next" id="drawer-slide-next">▶</button>
+          ` : ''}
+          <div class="drawer-slideshow-caption" id="drawer-slide-caption">
+            ${images[0].caption || ''}
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    mediaHtml = `
+      <div class="detail-section">
+        <h3 class="detail-section-title">Visual Dashboard Overview</h3>
+        <div class="detail-image-box">
+          <div class="detail-image-icon">📊</div>
+          <strong>Dashboard Screenshot & Layout Details</strong>
+          <span>[Visualization file to be connected in final production]</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Choose structure
+  if (proj.structure === 3) {
+    // STRUCTURE 3: Technical/Others
+    html = `
+      <div class="detail-header">
+        <span class="detail-category-badge" style="background-color: ${accentColor}">${proj.category}</span>
+        <h2 class="detail-title">${proj.title}</h2>
+        <div class="detail-meta-grid">
+          <div class="detail-meta-item"><strong>Client / Context</strong><span>${proj.client || 'N/A'}</span></div>
+          <div class="detail-meta-item"><strong>Timeline</strong><span>${proj.timeline || 'N/A'}</span></div>
+          <div class="detail-meta-item"><strong>Role</strong><span>${proj.role || 'N/A'}</span></div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Case Overview</h3>
+        <div class="detail-desc-text"><p>${proj.caseOverview}</p></div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Scope & Goals</h3>
+        <div class="detail-desc-text"><p>${proj.scopeGoals}</p></div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Summary</h3>
+        <div class="detail-desc-text"><p>${proj.summary}</p></div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Tools & Technologies</h3>
+        <div class="detail-tools-container">
+          ${proj.tools ? proj.tools.map(tool => `<span class="detail-tool-badge">${tool}</span>`).join('') : ''}
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Methodology</h3>
+        <div class="detail-methodology-timeline">
+          ${proj.methodology ? proj.methodology.map(step => `
+            <div class="detail-method-step">
+              <div class="detail-method-step-title">${step.title}</div>
+              <div class="detail-method-step-desc">${step.desc}</div>
+            </div>
+          `).join('') : ''}
+        </div>
+      </div>
+
+      ${mediaHtml}
+
+      <div class="detail-action-links">
+        ${proj.githubLink ? `<a href="${proj.githubLink}" target="_blank" class="detail-btn-action detail-btn-action-primary">View GitHub Repo</a>` : ''}
+        ${proj.liveLink ? `<a href="${proj.liveLink}" target="_blank" class="detail-btn-action detail-btn-action-secondary">Live Demo / Deck</a>` : ''}
+      </div>
+    `;
+  } else if (proj.structure === 2) {
+    // STRUCTURE 2: Data Visualization
+    html = `
+      <div class="detail-header">
+        <span class="detail-category-badge" style="background-color: ${accentColor}">${proj.category}</span>
+        <h2 class="detail-title">${proj.title}</h2>
+        <div class="detail-meta-grid">
+          <div class="detail-meta-item"><strong>Client / Context</strong><span>${proj.client || 'N/A'}</span></div>
+          <div class="detail-meta-item"><strong>Timeline</strong><span>${proj.timeline || 'N/A'}</span></div>
+          <div class="detail-meta-item"><strong>Role</strong><span>${proj.role || 'N/A'}</span></div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Project Description</h3>
+        <div class="detail-desc-text"><p>${proj.description}</p></div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Tools & BI Suite</h3>
+        <div class="detail-tools-container">
+          ${proj.tools ? proj.tools.map(tool => `<span class="detail-tool-badge">${tool}</span>`).join('') : ''}
+        </div>
+      </div>
+
+      ${mediaHtml}
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Dashboard Pages & Purpose</h3>
+        <div style="margin-top: 1.5rem;">
+          ${proj.pages ? proj.pages.map((page, idx) => `
+            <div class="detail-viz-page-box">
+              <span class="detail-viz-page-num">PAGE 0${idx + 1}</span>
+              <div class="detail-viz-page-name">${page.name}</div>
+              <div class="detail-viz-page-purpose">${page.purpose}</div>
+            </div>
+          `).join('') : ''}
+        </div>
+      </div>
+
+      <div class="detail-action-links">
+        ${proj.liveLink ? `<a href="${proj.liveLink}" target="_blank" class="detail-btn-action detail-btn-action-primary">Open Interactive Dashboard</a>` : ''}
+      </div>
+    `;
+  } else if (proj.structure === 1) {
+    // STRUCTURE 1: Impact Projects
+    html = `
+      <div class="detail-header">
+        <span class="detail-category-badge" style="background-color: ${accentColor}">${proj.category}</span>
+        <h2 class="detail-title">${proj.title}</h2>
+        <div class="detail-meta-grid">
+          <div class="detail-meta-item"><strong>Organization</strong><span>${proj.client || 'N/A'}</span></div>
+          <div class="detail-meta-item"><strong>Timeline</strong><span>${proj.timeline || 'N/A'}</span></div>
+          <div class="detail-meta-item"><strong>Role</strong><span>${proj.role || 'N/A'}</span></div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Project Overview</h3>
+        <div class="detail-desc-text"><p>${proj.overviewText}</p></div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Key Impact & Outcomes</h3>
+        <div class="detail-desc-text"><p>${proj.impactText}</p></div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Client Testimonial</h3>
+        <div class="detail-testimonial-box">
+          <p>${proj.quoteText}</p>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3 class="detail-section-title">Tools & Databases</h3>
+        <div class="detail-tools-container">
+          ${proj.tools ? proj.tools.map(tool => `<span class="detail-tool-badge">${tool}</span>`).join('') : ''}
+        </div>
+      </div>
+
+      ${mediaHtml}
+
+      <div class="detail-action-links">
+        ${proj.links ? proj.links.map(link => `
+          <a href="${link.url}" target="_blank" class="detail-btn-action detail-btn-action-primary">${link.label}</a>
+        `).join('') : ''}
+      </div>
+    `;
+  }
+
+  content.innerHTML = html;
+
+  // Bind slideshow events inside the drawer if there are multiple images
+  if (images.length > 1) {
+    let activeIdx = 0;
+    const slideImgs = panel.querySelectorAll('.drawer-slideshow img');
+    const prevBtn = panel.querySelector('#drawer-slide-prev');
+    const nextBtn = panel.querySelector('#drawer-slide-next');
+    const captionEl = panel.querySelector('#drawer-slide-caption');
+
+    const updateSlides = (newIdx) => {
+      slideImgs[activeIdx].classList.remove('active');
+      slideImgs[newIdx].classList.add('active');
+      activeIdx = newIdx;
+      if (captionEl && images[activeIdx]) {
+        captionEl.textContent = images[activeIdx].caption || '';
+      }
+    };
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const newIdx = (activeIdx - 1 + images.length) % images.length;
+        updateSlides(newIdx);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const newIdx = (activeIdx + 1) % images.length;
+        updateSlides(newIdx);
+      });
+    }
+
+    // Zoom lightbox for drawer images on click
+    slideImgs.forEach((img) => {
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const lightbox = document.getElementById('hologram-lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        const lbCaption = document.getElementById('lightbox-caption');
+        if (lightbox && lbImg) {
+          lbImg.src = img.src;
+          if (lbCaption) lbCaption.textContent = img.alt || '';
+          lightbox.classList.add('active');
+        }
+      });
+    });
+  } else if (images.length === 1) {
+    const singleImg = panel.querySelector('.drawer-slideshow img');
+    if (singleImg) {
+      singleImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const lightbox = document.getElementById('hologram-lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        const lbCaption = document.getElementById('lightbox-caption');
+        if (lightbox && lbImg) {
+          lbImg.src = singleImg.src;
+          if (lbCaption) lbCaption.textContent = singleImg.alt || '';
+          lightbox.classList.add('active');
+        }
+      });
+    }
+  }
+
+  // Suspend heavy Three.js animation rendering loop
+  pauseThreeBackground();
+
+  // Slide-in animation using GSAP
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  gsap.set(panel, { xPercent: 100 });
+  gsap.to(overlay, { opacity: 1, duration: 0.3 });
+  gsap.to(panel, { 
+    xPercent: 0, 
+    duration: 0.5, 
+    ease: 'power3.out',
+    onComplete: () => {
+      // Clear transform to prevent browser sub-pixel rendering blur!
+      gsap.set(panel, { clearProps: 'transform' });
+    }
+  });
+}
+
+/* ============ CLOSE DETAILS DRAWER ============ */
+function closeProjectDetails() {
+  const overlay = document.getElementById('details-drawer-overlay');
+  const panel = document.getElementById('details-drawer-panel');
+
+  if (!overlay || !panel) return;
+
+  // Restore transform state before animating close
+  gsap.set(panel, { xPercent: 0 });
+
+  gsap.to(panel, {
+    xPercent: 100,
+    duration: 0.4,
+    ease: 'power3.in',
+    onComplete: () => {
+      gsap.to(overlay, {
+        opacity: 0,
+        duration: 0.2,
+        onComplete: () => {
+          overlay.classList.remove('active');
+          document.body.style.overflow = '';
+          // Resume background Three.js loop
+          resumeThreeBackground();
+        }
+      });
+    }
   });
 }
 
@@ -1055,6 +1724,9 @@ function initSpaceRoomScroll() {
 
   // Intercept all wheel events and convert them to virtual scroll movement
   container.addEventListener('wheel', (e) => {
+    if (e.target.closest('.m-desc-wrapper')) {
+      return; // Allow natural scrolling inside the text card description
+    }
     e.preventDefault(); // Stop native scrolling
     
     // Normalize wheel delta (differs between Windows/Mac and mouse/trackpad)
@@ -1074,6 +1746,9 @@ function initSpaceRoomScroll() {
   }, { passive: true });
 
   container.addEventListener('touchmove', (e) => {
+    if (e.target.closest('.m-desc-wrapper')) {
+      return; // Allow natural touch scrolling inside the text card description
+    }
     e.preventDefault();
     const touchY = e.touches[0].clientY;
     const delta = touchStartY - touchY;
@@ -1160,4 +1835,111 @@ function initHeaderAnimations() {
       }
     });
   });
+}
+
+/* ============ LOTTIE ANIMATIONS ============ */
+function initLottieAnimations() {
+  const eduContainer = document.getElementById('lottie-education');
+  if (eduContainer && typeof lottie !== 'undefined') {
+    lottie.loadAnimation({
+      container: eduContainer,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: '/foto/education/icon_education.json'
+    });
+  }
+
+  const expContainer = document.getElementById('lottie-experience');
+  if (expContainer && typeof lottie !== 'undefined') {
+    lottie.loadAnimation({
+      container: expContainer,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: '/foto/expereince/icon experience.json'
+    });
+  }
+
+  // Load category hub Lottie animations next to filters
+  const categoryLotties = {
+    all: allProjectsLottie,
+    customer: customerBehaviorLottie,
+    'end-to-end': endToEndLottie,
+    ml: machineLearningLottie,
+    ai: appliedAiLottie,
+    database: databaseBuildingLottie,
+    ab: abTestingLottie,
+    viz: dataVizLottie,
+    impact: impactProjectsLottie
+  };
+
+  Object.keys(categoryLotties).forEach(key => {
+    const container = document.getElementById(`lottie-cat-${key}`);
+    if (container && typeof lottie !== 'undefined') {
+      // Deep clone to prevent mutating read-only module imports
+      const clonedLottie = JSON.parse(JSON.stringify(categoryLotties[key]));
+      makeLottieColorsBright(clonedLottie);
+
+      const anim = lottie.loadAnimation({
+        container: container,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        animationData: clonedLottie
+      });
+
+      // Special handling for Customer Behaviour to keep the person visible and prevent entry/exit fading
+      if (key === 'customer') {
+        anim.addEventListener('DOMLoaded', () => {
+          const totalFrames = anim.totalFrames;
+          const startFrame = Math.floor(totalFrames * 0.15);
+          const endFrame = Math.floor(totalFrames * 0.65);
+          anim.playSegments([startFrame, endFrame], true);
+        });
+      }
+    }
+  });
+}
+
+/**
+ * Recursive function to replace dark colors in Lottie JSONs with bright white
+ * to ensure high contrast against the dark background theme.
+ */
+function makeLottieColorsBright(obj) {
+  if (!obj || typeof obj !== 'object') return;
+  
+  if (obj.c && obj.c.k) {
+    const k = obj.c.k;
+    if (Array.isArray(k) && typeof k[0] === 'number') {
+      if (k[0] < 0.3 && k[1] < 0.3 && k[2] < 0.3) {
+        k[0] = 1;
+        k[1] = 1;
+        k[2] = 1;
+      }
+    } else if (Array.isArray(k)) {
+      k.forEach(keyframe => {
+        if (keyframe.s && Array.isArray(keyframe.s)) {
+          if (keyframe.s[0] < 0.3 && keyframe.s[1] < 0.3 && keyframe.s[2] < 0.3) {
+            keyframe.s[0] = 1;
+            keyframe.s[1] = 1;
+            keyframe.s[2] = 1;
+          }
+        }
+        if (keyframe.e && Array.isArray(keyframe.e)) {
+          if (keyframe.e[0] < 0.3 && keyframe.e[1] < 0.3 && keyframe.e[2] < 0.3) {
+            keyframe.e[0] = 1;
+            keyframe.e[1] = 1;
+            keyframe.e[2] = 1;
+          }
+        }
+      });
+    }
+  }
+  
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      makeLottieColorsBright(obj[key]);
+    }
+  }
 }
