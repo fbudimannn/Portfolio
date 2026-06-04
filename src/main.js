@@ -1,9 +1,13 @@
 import './style.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import lottie from 'lottie-web';
 import { initThreeBackground, triggerWarp, pauseThreeBackground, resumeThreeBackground } from './three-bg.js';
 import { initWarpTransition } from './warp-transition.js';
 import { projectsData } from './projectsData.js';
+
+// Expose Lottie globally to support inline scripts (e.g. index.html)
+window.lottie = lottie;
 
 // Import category hub Lottie JSONs as ESM modules
 import allProjectsLottie from './icon_project_archives.json';

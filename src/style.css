@@ -1944,7 +1944,7 @@ img.simple-icon {
 .category-card span {
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.85); /* Increased contrast from 0.6 */
   transition: color 0.3s;
   white-space: nowrap;
 }
@@ -1974,6 +1974,7 @@ img.simple-icon {
 .category-icon-anim {
   width: 64px;
   height: 64px;
+  flex: 0 0 64px; /* Lock size to 64px and prevent shrinking/collapsing in flex layout */
   display: flex;
   align-items: center;
   justify-content: center;
