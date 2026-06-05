@@ -400,6 +400,9 @@ function animateHeroEntrance() {
       if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.refresh();
       }
+      if (typeof window.showPdfPopup === 'function') {
+        window.showPdfPopup();
+      }
     }
   });
 
@@ -2271,10 +2274,12 @@ function initPdfPopup() {
     return;
   }
 
-  // Show the popup gracefully shortly after hero entrance animations finish
-  setTimeout(() => {
-    popup.classList.add('visible');
-  }, 3200);
+  // Expose show function to be triggered when hero animation completes
+  window.showPdfPopup = () => {
+    setTimeout(() => {
+      popup.classList.add('visible');
+    }, 1000); // Appear 1s after all intro animations finish
+  };
 
   closeBtn.addEventListener('click', () => {
     popup.classList.remove('visible');
