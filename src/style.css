@@ -3110,3 +3110,82 @@ img.simple-icon {
   border-left-width: 4px;
 }
 
+/* PDF Popup Notification */
+.pdf-btn-container {
+  position: relative;
+  display: inline-flex;
+}
+
+.pdf-popup-notification {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: 290px;
+  background: rgba(13, 13, 31, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(56, 189, 248, 0.15);
+  padding: 1.1rem 1.25rem;
+  border-radius: 12px;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pdf-popup-notification.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.pdf-popup-arrow {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 7px;
+  border-style: solid;
+  border-color: rgba(56, 189, 248, 0.4) transparent transparent transparent;
+}
+
+.pdf-popup-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: rgba(13, 13, 31, 0.96) transparent transparent transparent;
+}
+
+.pdf-popup-close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.pdf-popup-close:hover {
+  color: var(--accent-1);
+  transform: scale(1.1);
+}
+
+.pdf-popup-text {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.9);
+  padding-right: 12px;
+}
+

@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initWarpTransition();
   initSpaceRoomScroll();
   initLottieAnimations();
+  initPdfPopup();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -434,7 +435,7 @@ function animateHeroEntrance() {
       '-=0.3'
     )
     // Stage 4: Hero CTA actions
-    .fromTo('.hero-actions > a',
+    .fromTo('.hero-actions > a, .hero-actions > .pdf-btn-container > a',
       { opacity: 0, y: 20, scale: 0.9 },
       { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.08, ease: 'back.out(1.7)' },
       '-=0.5'
@@ -2257,4 +2258,26 @@ function makeLottieColorsBright(obj) {
       makeLottieColorsBright(obj[key]);
     }
   }
+}
+
+/* ============ PDF POPUP WARNING ============ */
+function initPdfPopup() {
+  const popup = document.getElementById('pdf-popup-notification');
+  const closeBtn = document.getElementById('pdf-popup-close');
+  if (!popup || !closeBtn) return;
+
+  // Check if user has already dismissed it historically
+  if (localStorage.getItem('pdf_popup_dismissed') === 'true') {
+    return;
+  }
+
+  // Show the popup gracefully shortly after hero entrance animations finish
+  setTimeout(() => {
+    popup.classList.add('visible');
+  }, 3200);
+
+  closeBtn.addEventListener('click', () => {
+    popup.classList.remove('visible');
+    localStorage.setItem('pdf_popup_dismissed', 'true');
+  });
 }
