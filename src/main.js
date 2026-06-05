@@ -777,7 +777,7 @@ function initProjectCards() {
   gsap.from('.projects-carousel-wrapper', {
     y: 50, opacity: 0, duration: 0.8,
     ease: 'power2.out',
-    scrollTrigger: { trigger: '.projects-carousel-wrapper', start: 'top 85%' }
+    scrollTrigger: { trigger: '.project-categories', start: 'top 85%' }
   });
 
   // ─── CAROUSEL & PAGINATION STATE ───
