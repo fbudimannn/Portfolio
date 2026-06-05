@@ -17,6 +17,8 @@ gsap.registerPlugin(ScrollTrigger);
 window.gsap = gsap;
 window.triggerWarp = triggerWarp;
 
+let pdfPopupDismissed = false;
+
 document.addEventListener('DOMContentLoaded', () => {
   initPreloader();
   initCustomCursor();
@@ -121,22 +123,22 @@ function initSectionTransitions() {
     // EXIT animation: fade out + shift up + blur as you leave
     ScrollTrigger.create({
       trigger: section,
-      start: 'bottom 50%', // Delay the start of the blur until section is halfway up the screen
-      end: 'bottom 0%',
+      start: 'bottom 80%', // Start blurring when bottom is 80% from top of viewport
+      end: 'bottom 15%',  // End when bottom is 15% from top of viewport
       scrub: 0.6,
       onUpdate: (self) => {
         if (isLast) return;
         const p = self.progress; // 0 → 1 as section exits
         gsap.set(section, {
           opacity: 1 - p * 0.7,
-          y: -p * 20, // Less vertical shift
-          filter: `blur(${p * 2}px)`, // Less intense blur
-          scale: 1 - p * 0.02,
+          y: -p * 30, // Subtle vertical shift
+          filter: `blur(${p * 5}px)`, // Noticeable cinematic blur
+          scale: 1 - p * 0.03,
         });
       },
       onLeave: () => {
         if (!isLast) {
-          gsap.set(section, { opacity: 0.3, filter: 'blur(2px)' });
+          gsap.set(section, { opacity: 0.3, filter: 'blur(5px)' });
         }
       },
       onEnterBack: () => {
@@ -2271,8 +2273,8 @@ function initPdfPopup() {
 
   // Expose show function to be triggered when hero animation completes
   window.showPdfPopup = () => {
-    // Check if user has already dismissed it this session
-    if (sessionStorage.getItem('pdf_popup_dismissed') === 'true') {
+    // Check if user has already dismissed it historically or this session
+    if (pdfPopupDismissed) {
       return;
     }
     setTimeout(() => {
@@ -2282,6 +2284,6 @@ function initPdfPopup() {
 
   closeBtn.addEventListener('click', () => {
     popup.classList.remove('visible');
-    sessionStorage.setItem('pdf_popup_dismissed', 'true');
+    pdfPopupDismissed = true;
   });
 }
