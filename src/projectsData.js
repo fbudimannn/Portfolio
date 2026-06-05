@@ -458,7 +458,7 @@ export const projectsData = {
     category: 'Impact Projects',
     accent: 'var(--accent-impact)',
     title: 'Kemensos Social Aid (Bansos) Distribution Analysis & Dashboard',
-    client: 'Ministry of Social Affairs (Sukoharjo Region)',
+    client: null, // Omit client display as requested
     timeline: 'Dec 2022 - Apr 2023',
     location: 'Sukoharjo Region, Central Java, Indonesia',
     role: null, // Omit role display as requested

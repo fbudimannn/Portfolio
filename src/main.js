@@ -1097,9 +1097,25 @@ function openProjectDetails(id, proj) {
 
   if (!overlay || !panel || !content) return;
 
-  // Determine light mode accent color
+  // Map long category names to short keys used in Lotties and light mode accents
+  const categoryShortKeys = {
+    'customer behaviour': 'customer',
+    'customer behavior': 'customer',
+    'customer behavior analysis': 'customer',
+    'customer behaviour analysis': 'customer',
+    'end-to-end': 'end-to-end',
+    'end-to-end analysis': 'end-to-end',
+    'machine learning': 'ml',
+    'applied ai': 'ai',
+    'applied ai & intelligent systems': 'ai',
+    'database building': 'database',
+    'a/b testing': 'ab',
+    'data visualization': 'viz',
+    'impact projects': 'impact'
+  };
   const filterKey = proj.category.toLowerCase().replace(/\s+/g, '-');
-  const accentColor = lightAccents[filterKey] || '#111827';
+  const categoryKey = categoryShortKeys[proj.category.toLowerCase().trim()] || filterKey;
+  const accentColor = lightAccents[categoryKey] || '#111827';
   panel.style.setProperty('--accent-color-light', accentColor);
 
   let html = '';
@@ -1109,31 +1125,25 @@ function openProjectDetails(id, proj) {
   let mediaHtml = '';
   if (images.length > 0) {
     mediaHtml = `
-      <div class="detail-section">
-        <h3 class="detail-section-title">Analysis & Visual Overview</h3>
-        <div class="drawer-slideshow">
-          ${images.map((img, idx) => `
-            <img src="${img.src}" class="${idx === 0 ? 'active' : ''}" alt="${img.caption || ''}" data-idx="${idx}" />
-          `).join('')}
-          ${images.length > 1 ? `
-            <button class="drawer-slideshow-prev" id="drawer-slide-prev">◀</button>
-            <button class="drawer-slideshow-next" id="drawer-slide-next">▶</button>
-          ` : ''}
-          <div class="drawer-slideshow-caption" id="drawer-slide-caption">
-            ${images[0].caption || ''}
-          </div>
+      <div class="drawer-slideshow">
+        ${images.map((img, idx) => `
+          <img src="${img.src}" class="${idx === 0 ? 'active' : ''}" alt="${img.caption || ''}" data-idx="${idx}" />
+        `).join('')}
+        ${images.length > 1 ? `
+          <button class="drawer-slideshow-prev" id="drawer-slide-prev">◀</button>
+          <button class="drawer-slideshow-next" id="drawer-slide-next">▶</button>
+        ` : ''}
+        <div class="drawer-slideshow-caption" id="drawer-slide-caption">
+          ${images[0].caption || ''}
         </div>
       </div>
     `;
   } else {
     mediaHtml = `
-      <div class="detail-section">
-        <h3 class="detail-section-title">Visual Dashboard Overview</h3>
-        <div class="detail-image-box">
-          <div class="detail-image-icon">📊</div>
-          <strong>Dashboard Screenshot & Layout Details</strong>
-          <span>[Visualization file to be connected in final production]</span>
-        </div>
+      <div class="detail-image-box">
+        <div class="detail-image-icon">📊</div>
+        <strong>Dashboard Screenshot & Layout Details</strong>
+        <span>[Visualization file to be connected in final production]</span>
       </div>
     `;
   }
@@ -1217,29 +1227,29 @@ function openProjectDetails(id, proj) {
     html = `
       ${headerHtml}
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Case Overview</h3>
         <div class="detail-desc-text"><p>${proj.caseOverview}</p></div>
       </div>
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Scope & Goals</h3>
         <div class="detail-desc-text"><p>${proj.scopeGoals}</p></div>
       </div>
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Summary</h3>
         <div class="detail-desc-text"><p>${proj.summary}</p></div>
       </div>
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Tools & Technologies</h3>
         <div class="detail-tools-container">
           ${toolsHtml}
         </div>
       </div>
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Methodology</h3>
         <div class="detail-methodology-timeline">
           ${proj.methodology ? proj.methodology.map(step => `
@@ -1251,7 +1261,12 @@ function openProjectDetails(id, proj) {
         </div>
       </div>
 
-      ${mediaHtml}
+      ${images.length > 0 ? `
+        <div class="detail-section-card">
+          <h3 class="detail-section-title">Analysis & Visual Overview</h3>
+          ${mediaHtml}
+        </div>
+      ` : ''}
 
       <div class="detail-action-links">
         ${proj.githubLink ? `<a href="${proj.githubLink}" target="_blank" class="detail-btn-action detail-btn-action-primary">View GitHub Repo</a>` : ''}
@@ -1263,23 +1278,28 @@ function openProjectDetails(id, proj) {
     html = `
       ${headerHtml}
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Project Description</h3>
         <div class="detail-desc-text"><p>${proj.description}</p></div>
       </div>
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Tools & BI Suite</h3>
         <div class="detail-tools-container">
           ${toolsHtml}
         </div>
       </div>
 
-      ${mediaHtml}
+      ${images.length > 0 ? `
+        <div class="detail-section-card">
+          <h3 class="detail-section-title">Dashboard Overview</h3>
+          ${mediaHtml}
+        </div>
+      ` : ''}
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Dashboard Pages & Purpose</h3>
-        <div style="margin-top: 1.5rem;">
+        <div style="margin-top: 1rem;">
           ${proj.pages ? proj.pages.map((page, idx) => `
             <div class="detail-viz-page-box">
               <span class="detail-viz-page-num">PAGE 0${idx + 1}</span>
@@ -1301,9 +1321,9 @@ function openProjectDetails(id, proj) {
     let overviewImgHtml = '';
     if (proj.cardBgImage) {
       overviewImgHtml = `
-        <div style="margin-top: 1.5rem; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); max-width: 500px; cursor: zoom-in;">
+        <div style="margin-top: 1.5rem; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); max-width: 500px; cursor: zoom-in;">
           <img src="${proj.cardBgImage}" alt="Regency Scope Map" style="width: 100%; height: auto; display: block;" class="zoomable-scope-map" />
-          <div style="padding: 0.75rem 1rem; font-size: 0.8rem; color: #6b7280; background: #fafafa; text-align: center; border-top: 1px solid #e5e7eb; font-weight: 500;">
+          <div style="padding: 0.75rem 1rem; font-size: 0.8rem; color: #6b7280; background: #fafafa; text-align: center; border-top: 1px solid #e2e8f0; font-weight: 500;">
             Project Geographic Scope: Sukoharjo Regency, Central Java
           </div>
         </div>
@@ -1337,7 +1357,7 @@ function openProjectDetails(id, proj) {
     let overviewsBlockHtml = '';
     if (proj.analysisOverview && proj.dashboardOverview) {
       overviewsBlockHtml = `
-        <div class="detail-section">
+        <div class="detail-section-card">
           <h3 class="detail-section-title">${proj.analysisOverview.title}</h3>
           <p class="detail-overview-desc">${proj.analysisOverview.desc}</p>
           <div class="detail-overview-grid">
@@ -1352,7 +1372,7 @@ function openProjectDetails(id, proj) {
           </div>
         </div>
 
-        <div class="detail-section">
+        <div class="detail-section-card">
           <h3 class="detail-section-title">${proj.dashboardOverview.title}</h3>
           <p class="detail-overview-desc">${proj.dashboardOverview.desc}</p>
           <div class="detail-overview-grid">
@@ -1368,13 +1388,18 @@ function openProjectDetails(id, proj) {
         </div>
       `;
     } else {
-      overviewsBlockHtml = mediaHtml;
+      overviewsBlockHtml = `
+        <div class="detail-section-card">
+          <h3 class="detail-section-title">Visual Overview</h3>
+          ${mediaHtml}
+        </div>
+      `;
     }
 
     html = `
       ${headerHtml}
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Project Overview</h3>
         <div class="detail-desc-text">
           <p>${proj.overviewText}</p>
@@ -1382,19 +1407,19 @@ function openProjectDetails(id, proj) {
         </div>
       </div>
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Key Impact & Outcomes</h3>
         <div class="detail-desc-text"><p>${proj.impactText}</p></div>
       </div>
 
       ${testimonialHtml ? `
-        <div class="detail-section">
+        <div class="detail-section-card">
           <h3 class="detail-section-title">Client Testimonial</h3>
           ${testimonialHtml}
         </div>
       ` : ''}
 
-      <div class="detail-section">
+      <div class="detail-section-card">
         <h3 class="detail-section-title">Tools & Databases</h3>
         <div class="detail-tools-container">
           ${toolsHtml}
