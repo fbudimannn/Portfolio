@@ -774,7 +774,8 @@ function initProjectCards() {
     y: 50,
     opacity: 0,
     duration: 0.8,
-    ease: 'power2.out'
+    ease: 'power2.out',
+    immediateRender: false
   });
 
   // 2. Stagger category cards in (overlapping slightly with header)
@@ -783,7 +784,8 @@ function initProjectCards() {
     opacity: 0,
     duration: 0.5,
     stagger: 0.05,
-    ease: 'power2.out'
+    ease: 'power2.out',
+    immediateRender: false
   }, '-=0.4');
 
   // 3. Fade in the projects carousel wrapper (overlapping slightly with categories)
@@ -791,7 +793,8 @@ function initProjectCards() {
     y: 50,
     opacity: 0,
     duration: 0.8,
-    ease: 'power2.out'
+    ease: 'power2.out',
+    immediateRender: false
   }, '-=0.3');
 
   // ─── CAROUSEL & PAGINATION STATE ───
