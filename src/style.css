@@ -233,7 +233,7 @@ img { max-width: 100%; display: block; }
   position: fixed; top: 0; left: 0;
   width: 6px; height: 6px;
   background: var(--accent-1);
-  border-radius: 50%; z-index: 99998;
+  border-radius: 50%; z-index: 99999999;
   pointer-events: none;
   transform: translate(-50%, -50%);
   transition: width 0.2s, height 0.2s, background 0.2s;
@@ -242,7 +242,7 @@ img { max-width: 100%; display: block; }
   position: fixed; top: 0; left: 0;
   width: 36px; height: 36px;
   border: 1.5px solid rgba(56,189,248,0.4);
-  border-radius: 50%; z-index: 99997;
+  border-radius: 50%; z-index: 99999998;
   pointer-events: none;
   transform: translate(-50%, -50%);
   transition: width 0.3s, height 0.3s, border-color 0.3s;

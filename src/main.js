@@ -71,19 +71,30 @@ function initCustomCursor() {
   }
   animateRing();
 
-  // Hover effect on interactive elements
-  const hoverTargets = document.querySelectorAll(
-    'a, button, .project-card, .nav-link, .social-link, .hero-cta, .skill-tag, .nav-toggle'
-  );
-  hoverTargets.forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      dot.classList.add('hover');
-      ring.classList.add('hover');
-    });
-    el.addEventListener('mouseleave', () => {
-      dot.classList.remove('hover');
-      ring.classList.remove('hover');
-    });
+  // Hover effect on interactive elements via event delegation
+  document.addEventListener('mouseover', (e) => {
+    if (e.target && e.target.closest) {
+      const target = e.target.closest('a, button, .project-card, .nav-link, .social-link, .hero-cta, .skill-tag, .nav-toggle, [role="button"]');
+      if (target) {
+        dot.classList.add('hover');
+        ring.classList.add('hover');
+      }
+    }
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    if (e.target && e.target.closest) {
+      const target = e.target.closest('a, button, .project-card, .nav-link, .social-link, .hero-cta, .skill-tag, .nav-toggle, [role="button"]');
+      if (target) {
+        // If moving inside the same interactive container, keep the hover state active
+        const related = e.relatedTarget;
+        if (related && related.closest && related.closest('a, button, .project-card, .nav-link, .social-link, .hero-cta, .skill-tag, .nav-toggle, [role="button"]') === target) {
+          return;
+        }
+        dot.classList.remove('hover');
+        ring.classList.remove('hover');
+      }
+    }
   });
 
   // Hide cursor when leaving window
