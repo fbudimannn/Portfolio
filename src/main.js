@@ -1217,7 +1217,7 @@ function openProjectDetails(id, proj) {
   // Metadata Grid Adjustment (OMIT ROLE, ADD LOCATION)
   let metaGridHtml = '';
   if (proj.client) {
-    metaGridHtml += `<div class="detail-meta-item"><strong>Client / Context</strong><span>${proj.client}</span></div>`;
+    metaGridHtml += `<div class="detail-meta-item"><strong>Context</strong><span>${proj.client}</span></div>`;
   }
   if (proj.timeline) {
     metaGridHtml += `<div class="detail-meta-item"><strong>Timeline</strong><span>${proj.timeline}</span></div>`;
