@@ -1225,9 +1225,6 @@ function openProjectDetails(id, proj) {
   if (proj.location) {
     metaGridHtml += `<div class="detail-meta-item"><strong>Location</strong><span>${proj.location}</span></div>`;
   }
-  if (proj.role) {
-    metaGridHtml += `<div class="detail-meta-item"><strong>Role</strong><span>${proj.role}</span></div>`;
-  }
 
   // Header template with Lottie wrapper
   const headerHtml = `
