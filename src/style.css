@@ -367,7 +367,7 @@ img { max-width: 100%; display: block; }
 
 /* ======================== HERO ======================== */
 .hero {
-  min-height: 100vh; position: relative; overflow: hidden;
+  min-height: 100vh; position: relative; overflow: visible;
   display: flex; flex-direction: column;
   justify-content: center;
 }
@@ -3188,5 +3188,51 @@ img.simple-icon {
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.9);
   padding-right: 12px;
+}
+
+/* Shorter Viewports: Adjust hero scale & padding to fit layout vertically */
+@media (max-height: 800px) and (min-width: 901px) {
+  .hero-split {
+    padding-top: 5rem;
+    padding-bottom: 1.5rem;
+  }
+  .hero-photo-wrapper {
+    max-width: 440px;
+  }
+}
+
+@media (max-height: 680px) and (min-width: 901px) {
+  .hero-split {
+    padding-top: 4.5rem;
+    padding-bottom: 1rem;
+    gap: 1rem;
+  }
+  .hero-left {
+    padding-top: 1.5rem;
+  }
+  .hero-photo-wrapper {
+    max-width: 370px;
+  }
+  .hero-title {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    margin-bottom: 1rem;
+  }
+  .hero-desc {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-height: 580px) and (min-width: 901px) {
+  .hero-split {
+    padding-top: 4rem;
+    padding-bottom: 0.5rem;
+  }
+  .hero-left {
+    padding-top: 0.5rem;
+  }
+  .hero-photo-wrapper {
+    max-width: 310px;
+  }
 }
 
