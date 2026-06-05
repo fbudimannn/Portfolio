@@ -400,9 +400,6 @@ function animateHeroEntrance() {
       if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.refresh();
       }
-      if (typeof window.showPdfPopup === 'function') {
-        window.showPdfPopup();
-      }
     }
   });
 
@@ -2269,20 +2266,18 @@ function initPdfPopup() {
   const closeBtn = document.getElementById('pdf-popup-close');
   if (!popup || !closeBtn) return;
 
-  // Check if user has already dismissed it historically
-  if (localStorage.getItem('pdf_popup_dismissed') === 'true') {
+  // Check if user has already dismissed it this session
+  if (sessionStorage.getItem('pdf_popup_dismissed') === 'true') {
     return;
   }
 
-  // Expose show function to be triggered when hero animation completes
-  window.showPdfPopup = () => {
-    setTimeout(() => {
-      popup.classList.add('visible');
-    }, 1000); // Appear 1s after all intro animations finish
-  };
+  // Show the popup gracefully shortly after hero entrance animations finish
+  setTimeout(() => {
+    popup.classList.add('visible');
+  }, 3200);
 
   closeBtn.addEventListener('click', () => {
     popup.classList.remove('visible');
-    localStorage.setItem('pdf_popup_dismissed', 'true');
+    sessionStorage.setItem('pdf_popup_dismissed', 'true');
   });
 }
