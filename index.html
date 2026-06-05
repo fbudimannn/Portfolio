@@ -1132,6 +1132,8 @@
       }
     }
 
+    let landingScrollY = 0;
+
     document.querySelectorAll('.portal-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const portalEl = e.target.closest('.magic-portal');
@@ -1185,6 +1187,9 @@
           onComplete: () => {
             // ---> WE ARE NOW FULLY BLINDED BY THE FLASH <---
 
+            // Store current scroll position to restore on warp back
+            landingScrollY = window.scrollY;
+
             // Swap out the background quietly
             if (window.stopAllPortals) window.stopAllPortals();
 
@@ -1192,6 +1197,19 @@
             room.classList.add('active');
             room.querySelector('.space-scroll-container').scrollTop = 0;
             if (window.updateSpaceRoom3D) window.updateSpaceRoom3D();
+
+            // Hide main landing page elements to prevent Safari layout squeeze & free GPU memory
+            const mainEl = document.querySelector('main');
+            const navEl = document.querySelector('.nav');
+            const footerEl = document.querySelector('.footer');
+            if (mainEl) mainEl.style.display = 'none';
+            if (navEl) navEl.style.display = 'none';
+            if (footerEl) footerEl.style.display = 'none';
+
+            const cursorDot = document.getElementById('cursor-dot');
+            const cursorRing = document.getElementById('cursor-ring');
+            if (cursorDot) cursorDot.style.display = 'none';
+            if (cursorRing) cursorRing.style.display = 'none';
 
             // Reset the portal scale and translation silently behind the space room
             gsap.set(portalEl, { scale: 1, x: 0, y: 0 });
@@ -1228,6 +1246,22 @@
         onComplete: () => {
           room.classList.remove('active');
           if (window.startAllPortals) window.startAllPortals();
+
+          // Restore landing page elements visibility
+          const mainEl = document.querySelector('main');
+          const navEl = document.querySelector('.nav');
+          const footerEl = document.querySelector('.footer');
+          if (mainEl) mainEl.style.display = '';
+          if (navEl) navEl.style.display = '';
+          if (footerEl) footerEl.style.display = '';
+
+          const cursorDot = document.getElementById('cursor-dot');
+          const cursorRing = document.getElementById('cursor-ring');
+          if (cursorDot) cursorDot.style.display = '';
+          if (cursorRing) cursorRing.style.display = '';
+
+          // Restore scroll position to where user was
+          window.scrollTo(0, landingScrollY);
 
           // Refresh ScrollTrigger to recalculate trigger boundaries
           if (window.gsap && window.gsap.ScrollTrigger) {
