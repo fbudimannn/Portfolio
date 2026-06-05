@@ -3189,3 +3189,33 @@ img.simple-icon {
   padding-right: 12px;
 }
 
+/* Desktop Side Layout */
+@media (min-width: 769px) {
+  .pdf-popup-notification {
+    bottom: auto;
+    top: 50%;
+    left: calc(100% + 18px);
+    transform: translateY(-50%) translateX(10px);
+  }
+
+  .pdf-popup-notification.visible {
+    transform: translateY(-50%) translateX(0);
+  }
+
+  .pdf-popup-arrow {
+    top: 50%;
+    left: -14px;
+    bottom: auto;
+    transform: translateY(-50%);
+    border-color: transparent rgba(56, 189, 248, 0.4) transparent transparent;
+  }
+
+  .pdf-popup-arrow::after {
+    top: 50%;
+    left: -5px;
+    bottom: auto;
+    transform: translateY(-50%);
+    border-color: transparent rgba(13, 13, 31, 0.96) transparent transparent;
+  }
+}
+
