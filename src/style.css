@@ -2464,14 +2464,27 @@ img.simple-icon {
 }
 
 .detail-tool-badge {
-  background: #f3f4f6;
+  background: #f9fafb;
   border: 1px solid #e5e7eb;
-  color: #111827;
+  color: #374151;
   padding: 0.45rem 0.9rem;
   border-radius: 8px;
   font-size: 0.85rem;
   font-family: var(--font-mono);
   font-weight: 600;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+}
+
+.detail-tool-badge:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-color-light, #111827);
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
 }
 
 /* Methodology Steps Timeline */
@@ -2793,12 +2806,7 @@ img.simple-icon {
   justify-content: center;
 }
 
-/* Tool badge logos */
-.detail-tool-badge {
-  display: inline-flex !important;
-  align-items: center;
-  gap: 0.5rem;
-}
+/* Tool badge display configurations */
 
 .tool-logo-img {
   width: 18px;
@@ -2812,22 +2820,29 @@ img.simple-icon {
   display: flex;
   gap: 2rem;
   align-items: center;
-  background: #f9fafb;
-  border: 1px solid #f3f4f6;
+  background: #fafafa;
+  border-left: 4px solid var(--accent-color-light, #3b82f6);
+  border-top: 1px solid #f3f4f6;
+  border-right: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6;
   padding: 2.25rem;
-  border-radius: 16px;
+  border-radius: 12px;
   margin-top: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.015);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.015);
+  position: relative;
 }
 
 .testimonial-avatar {
-  flex: 0 0 80px;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  flex: 0 0 90px;
+  width: 90px;
+  height: 90px;
+  border-radius: 12px;
   object-fit: cover;
-  border: 3px solid #ffffff;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  object-position: center top;
+  border: 1px solid #e5e7eb;
+  padding: 4px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .testimonial-content {
@@ -2835,22 +2850,24 @@ img.simple-icon {
 }
 
 .testimonial-quote {
-  font-size: 0.98rem;
+  font-size: 1.02rem;
   font-style: italic;
-  color: #4b5563;
-  line-height: 1.7;
+  color: #1f2937;
+  line-height: 1.8;
   margin-bottom: 0.85rem;
   position: relative;
+  font-weight: 500;
 }
 
 .testimonial-quote::before {
   content: '“';
-  font-family: var(--font-display);
-  font-size: 3.5rem;
-  color: rgba(245, 158, 11, 0.2);
+  font-family: Georgia, serif;
+  font-size: 4rem;
+  color: var(--accent-color-light, #3b82f6);
+  opacity: 0.12;
   position: absolute;
-  left: -1.75rem;
-  top: -1.75rem;
+  left: -2rem;
+  top: -2.25rem;
   line-height: 1;
 }
 
@@ -2862,11 +2879,11 @@ img.simple-icon {
 .testimonial-author {
   font-weight: 700;
   color: #111827;
-  font-size: 0.95rem;
+  font-size: 0.98rem;
 }
 
 .testimonial-role {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: #6b7280;
   font-family: var(--font-mono);
 }
@@ -2909,6 +2926,7 @@ img.simple-icon {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
   transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s;
   cursor: zoom-in;
+  position: relative;
 }
 
 .detail-overview-card:hover {
@@ -2940,6 +2958,68 @@ img.simple-icon {
 }
 
 .detail-overview-card:hover .detail-overview-img-wrapper img {
+  transform: scale(1.02);
+}
+
+/* Zoom Overlay styling (Text only, no icon) */
+.zoom-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.zoom-text {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border: 1.5px solid #ffffff;
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2px);
+  transform: translateY(8px);
+  transition: transform 0.3s ease;
+}
+
+.clickable-overview-img:hover .zoom-overlay,
+.zoomable-scope-map-wrapper:hover .zoom-overlay,
+.drawer-slideshow:hover .zoom-overlay {
+  opacity: 1;
+}
+
+.clickable-overview-img:hover .zoom-text,
+.zoomable-scope-map-wrapper:hover .zoom-text,
+.drawer-slideshow:hover .zoom-text {
+  transform: translateY(0);
+}
+
+.zoomable-scope-map-wrapper {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.zoomable-scope-map-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05) !important;
+}
+
+.zoomable-scope-map-wrapper img {
+  transition: transform 0.5s ease;
+}
+
+.zoomable-scope-map-wrapper:hover img {
   transform: scale(1.02);
 }
 

@@ -1129,6 +1129,9 @@ function openProjectDetails(id, proj) {
         ${images.map((img, idx) => `
           <img src="${img.src}" class="${idx === 0 ? 'active' : ''}" alt="${img.caption || ''}" data-idx="${idx}" />
         `).join('')}
+        <div class="zoom-overlay">
+          <span class="zoom-text">Click to Zoom</span>
+        </div>
         ${images.length > 1 ? `
           <button class="drawer-slideshow-prev" id="drawer-slide-prev">◀</button>
           <button class="drawer-slideshow-next" id="drawer-slide-next">▶</button>
@@ -1321,8 +1324,13 @@ function openProjectDetails(id, proj) {
     let overviewImgHtml = '';
     if (proj.cardBgImage) {
       overviewImgHtml = `
-        <div style="margin-top: 1.5rem; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); max-width: 500px; cursor: zoom-in;">
-          <img src="${proj.cardBgImage}" alt="Regency Scope Map" style="width: 100%; height: auto; display: block;" class="zoomable-scope-map" />
+        <div class="zoomable-scope-map-wrapper" style="margin-top: 1.5rem; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); max-width: 500px; cursor: zoom-in; position: relative;">
+          <div class="detail-overview-img-wrapper" style="padding: 0; border-bottom: none; position: relative;">
+            <img src="${proj.cardBgImage}" alt="Regency Scope Map" style="width: 100%; height: auto; display: block;" class="zoomable-scope-map" />
+            <div class="zoom-overlay">
+              <span class="zoom-text">Click to Zoom</span>
+            </div>
+          </div>
           <div style="padding: 0.75rem 1rem; font-size: 0.8rem; color: #6b7280; background: #fafafa; text-align: center; border-top: 1px solid #e2e8f0; font-weight: 500;">
             Project Geographic Scope: Sukoharjo Regency, Central Java
           </div>
@@ -1361,10 +1369,13 @@ function openProjectDetails(id, proj) {
           <h3 class="detail-section-title">${proj.analysisOverview.title}</h3>
           <p class="detail-overview-desc">${proj.analysisOverview.desc}</p>
           <div class="detail-overview-grid">
-            ${proj.analysisOverview.images.map(img => `
-              <div class="detail-overview-card clickable-overview-img">
+            ${proj.analysisOverview.images.map((img, idx) => `
+              <div class="detail-overview-card clickable-overview-img" data-section="analysis" data-idx="${idx}">
                 <div class="detail-overview-img-wrapper">
                   <img src="${img.src}" alt="${img.caption}" />
+                  <div class="zoom-overlay">
+                    <span class="zoom-text">Click to Zoom</span>
+                  </div>
                 </div>
                 <div class="detail-overview-caption">${img.caption}</div>
               </div>
@@ -1376,10 +1387,13 @@ function openProjectDetails(id, proj) {
           <h3 class="detail-section-title">${proj.dashboardOverview.title}</h3>
           <p class="detail-overview-desc">${proj.dashboardOverview.desc}</p>
           <div class="detail-overview-grid">
-            ${proj.dashboardOverview.images.map(img => `
-              <div class="detail-overview-card clickable-overview-img">
+            ${proj.dashboardOverview.images.map((img, idx) => `
+              <div class="detail-overview-card clickable-overview-img" data-section="dashboard" data-idx="${idx}">
                 <div class="detail-overview-img-wrapper">
                   <img src="${img.src}" alt="${img.caption}" />
+                  <div class="zoom-overlay">
+                    <span class="zoom-text">Click to Zoom</span>
+                  </div>
                 </div>
                 <div class="detail-overview-caption">${img.caption}</div>
               </div>
@@ -1414,7 +1428,7 @@ function openProjectDetails(id, proj) {
 
       ${testimonialHtml ? `
         <div class="detail-section-card">
-          <h3 class="detail-section-title">Client Testimonial</h3>
+          <h3 class="detail-section-title">Testimonial</h3>
           ${testimonialHtml}
         </div>
       ` : ''}
@@ -1458,7 +1472,7 @@ function openProjectDetails(id, proj) {
   };
 
   const lottieContainer = document.getElementById('drawer-title-lottie');
-  const lottiePath = categoryLottiePaths[filterKey];
+  const lottiePath = categoryLottiePaths[categoryKey];
   if (lottieContainer && lottiePath && typeof lottie !== 'undefined') {
     fetch(lottiePath)
       .then(res => {
@@ -1522,13 +1536,10 @@ function openProjectDetails(id, proj) {
     slideImgs.forEach((img) => {
       img.addEventListener('click', (e) => {
         e.stopPropagation();
-        const lightbox = document.getElementById('hologram-lightbox');
-        const lbImg = document.getElementById('lightbox-img');
-        const lbCaption = document.getElementById('lightbox-caption');
-        if (lightbox && lbImg) {
-          lbImg.src = img.src;
-          if (lbCaption) lbCaption.textContent = img.alt || '';
-          lightbox.classList.add('active');
+        if (typeof window.openLightbox === 'function') {
+          const gallery = images.map(item => ({ src: item.src, caption: item.caption || '' }));
+          const idx = parseInt(img.dataset.idx || '0', 10);
+          window.openLightbox(gallery, idx);
         }
       });
     });
@@ -1537,13 +1548,9 @@ function openProjectDetails(id, proj) {
     if (singleImg) {
       singleImg.addEventListener('click', (e) => {
         e.stopPropagation();
-        const lightbox = document.getElementById('hologram-lightbox');
-        const lbImg = document.getElementById('lightbox-img');
-        const lbCaption = document.getElementById('lightbox-caption');
-        if (lightbox && lbImg) {
-          lbImg.src = singleImg.src;
-          if (lbCaption) lbCaption.textContent = singleImg.alt || '';
-          lightbox.classList.add('active');
+        if (typeof window.openLightbox === 'function') {
+          const gallery = [{ src: singleImg.src, caption: singleImg.alt || '' }];
+          window.openLightbox(gallery, 0);
         }
       });
     }
@@ -1554,14 +1561,21 @@ function openProjectDetails(id, proj) {
   overviewCards.forEach((card) => {
     card.addEventListener('click', (e) => {
       e.stopPropagation();
-      const img = card.querySelector('img');
-      const lightbox = document.getElementById('hologram-lightbox');
-      const lbImg = document.getElementById('lightbox-img');
-      const lbCaption = document.getElementById('lightbox-caption');
-      if (lightbox && lbImg && img) {
-        lbImg.src = img.src;
-        if (lbCaption) lbCaption.textContent = img.alt || '';
-        lightbox.classList.add('active');
+      const section = card.dataset.section; // "analysis" or "dashboard"
+      const idx = parseInt(card.dataset.idx || '0', 10);
+      
+      let gallery = [];
+      if (section === 'analysis' && proj.analysisOverview) {
+        gallery = proj.analysisOverview.images.map(img => ({ src: img.src, caption: img.caption || '' }));
+      } else if (section === 'dashboard' && proj.dashboardOverview) {
+        gallery = proj.dashboardOverview.images.map(img => ({ src: img.src, caption: img.caption || '' }));
+      } else {
+        const img = card.querySelector('img');
+        gallery = [{ src: img.src, caption: img.alt || '' }];
+      }
+      
+      if (typeof window.openLightbox === 'function') {
+        window.openLightbox(gallery, idx);
       }
     });
   });
@@ -1570,13 +1584,10 @@ function openProjectDetails(id, proj) {
   if (scopeMap) {
     scopeMap.addEventListener('click', (e) => {
       e.stopPropagation();
-      const lightbox = document.getElementById('hologram-lightbox');
-      const lbImg = document.getElementById('lightbox-img');
-      const lbCaption = document.getElementById('lightbox-caption');
-      if (lightbox && lbImg) {
-        lbImg.src = scopeMap.src;
-        if (lbCaption) lbCaption.textContent = 'Project Geographic Scope: Sukoharjo Regency, Central Java';
-        lightbox.classList.add('active');
+      if (typeof window.openLightbox === 'function') {
+        window.openLightbox([
+          { src: scopeMap.src, caption: 'Project Geographic Scope: Sukoharjo Regency, Central Java' }
+        ], 0);
       }
     });
   }

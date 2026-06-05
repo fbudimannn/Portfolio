@@ -1265,6 +1265,21 @@
 
       if (!lightbox || !lightboxImg) return;
 
+      // Expose globally for details drawer or other scripts to trigger the lightbox
+      window.openLightbox = function(gallery, startIndex = 0) {
+        currentGallery = gallery;
+        currentIdx = startIndex;
+        showSlide();
+        lightbox.classList.add('active');
+        // Pop-in entry animation for the image
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo(lightboxImg, 
+            { scale: 0.85, opacity: 0 }, 
+            { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.2)" }
+          );
+        }
+      };
+
       // Event delegation — works on dynamically injected slideshows
       document.addEventListener('click', (e) => {
         const slideshow = e.target.closest('.photo-slideshow');
