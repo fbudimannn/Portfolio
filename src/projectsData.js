@@ -19,7 +19,6 @@ export const projectsData = {
       { title: 'Data Visualization', desc: 'Create dashboards in Tableau and custom presentation assets in Illustrator.' }
     ],
     analysisPlaceholder: 'RFM Segment Distribution & Correlation Matrix',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/Segmentationdeck'
   },
   funnel_analysis: {
@@ -41,7 +40,6 @@ export const projectsData = {
       { title: 'Data Visualization', desc: 'Design UI prototypes in Figma and custom icons for visual recommendations.' }
     ],
     analysisPlaceholder: 'App Conversion Funnel & Exit Rate Chart',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/FunnelDeck'
   },
   market_basket: {
@@ -63,7 +61,6 @@ export const projectsData = {
       { title: 'Recommendation', desc: 'Formulate specific bundling promotions for customer tiers.' }
     ],
     analysisPlaceholder: 'Association Rules Network Graph & Lift Values Chart',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/MBAPythonlink'
   },
 
@@ -87,7 +84,6 @@ export const projectsData = {
       { title: 'Data Visualization', desc: 'Design interactive Tableau dashboards and custom templates.' }
     ],
     analysisPlaceholder: 'Accident Frequency Trend & Causality Analysis Chart',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/DeckTrafﬁcAnalysisDeck'
   },
   annual_report: {
@@ -109,7 +105,6 @@ export const projectsData = {
       { title: 'Data Visualization', desc: 'Build Tableau dashboards and design presentation deck assets.' }
     ],
     analysisPlaceholder: 'GMV Decay & User Funnel Retention Curves',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/DeckAnnualReportDeck'
   },
   socia_buzz: {
@@ -131,7 +126,6 @@ export const projectsData = {
       { title: 'Data Visualization', desc: 'Create charts and dashboards in Tableau.' }
     ],
     analysisPlaceholder: 'Top Content Categories by Reaction Score',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/DeckAccentureDeck'
   },
 
@@ -176,7 +170,6 @@ export const projectsData = {
       { title: 'Data Visualization', desc: 'Generate scatter plots and distribution charts of clusters.' }
     ],
     analysisPlaceholder: 'Elbow Curve & Silhouette Score Analysis Chart',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/ClustersMutualFund'
   },
   bond_purchasing: {
@@ -198,7 +191,6 @@ export const projectsData = {
       { title: 'Cost-Benefit Analysis', desc: 'Calculate ROI matrix in Excel based on probability scoring.' }
     ],
     analysisPlaceholder: 'Correlation Heatmap & ROC Curve Chart',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/LogsiticsPythonPython'
   },
   rating_predictions: {
@@ -220,7 +212,6 @@ export const projectsData = {
       { title: 'Evaluation', desc: 'Evaluate accuracy, recall, ROC-AUC, and extract SHAP feature importances.' }
     ],
     analysisPlaceholder: 'Feature Importance Graph & ROC-AUC Chart',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/PythonlinkPython'
   },
 
@@ -265,7 +256,6 @@ export const projectsData = {
       { title: 'Deployment', desc: 'Save and push optimized weights to Hugging Face Model Hub.' }
     ],
     analysisPlaceholder: 'Training Loss Curves & ROUGE Validation Table',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://huggingface.co/fahil2631/led-ﬁnancial_summarization-genai15'
   },
   rag_system: {
@@ -311,7 +301,6 @@ export const projectsData = {
       { title: 'Insights & Dashboards', desc: 'Visualize transaction metrics in Tableau.' }
     ],
     analysisPlaceholder: 'Database ERD Diagram & Table Relationships Schema',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/DatabaseDashboard'
   },
 
@@ -335,7 +324,6 @@ export const projectsData = {
       { title: 'Visualization', desc: 'Plot error rate histograms via ggplot2.' }
     ],
     analysisPlaceholder: 'Welch T-Test Output & Cohen\'s d Calculation Summary',
-    githubLink: 'https://github.com/fbudimannn',
     liveLink: 'https://intip.in/ABTestingR'
   },
 
@@ -502,9 +490,7 @@ export const projectsData = {
     overviewText: 'Served as the Head of the Database Management Directorate for the LPDP PK 239 program from June to August 2024. Led a 5-member team in designing and maintaining a centralized database system for 316 participants. The system consolidated participant demographics, health records, and financial requirements into a single, real-time update dashboard.',
     impactText: 'Re-architected data structures using a star schema model. Automated weekly data updates by integrating Google Form submissions. Achieved 100% data accuracy and improved cross-divisional efficiency by 70%. Designed automated query tables for group leaders to track participants.',
     quoteText: '"Fakhri\'s dedication and database engineering skills provided our committee with real-time analytics, streamlining our operational tasks immensely." — PK 239 Database Team Representative',
-    links: [
-      { label: 'Database Overview Page', url: 'https://github.com/fbudimannn' }
-    ]
+    links: []
   },
   sql_academy: {
     structure: 1,
@@ -518,8 +504,6 @@ export const projectsData = {
     overviewText: 'Served as one of six team members designing and delivering the SQL Academy curriculum for Indonesian students in the UK (May-July 2025). Instructed a cohort of 35 students, delivering lectures on advanced SQL concepts and providing daily 1-on-1 mentoring.',
     impactText: 'Designed a retail-based learning database containing over 10,000 transaction rows. Developed advanced course modules covering Subqueries, CTEs, and Window Functions. Boosted students\' technical proficiency by 80-90%. Achieved a 4.5/5.0 average instructor satisfaction rating.',
     quoteText: '"Fakhri\'s ability to explain advanced SQL window functions and subqueries helped our UK cohort gain confidence in quantitative database tasks." — SQL Academy Program Manager',
-    links: [
-      { label: 'Curriculum Repo Link', url: 'https://github.com/fbudimannn' }
-    ]
+    links: []
   }
 };
