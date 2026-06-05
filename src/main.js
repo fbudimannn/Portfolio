@@ -123,22 +123,22 @@ function initSectionTransitions() {
     // EXIT animation: fade out + shift up + blur as you leave
     ScrollTrigger.create({
       trigger: section,
-      start: 'bottom 80%', // Start blurring when bottom is 80% from top of viewport
-      end: 'bottom 15%',  // End when bottom is 15% from top of viewport
+      start: 'bottom 30%', // Only start blurring when bottom of section is 30% from the top of the screen (mostly off-screen)
+      end: 'bottom 0%',   // End when the section is completely off-screen
       scrub: 0.6,
       onUpdate: (self) => {
         if (isLast) return;
         const p = self.progress; // 0 → 1 as section exits
         gsap.set(section, {
           opacity: 1 - p * 0.7,
-          y: -p * 30, // Subtle vertical shift
-          filter: `blur(${p * 5}px)`, // Noticeable cinematic blur
-          scale: 1 - p * 0.03,
+          y: -p * 20, // Subtle vertical shift
+          filter: `blur(${p * 4}px)`, // Cinematic blur
+          scale: 1 - p * 0.02,
         });
       },
       onLeave: () => {
         if (!isLast) {
-          gsap.set(section, { opacity: 0.3, filter: 'blur(5px)' });
+          gsap.set(section, { opacity: 0.3, filter: 'blur(4px)' });
         }
       },
       onEnterBack: () => {
