@@ -226,6 +226,14 @@ function initPreloader() {
       .add(() => {
         preloader.classList.add('hidden');
         animateHeroEntrance();
+        // Recalculate ScrollTrigger offsets once the preloader hides and layout is fully styled
+        if (typeof ScrollTrigger !== 'undefined') {
+          ScrollTrigger.refresh();
+          // Safety delayed refreshes to handle dynamic 3D loading and lottie layout shifts
+          setTimeout(() => ScrollTrigger.refresh(), 300);
+          setTimeout(() => ScrollTrigger.refresh(), 1000);
+          setTimeout(() => ScrollTrigger.refresh(), 2500);
+        }
       });
   }
 
@@ -1652,41 +1660,46 @@ function closeProjectDetails() {
 
 /* ============ CONTACT / TYPEWRITER ============ */
 function initContactSection() {
-  gsap.from('#contact-header', {
-    y: 50, opacity: 0, duration: 0.8,
-    scrollTrigger: { trigger: '#contact', start: 'top 80%' }
-  });
-
-  gsap.from('.terminal', {
-    y: 40, opacity: 0, scale: 0.95, duration: 0.8,
-    ease: 'back.out(1.5)',
-    scrollTrigger: { trigger: '.terminal', start: 'top 80%' }
-  });
-
-  // Typewriter
   const email = 'fakhribudiman1721@gmail.com';
   const typewriterEl = document.getElementById('typewriter');
   let typed = false;
 
-  ScrollTrigger.create({
-    trigger: '#contact',
-    start: 'top 65%',
-    once: true,
-    onEnter: () => {
-      if (typed) return;
-      typed = true;
-      let i = 0;
-      const interval = setInterval(() => {
-        if (i <= email.length) {
-          typewriterEl.textContent = email.substring(0, i);
-          i++;
-        } else {
-          clearInterval(interval);
-        }
-      }, 60);
+  const contactTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#contact',
+      start: 'top 85%',
+      once: true
     }
   });
 
+  contactTimeline.from('#contact-header', {
+    y: 50,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power2.out'
+  });
+
+  contactTimeline.from('.terminal', {
+    y: 40,
+    opacity: 0,
+    scale: 0.95,
+    duration: 0.8,
+    ease: 'back.out(1.2)',
+    onComplete: () => {
+      if (!typed && typewriterEl) {
+        typed = true;
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i <= email.length) {
+            typewriterEl.textContent = email.substring(0, i);
+            i++;
+          } else {
+            clearInterval(interval);
+          }
+        }, 60);
+      }
+    }
+  }, '-=0.5');
 }
 
 /* ============ SCI-FI TYPING QUOTE ============ */
