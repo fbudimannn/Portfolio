@@ -3118,9 +3118,9 @@ img.simple-icon {
 
 .pdf-popup-notification {
   position: absolute;
-  bottom: calc(100% + 14px);
+  top: calc(100% + 14px);
   left: 50%;
-  transform: translateX(-50%) translateY(10px);
+  transform: translateX(-50%) translateY(-10px);
   width: 290px;
   background: rgba(13, 13, 31, 0.96);
   backdrop-filter: blur(12px);
@@ -3143,23 +3143,23 @@ img.simple-icon {
 
 .pdf-popup-arrow {
   position: absolute;
-  top: 100%;
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   border-width: 7px;
   border-style: solid;
-  border-color: rgba(56, 189, 248, 0.4) transparent transparent transparent;
+  border-color: transparent transparent rgba(56, 189, 248, 0.4) transparent;
 }
 
 .pdf-popup-arrow::after {
   content: '';
   position: absolute;
-  bottom: 2px;
+  top: -5px;
   left: 50%;
   transform: translateX(-50%);
   border-width: 6px;
   border-style: solid;
-  border-color: rgba(13, 13, 31, 0.96) transparent transparent transparent;
+  border-color: transparent transparent rgba(13, 13, 31, 0.96) transparent;
 }
 
 .pdf-popup-close {
@@ -3187,35 +3187,5 @@ img.simple-icon {
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.9);
   padding-right: 12px;
-}
-
-/* Desktop Side Layout */
-@media (min-width: 769px) {
-  .pdf-popup-notification {
-    bottom: auto;
-    top: 50%;
-    left: calc(100% + 18px);
-    transform: translateY(-50%) translateX(10px);
-  }
-
-  .pdf-popup-notification.visible {
-    transform: translateY(-50%) translateX(0);
-  }
-
-  .pdf-popup-arrow {
-    top: 50%;
-    left: -14px;
-    bottom: auto;
-    transform: translateY(-50%);
-    border-color: transparent rgba(56, 189, 248, 0.4) transparent transparent;
-  }
-
-  .pdf-popup-arrow::after {
-    top: 50%;
-    left: -5px;
-    bottom: auto;
-    transform: translateY(-50%);
-    border-color: transparent rgba(13, 13, 31, 0.96) transparent transparent;
-  }
 }
 
