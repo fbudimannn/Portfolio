@@ -1138,19 +1138,84 @@ function openProjectDetails(id, proj) {
     `;
   }
 
+  // Tool logos mapping
+  const toolLogos = {
+    'python': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg',
+    'pandas': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pandas/pandas-original.svg',
+    'tableau': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/tableau.svg',
+    'tableau prep': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/tableau.svg',
+    'looker studio': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/looker.svg',
+    'excel': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/microsoftexcel.svg',
+    'adv. excel': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/microsoftexcel.svg',
+    'google sheets': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/googlesheets.svg',
+    'postgresql': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg',
+    'supabase': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/supabase.svg',
+    'streamlit': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/streamlit.svg',
+    'plotly': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/plotly.svg',
+    'llama 3': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/meta.svg',
+    'r': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/r/r-original.svg',
+    'rstudio': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rstudio/rstudio-original.svg',
+    'figma': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/figma.svg',
+    'adobe illustrator': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/adobeillustrator.svg',
+    'power bi': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/powerbi.svg',
+    'numpy': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/numpy/numpy-original.svg',
+    'scikit-learn': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/scikitlearn/scikitlearn-original.svg',
+    'machine learning': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/scikitlearn/scikitlearn-original.svg',
+    'bigquery (sql)': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/googlecloud.svg',
+    'bigquery': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/googlecloud.svg',
+    'sql query functions': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg',
+    'ab testing': 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/testinglibrary.svg',
+    'sqlite': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg'
+  };
+
+  const toolsHtml = proj.tools ? proj.tools.map(tool => {
+    const cleanKey = tool.toLowerCase().trim();
+    const logoUrl = toolLogos[cleanKey];
+    if (logoUrl) {
+      return `
+        <span class="detail-tool-badge">
+          <img src="${logoUrl}" alt="${tool}" class="tool-logo-img" />
+          <span>${tool}</span>
+        </span>
+      `;
+    }
+    return `<span class="detail-tool-badge">${tool}</span>`;
+  }).join('') : '';
+
+  // Metadata Grid Adjustment (OMIT ROLE, ADD LOCATION)
+  let metaGridHtml = '';
+  if (proj.client) {
+    metaGridHtml += `<div class="detail-meta-item"><strong>Client / Context</strong><span>${proj.client}</span></div>`;
+  }
+  if (proj.timeline) {
+    metaGridHtml += `<div class="detail-meta-item"><strong>Timeline</strong><span>${proj.timeline}</span></div>`;
+  }
+  if (proj.location) {
+    metaGridHtml += `<div class="detail-meta-item"><strong>Location</strong><span>${proj.location}</span></div>`;
+  }
+  if (proj.role) {
+    metaGridHtml += `<div class="detail-meta-item"><strong>Role</strong><span>${proj.role}</span></div>`;
+  }
+
+  // Header template with Lottie wrapper
+  const headerHtml = `
+    <div class="detail-header">
+      <span class="detail-category-badge" style="background-color: ${accentColor}">${proj.category}</span>
+      <div class="detail-title-wrapper">
+        <div id="drawer-title-lottie" class="drawer-title-lottie-container"></div>
+        <h2 class="detail-title" style="margin-bottom: 0;">${proj.title}</h2>
+      </div>
+      <div class="detail-meta-grid">
+        ${metaGridHtml}
+      </div>
+    </div>
+  `;
+
   // Choose structure
   if (proj.structure === 3) {
     // STRUCTURE 3: Technical/Others
     html = `
-      <div class="detail-header">
-        <span class="detail-category-badge" style="background-color: ${accentColor}">${proj.category}</span>
-        <h2 class="detail-title">${proj.title}</h2>
-        <div class="detail-meta-grid">
-          <div class="detail-meta-item"><strong>Client / Context</strong><span>${proj.client || 'N/A'}</span></div>
-          <div class="detail-meta-item"><strong>Timeline</strong><span>${proj.timeline || 'N/A'}</span></div>
-          <div class="detail-meta-item"><strong>Role</strong><span>${proj.role || 'N/A'}</span></div>
-        </div>
-      </div>
+      ${headerHtml}
 
       <div class="detail-section">
         <h3 class="detail-section-title">Case Overview</h3>
@@ -1170,7 +1235,7 @@ function openProjectDetails(id, proj) {
       <div class="detail-section">
         <h3 class="detail-section-title">Tools & Technologies</h3>
         <div class="detail-tools-container">
-          ${proj.tools ? proj.tools.map(tool => `<span class="detail-tool-badge">${tool}</span>`).join('') : ''}
+          ${toolsHtml}
         </div>
       </div>
 
@@ -1196,15 +1261,7 @@ function openProjectDetails(id, proj) {
   } else if (proj.structure === 2) {
     // STRUCTURE 2: Data Visualization
     html = `
-      <div class="detail-header">
-        <span class="detail-category-badge" style="background-color: ${accentColor}">${proj.category}</span>
-        <h2 class="detail-title">${proj.title}</h2>
-        <div class="detail-meta-grid">
-          <div class="detail-meta-item"><strong>Client / Context</strong><span>${proj.client || 'N/A'}</span></div>
-          <div class="detail-meta-item"><strong>Timeline</strong><span>${proj.timeline || 'N/A'}</span></div>
-          <div class="detail-meta-item"><strong>Role</strong><span>${proj.role || 'N/A'}</span></div>
-        </div>
-      </div>
+      ${headerHtml}
 
       <div class="detail-section">
         <h3 class="detail-section-title">Project Description</h3>
@@ -1214,7 +1271,7 @@ function openProjectDetails(id, proj) {
       <div class="detail-section">
         <h3 class="detail-section-title">Tools & BI Suite</h3>
         <div class="detail-tools-container">
-          ${proj.tools ? proj.tools.map(tool => `<span class="detail-tool-badge">${tool}</span>`).join('') : ''}
+          ${toolsHtml}
         </div>
       </div>
 
@@ -1239,20 +1296,90 @@ function openProjectDetails(id, proj) {
     `;
   } else if (proj.structure === 1) {
     // STRUCTURE 1: Impact Projects
-    html = `
-      <div class="detail-header">
-        <span class="detail-category-badge" style="background-color: ${accentColor}">${proj.category}</span>
-        <h2 class="detail-title">${proj.title}</h2>
-        <div class="detail-meta-grid">
-          <div class="detail-meta-item"><strong>Organization</strong><span>${proj.client || 'N/A'}</span></div>
-          <div class="detail-meta-item"><strong>Timeline</strong><span>${proj.timeline || 'N/A'}</span></div>
-          <div class="detail-meta-item"><strong>Role</strong><span>${proj.role || 'N/A'}</span></div>
+    
+    // Check for map scope image
+    let overviewImgHtml = '';
+    if (proj.cardBgImage) {
+      overviewImgHtml = `
+        <div style="margin-top: 1.5rem; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); max-width: 500px; cursor: zoom-in;">
+          <img src="${proj.cardBgImage}" alt="Regency Scope Map" style="width: 100%; height: auto; display: block;" class="zoomable-scope-map" />
+          <div style="padding: 0.75rem 1rem; font-size: 0.8rem; color: #6b7280; background: #fafafa; text-align: center; border-top: 1px solid #e5e7eb; font-weight: 500;">
+            Project Geographic Scope: Sukoharjo Regency, Central Java
+          </div>
         </div>
-      </div>
+      `;
+    }
+
+    // Check for testimonial split avatar layout
+    let testimonialHtml = '';
+    if (proj.testimonial) {
+      testimonialHtml = `
+        <div class="detail-testimonial-wrapper">
+          <img src="${proj.testimonial.photo}" alt="${proj.testimonial.author}" class="testimonial-avatar" />
+          <div class="testimonial-content">
+            <div class="testimonial-quote">${proj.testimonial.quote}</div>
+            <div class="testimonial-author-info">
+              <span class="testimonial-author">${proj.testimonial.author}</span>
+              <span class="testimonial-role">${proj.testimonial.role}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (proj.quoteText) {
+      testimonialHtml = `
+        <div class="detail-testimonial-box">
+          <p>${proj.quoteText}</p>
+        </div>
+      `;
+    }
+
+    // Check for separated overview blocks
+    let overviewsBlockHtml = '';
+    if (proj.analysisOverview && proj.dashboardOverview) {
+      overviewsBlockHtml = `
+        <div class="detail-section">
+          <h3 class="detail-section-title">${proj.analysisOverview.title}</h3>
+          <p class="detail-overview-desc">${proj.analysisOverview.desc}</p>
+          <div class="detail-overview-grid">
+            ${proj.analysisOverview.images.map(img => `
+              <div class="detail-overview-card clickable-overview-img">
+                <div class="detail-overview-img-wrapper">
+                  <img src="${img.src}" alt="${img.caption}" />
+                </div>
+                <div class="detail-overview-caption">${img.caption}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3 class="detail-section-title">${proj.dashboardOverview.title}</h3>
+          <p class="detail-overview-desc">${proj.dashboardOverview.desc}</p>
+          <div class="detail-overview-grid">
+            ${proj.dashboardOverview.images.map(img => `
+              <div class="detail-overview-card clickable-overview-img">
+                <div class="detail-overview-img-wrapper">
+                  <img src="${img.src}" alt="${img.caption}" />
+                </div>
+                <div class="detail-overview-caption">${img.caption}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    } else {
+      overviewsBlockHtml = mediaHtml;
+    }
+
+    html = `
+      ${headerHtml}
 
       <div class="detail-section">
         <h3 class="detail-section-title">Project Overview</h3>
-        <div class="detail-desc-text"><p>${proj.overviewText}</p></div>
+        <div class="detail-desc-text">
+          <p>${proj.overviewText}</p>
+          ${overviewImgHtml}
+        </div>
       </div>
 
       <div class="detail-section">
@@ -1260,21 +1387,21 @@ function openProjectDetails(id, proj) {
         <div class="detail-desc-text"><p>${proj.impactText}</p></div>
       </div>
 
-      <div class="detail-section">
-        <h3 class="detail-section-title">Client Testimonial</h3>
-        <div class="detail-testimonial-box">
-          <p>${proj.quoteText}</p>
+      ${testimonialHtml ? `
+        <div class="detail-section">
+          <h3 class="detail-section-title">Client Testimonial</h3>
+          ${testimonialHtml}
         </div>
-      </div>
+      ` : ''}
 
       <div class="detail-section">
         <h3 class="detail-section-title">Tools & Databases</h3>
         <div class="detail-tools-container">
-          ${proj.tools ? proj.tools.map(tool => `<span class="detail-tool-badge">${tool}</span>`).join('') : ''}
+          ${toolsHtml}
         </div>
       </div>
 
-      ${mediaHtml}
+      ${overviewsBlockHtml}
 
       <div class="detail-action-links">
         ${proj.links ? proj.links.map(link => `
@@ -1286,8 +1413,55 @@ function openProjectDetails(id, proj) {
 
   content.innerHTML = html;
 
+  // Destroy previous dynamic drawer title lottie if running
+  if (window.drawerTitleLottieAnim) {
+    window.drawerTitleLottieAnim.destroy();
+    window.drawerTitleLottieAnim = null;
+  }
+
+  // Load new Lottie category icon dynamically inside drawer header
+  const categoryLottiePaths = {
+    all: '/foto/expereince/icon project archives.json',
+    customer: '/projects/Customer Behavior Analysis/customer behaviour analysis.json',
+    'end-to-end': '/projects/END to end analysis/end to end analysis.json',
+    ml: '/projects/machine learning/machine learning.json',
+    ai: '/projects/Applied AI & Intelligent Systems/APPLIED AI AND INTELLIGENT.json',
+    database: '/projects/Database Building/databasebuilding.json',
+    ab: '/projects/AB Testing/ab testing.json',
+    viz: '/projects/Data Visualization/dataviz.json',
+    impact: '/projects/impac projects/impact.json'
+  };
+
+  const lottieContainer = document.getElementById('drawer-title-lottie');
+  const lottiePath = categoryLottiePaths[filterKey];
+  if (lottieContainer && lottiePath && typeof lottie !== 'undefined') {
+    fetch(lottiePath)
+      .then(res => {
+        if (!res.ok) throw new Error('Network error loading lottie');
+        return res.json();
+      })
+      .then(data => {
+        try {
+          const clonedLottie = JSON.parse(JSON.stringify(data));
+          if (typeof makeLottieColorsBright === 'function') {
+            makeLottieColorsBright(clonedLottie);
+          }
+          window.drawerTitleLottieAnim = lottie.loadAnimation({
+            container: lottieContainer,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            animationData: clonedLottie
+          });
+        } catch (lottieErr) {
+          console.error('Lottie render error inside drawer:', lottieErr);
+        }
+      })
+      .catch(fetchErr => console.error('Error fetching dynamic drawer lottie:', fetchErr));
+  }
+
   // Bind slideshow events inside the drawer if there are multiple images
-  if (images.length > 1) {
+  if (images.length > 1 && !proj.analysisOverview) {
     let activeIdx = 0;
     const slideImgs = panel.querySelectorAll('.drawer-slideshow img');
     const prevBtn = panel.querySelector('#drawer-slide-prev');
@@ -1333,7 +1507,7 @@ function openProjectDetails(id, proj) {
         }
       });
     });
-  } else if (images.length === 1) {
+  } else if (images.length === 1 && !proj.analysisOverview) {
     const singleImg = panel.querySelector('.drawer-slideshow img');
     if (singleImg) {
       singleImg.addEventListener('click', (e) => {
@@ -1348,6 +1522,38 @@ function openProjectDetails(id, proj) {
         }
       });
     }
+  }
+
+  // Bind zoom lightbox click events for custom overview grids and map if present
+  const overviewCards = panel.querySelectorAll('.clickable-overview-img');
+  overviewCards.forEach((card) => {
+    card.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const img = card.querySelector('img');
+      const lightbox = document.getElementById('hologram-lightbox');
+      const lbImg = document.getElementById('lightbox-img');
+      const lbCaption = document.getElementById('lightbox-caption');
+      if (lightbox && lbImg && img) {
+        lbImg.src = img.src;
+        if (lbCaption) lbCaption.textContent = img.alt || '';
+        lightbox.classList.add('active');
+      }
+    });
+  });
+
+  const scopeMap = panel.querySelector('.zoomable-scope-map');
+  if (scopeMap) {
+    scopeMap.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const lightbox = document.getElementById('hologram-lightbox');
+      const lbImg = document.getElementById('lightbox-img');
+      const lbCaption = document.getElementById('lightbox-caption');
+      if (lightbox && lbImg) {
+        lbImg.src = scopeMap.src;
+        if (lbCaption) lbCaption.textContent = 'Project Geographic Scope: Sukoharjo Regency, Central Java';
+        lightbox.classList.add('active');
+      }
+    });
   }
 
   // Suspend heavy Three.js animation rendering loop
@@ -1376,6 +1582,12 @@ function closeProjectDetails() {
   const panel = document.getElementById('details-drawer-panel');
 
   if (!overlay || !panel) return;
+
+  // Destroy dynamic title Lottie animation
+  if (window.drawerTitleLottieAnim) {
+    window.drawerTitleLottieAnim.destroy();
+    window.drawerTitleLottieAnim = null;
+  }
 
   // Restore transform state before animating close
   gsap.set(panel, { xPercent: 0 });

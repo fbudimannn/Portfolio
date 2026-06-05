@@ -605,7 +605,7 @@ This file compiles and structures all projects from Fakhri Budiman's data portfo
 
 ## CATEGORY 8: Impact Projects (Structure 1)
 
-### 23. Kemensos Social Aid (Bansos) Distribution Pipeline & Dashboard
+### 23. Kemensos Social Aid (Bansos) Distribution Analysis & Dashboard
 * **Project Overview:**
  I had the opportunity to assist the Ministry of Social Affairs, primarily in the Sukoharjo region, in transforming social assistance (Bansos) distribution data. This project involved extracting unstructured data from .txt files—consisting of 5,000 to 1.5 million data points ranging from the district to the provincial level—and manipulating and cleaning it using Python.
 

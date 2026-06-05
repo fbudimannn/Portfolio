@@ -2742,3 +2742,216 @@ img.simple-icon {
   }
 }
 
+/* ==========================================================================
+   BANSOS & IMPACT LAYOUT IMPROVEMENTS (Premium Editorial Styling)
+   ========================================================================== */
+
+/* Project Card Map Watermark */
+.card-bg-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.12;
+  transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(0.3px);
+}
+
+.project-card:hover .card-bg-image {
+  opacity: 0.22;
+  transform: scale(1.06);
+}
+
+/* Maintain proper stack indexing for card content above background watermark */
+.project-card .card-meta,
+.project-card .card-title,
+.project-card .card-desc,
+.project-card .card-tags {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Drawer Title Lottie wrap */
+.detail-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.drawer-title-lottie-container {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tool badge logos */
+.detail-tool-badge {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tool-logo-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+/* Testimonial card side-by-side */
+.detail-testimonial-wrapper {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+  padding: 2.25rem;
+  border-radius: 16px;
+  margin-top: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.015);
+}
+
+.testimonial-avatar {
+  flex: 0 0 80px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.testimonial-content {
+  flex: 1;
+}
+
+.testimonial-quote {
+  font-size: 0.98rem;
+  font-style: italic;
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 0.85rem;
+  position: relative;
+}
+
+.testimonial-quote::before {
+  content: '“';
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  color: rgba(245, 158, 11, 0.2);
+  position: absolute;
+  left: -1.75rem;
+  top: -1.75rem;
+  line-height: 1;
+}
+
+.testimonial-author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.testimonial-author {
+  font-weight: 700;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.testimonial-role {
+  font-size: 0.78rem;
+  color: #6b7280;
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 600px) {
+  .detail-testimonial-wrapper {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.25rem;
+    padding: 1.75rem;
+  }
+  .testimonial-quote::before {
+    display: none;
+  }
+}
+
+/* Custom image layout grids for Separated Overviews */
+.detail-overview-section {
+  margin-bottom: 3.5rem;
+}
+
+.detail-overview-desc {
+  font-size: 0.95rem;
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.detail-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.detail-overview-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s;
+  cursor: zoom-in;
+}
+
+.detail-overview-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+  border-color: var(--accent-color-light, #111827);
+}
+
+.detail-overview-img-wrapper {
+  height: 220px;
+  overflow: hidden;
+  position: relative;
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-overview-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.detail-overview-card:hover .detail-overview-img-wrapper img {
+  transform: scale(1.04);
+}
+
+.detail-overview-caption {
+  padding: 0.9rem 1.25rem;
+  font-size: 0.8rem;
+  color: #4b5563;
+  font-weight: 600;
+  line-height: 1.4;
+  background: #fafafa;
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+@media (max-width: 768px) {
+  .detail-overview-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .detail-overview-img-wrapper {
+    height: 180px;
+  }
+}
+

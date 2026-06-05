@@ -457,14 +457,37 @@ export const projectsData = {
     structure: 1,
     category: 'Impact Projects',
     accent: 'var(--accent-impact)',
-    title: 'Kemensos Social Aid (Bansos) Distribution Pipeline',
+    title: 'Kemensos Social Aid (Bansos) Distribution Analysis & Dashboard',
     client: 'Ministry of Social Affairs (Sukoharjo Region)',
     timeline: 'Dec 2022 - Apr 2023',
-    role: 'Data & Dashboard Analyst',
-    tools: ['Python', 'Pandas', 'Tableau Prep', 'Looker Studio', 'Excel'],
-    overviewText: 'Collaborated with social aid officials to pre-process over 1.5 million demographic and spatial records. Built Python parsers and Tableau Prep scripts to combine raw text records with GADM spatial data, automating the reporting structure for local social aid distributions.',
-    impactText: 'Automated daily distribution trackers, saving social services officials 80% manual reporting overhead. Empowered Grogol district teams to track real-time recipient status on clean dashboards.',
-    quoteText: '"Fakhri\'s expertise in manipulating and transforming large data points made the analysis process much easier." — Deri Afianto, Ministry of Social Affairs Sukoharjo',
+    location: 'Sukoharjo Region, Central Java, Indonesia',
+    role: null, // Omit role display as requested
+    tools: ['Python', 'Pandas', 'Tableau Prep', 'Tableau', 'Looker Studio', 'Excel'],
+    overviewText: 'I had the opportunity to assist the Ministry of Social Affairs, primarily in the Sukoharjo region, in transforming social assistance (Bansos) distribution data. This project involved extracting unstructured data from .txt files—consisting of 5,000 to 1.5 million data points ranging from the district to the provincial level—and manipulating and cleaning it using Python. Additionally, I conducted data manipulation in Tableau Prep to combine GADM (spatial data) with the original dataset, which was later visualized using Tableau.',
+    impactText: 'Successfully automated daily distribution reporting for Grogol Subdistrict. Improved data tracking efficiency by 80% for social service officials.',
+    testimonial: {
+      quote: "Fakhri's expertise and guidance have truly empowered me to uncover meaningful insights from my raw data until visualization. The seamless integration between Google Form, Google Sheet, and Looker Studio has made the process efficient and seamless.",
+      author: "Deri Afianto",
+      role: "Ministry of Social Affairs Employee",
+      photo: "/projects/impac projects/bansos/foto mas deri afianto.png"
+    },
+    analysisOverview: {
+      title: 'Analysis Overview',
+      desc: 'Data cleaning and manipulation process executed to prepare the raw unstructured text datasets.',
+      images: [
+        { src: '/projects/impac projects/bansos/Data cleaning and manipulation with spreadsheet.png', caption: 'Data cleaning and manipulation with spreadsheet' },
+        { src: '/projects/impac projects/bansos/data cleaning ang mainpulation with python.png', caption: 'Data cleaning and manipulation with python' }
+      ]
+    },
+    dashboardOverview: {
+      title: 'Dashboard Overview',
+      desc: 'Finished interactive visualization dashboards tracking distribution metrics at provincial and district levels.',
+      images: [
+        { src: '/projects/impac projects/bansos/province level tableau.png', caption: 'Province level Tableau annual dashboard' },
+        { src: '/projects/impac projects/bansos/district level looker.png', caption: 'District level Looker Studio live dashboard' }
+      ]
+    },
+    cardBgImage: '/projects/impac projects/bansos/gambar kabpuaten sukoharjo.jpg',
     links: [
       { label: 'Looker Studio Dashboard', url: 'https://intip.in/TableauDashboardTrafﬁcAnalysis' }
     ]
