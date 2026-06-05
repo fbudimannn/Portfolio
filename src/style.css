@@ -440,6 +440,44 @@ img { max-width: 100%; display: block; }
 .hero-cta svg { transition: transform 0.3s; }
 .hero-cta:hover svg { transform: translate(3px, -3px); }
 
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.hero-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  background: transparent;
+  padding: 0.8rem 1.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.4s ease;
+  letter-spacing: 0.02em;
+}
+
+.hero-secondary-btn:hover {
+  border-color: var(--text);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.hero-secondary-btn svg {
+  transition: transform 0.3s;
+}
+
+.hero-secondary-btn:hover svg {
+  transform: translateY(2px);
+}
+
 /* RIGHT — Photo with silhouette */
 .hero-right {
   flex: 1; display: flex;
@@ -1912,7 +1950,7 @@ img.simple-icon {
   .section-container { padding: 4rem 1.2rem; }
   .hero-split { padding-top: 4.5rem; }
   .hero-desc { font-size: 0.9rem; }
-  .hero-cta { font-size: 0.78rem; padding: 0.7rem 1.4rem; }
+  .hero-cta, .hero-secondary-btn { font-size: 0.78rem; padding: 0.7rem 1.4rem; }
   .bubbles-container { inset: 0% -5% 0% -5%; }
   .bubble { font-size: 0.45rem; padding: 0.2rem 0.4rem; border-width: 1px; }
 }

@@ -422,10 +422,10 @@ function animateHeroEntrance() {
       { opacity: 1, y: 0, duration: 0.9 },
       '-=0.3'
     )
-    // Stage 4: CTA button
-    .fromTo('.hero-cta',
+    // Stage 4: Hero CTA actions
+    .fromTo('.hero-actions > a',
       { opacity: 0, y: 20, scale: 0.9 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.7)' },
+      { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.08, ease: 'back.out(1.7)' },
       '-=0.5'
     )
     // Stage 5: Photo materializes from blur with silhouette
