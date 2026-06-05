@@ -1206,11 +1206,6 @@
             if (navEl) navEl.style.display = 'none';
             if (footerEl) footerEl.style.display = 'none';
 
-            const cursorDot = document.getElementById('cursor-dot');
-            const cursorRing = document.getElementById('cursor-ring');
-            if (cursorDot) cursorDot.style.display = 'none';
-            if (cursorRing) cursorRing.style.display = 'none';
-
             // Reset the portal scale and translation silently behind the space room
             gsap.set(portalEl, { scale: 1, x: 0, y: 0 });
             portalEl.style.zIndex = '';
@@ -1254,11 +1249,6 @@
           if (mainEl) mainEl.style.display = '';
           if (navEl) navEl.style.display = '';
           if (footerEl) footerEl.style.display = '';
-
-          const cursorDot = document.getElementById('cursor-dot');
-          const cursorRing = document.getElementById('cursor-ring');
-          if (cursorDot) cursorDot.style.display = '';
-          if (cursorRing) cursorRing.style.display = '';
 
           // Restore scroll position to where user was
           window.scrollTo(0, landingScrollY);
