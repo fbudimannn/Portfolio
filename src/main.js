@@ -760,25 +760,39 @@ const projectImages = {
 
 /* ============ PROJECT CARDS ============ */
 function initProjectCards() {
-  gsap.from('#projects-header', {
-    y: 50, opacity: 0, duration: 0.8,
-    scrollTrigger: { trigger: '#projects', start: 'top 80%' }
+  // Create a single unified timeline for the projects section to prevent trigger race conditions & height shifts
+  const projectsTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#projects',
+      start: 'top 80%',
+      once: true // Run once and keep the final state
+    }
   });
 
-  // Stagger category cards in
-  gsap.from('.category-card', {
-    y: 30, opacity: 0, duration: 0.5,
+  // 1. Fade in projects header
+  projectsTimeline.from('#projects-header', {
+    y: 50,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power2.out'
+  });
+
+  // 2. Stagger category cards in (overlapping slightly with header)
+  projectsTimeline.from('.category-card', {
+    y: 30,
+    opacity: 0,
+    duration: 0.5,
     stagger: 0.05,
-    ease: 'power2.out',
-    scrollTrigger: { trigger: '.project-categories', start: 'top 85%' }
-  });
+    ease: 'power2.out'
+  }, '-=0.4');
 
-  // Animate the projects carousel wrapper as a whole to prevent card hover/parallax scrolling bugs
-  gsap.from('.projects-carousel-wrapper', {
-    y: 50, opacity: 0, duration: 0.8,
-    ease: 'power2.out',
-    scrollTrigger: { trigger: '.project-categories', start: 'top 85%' }
-  });
+  // 3. Fade in the projects carousel wrapper (overlapping slightly with categories)
+  projectsTimeline.from('.projects-carousel-wrapper', {
+    y: 50,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power2.out'
+  }, '-=0.3');
 
   // ─── CAROUSEL & PAGINATION STATE ───
   const carousel = document.getElementById('projects-carousel-container');
