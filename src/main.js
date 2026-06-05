@@ -9,16 +9,7 @@ import { projectsData } from './projectsData.js';
 // Expose Lottie globally to support inline scripts (e.g. index.html)
 window.lottie = lottie;
 
-// Import category hub Lottie JSONs as ESM modules
-import allProjectsLottie from './icon_project_archives.json';
-import customerBehaviorLottie from '../projects/Customer Behavior Analysis/customer behaviour analysis.json';
-import endToEndLottie from '../projects/END to end analysis/end to end analysis.json';
-import machineLearningLottie from '../projects/machine learning/machine learning.json';
-import appliedAiLottie from '../projects/Applied AI & Intelligent Systems/APPLIED AI AND INTELLIGENT.json';
-import databaseBuildingLottie from '../projects/Database Building/databasebuilding.json';
-import abTestingLottie from '../projects/AB Testing/ab testing.json';
-import dataVizLottie from '../projects/Data Visualization/dataviz.json';
-import impactProjectsLottie from '../projects/impac projects/impact.json';
+// Lottie JSON assets are fetched dynamically at runtime to optimize bundle size
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -386,6 +377,9 @@ function animateHeroEntrance() {
       startGreetingRotator();
       if (window.startBubbles) window.startBubbles();
       if (window.triggerMusicUI) window.triggerMusicUI();
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+      }
     }
   });
 
@@ -1382,6 +1376,9 @@ function closeProjectDetails() {
           document.body.style.overflow = '';
           // Resume background Three.js loop
           resumeThreeBackground();
+          if (typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.refresh();
+          }
         }
       });
     }
@@ -1865,43 +1862,71 @@ function initLottieAnimations() {
     });
   }
 
-  // Load category hub Lottie animations next to filters
-  const categoryLotties = {
-    all: allProjectsLottie,
-    customer: customerBehaviorLottie,
-    'end-to-end': endToEndLottie,
-    ml: machineLearningLottie,
-    ai: appliedAiLottie,
-    database: databaseBuildingLottie,
-    ab: abTestingLottie,
-    viz: dataVizLottie,
-    impact: impactProjectsLottie
+  // Paths mapping for on-demand dynamic Lottie fetches (reduces JS bundle size)
+  const categoryLottiePaths = {
+    all: '/foto/expereince/icon project archives.json',
+    customer: '/projects/Customer Behavior Analysis/customer behaviour analysis.json',
+    'end-to-end': '/projects/END to end analysis/end to end analysis.json',
+    ml: '/projects/machine learning/machine learning.json',
+    ai: '/projects/Applied AI & Intelligent Systems/APPLIED AI AND INTELLIGENT.json',
+    database: '/projects/Database Building/databasebuilding.json',
+    ab: '/projects/AB Testing/ab testing.json',
+    viz: '/projects/Data Visualization/dataviz.json',
+    impact: '/projects/impac projects/impact.json'
   };
 
-  Object.keys(categoryLotties).forEach(key => {
+  const loadPromises = Object.keys(categoryLottiePaths).map(key => {
     const container = document.getElementById(`lottie-cat-${key}`);
     if (container && typeof lottie !== 'undefined') {
-      // Deep clone to prevent mutating read-only module imports
-      const clonedLottie = JSON.parse(JSON.stringify(categoryLotties[key]));
-      makeLottieColorsBright(clonedLottie);
+      return fetch(categoryLottiePaths[key])
+        .then(res => {
+          if (!res.ok) throw new Error(`Failed to fetch Lottie asset for key "${key}"`);
+          return res.json();
+        })
+        .then(data => {
+          try {
+            // Deep clone to prevent mutating read-only objects
+            const clonedLottie = JSON.parse(JSON.stringify(data));
+            
+            // Process colors safely with error boundary
+            try {
+              makeLottieColorsBright(clonedLottie);
+            } catch (colorErr) {
+              console.error(`Color processing error for key "${key}":`, colorErr);
+            }
 
-      const anim = lottie.loadAnimation({
-        container: container,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        animationData: clonedLottie
-      });
+            const anim = lottie.loadAnimation({
+              container: container,
+              renderer: 'svg',
+              loop: true,
+              autoplay: true,
+              animationData: clonedLottie
+            });
 
-      // Special handling for Customer Behaviour to keep the person visible and prevent entry/exit fading
-      if (key === 'customer') {
-        anim.addEventListener('DOMLoaded', () => {
-          const totalFrames = anim.totalFrames;
-          const startFrame = Math.floor(totalFrames * 0.15);
-          const endFrame = Math.floor(totalFrames * 0.65);
-          anim.playSegments([startFrame, endFrame], true);
+            // Special handling for Customer Behaviour to keep the person visible and prevent entry/exit fading
+            if (key === 'customer') {
+              anim.addEventListener('DOMLoaded', () => {
+                const totalFrames = anim.totalFrames;
+                const startFrame = Math.floor(totalFrames * 0.15);
+                const endFrame = Math.floor(totalFrames * 0.65);
+                anim.playSegments([startFrame, endFrame], true);
+              });
+            }
+          } catch (renderErr) {
+            console.error(`Render error for key "${key}":`, renderErr);
+          }
+        })
+        .catch(fetchErr => {
+          console.error(`Fetch error for key "${key}":`, fetchErr);
         });
-      }
+    }
+    return Promise.resolve();
+  });
+
+  // Recalculate ScrollTrigger markers once all dynamic icon paths settle
+  Promise.all(loadPromises).then(() => {
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.refresh();
     }
   });
 }
