@@ -374,6 +374,7 @@ img { max-width: 100%; display: block; }
 /* Hide hero elements until JS entrance animation runs — prevents FOUC */
 .hero-desc,
 .hero-cta,
+.hero-secondary-btn,
 .hero-photo,
 .photo-silhouette,
 .bubble,
@@ -3119,8 +3120,8 @@ img.simple-icon {
 .pdf-popup-notification {
   position: absolute;
   top: calc(100% + 14px);
-  left: 0;
-  transform: translateY(-10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
   width: 260px;
   background: rgba(13, 13, 31, 0.96);
   backdrop-filter: blur(12px);
@@ -3138,14 +3139,14 @@ img.simple-icon {
 .pdf-popup-notification.visible {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
 }
 
 .pdf-popup-arrow {
   position: absolute;
   bottom: 100%;
-  left: 28px;
-  transform: none;
+  left: 50%;
+  transform: translateX(-50%);
   border-width: 7px;
   border-style: solid;
   border-color: transparent transparent rgba(56, 189, 248, 0.4) transparent;
