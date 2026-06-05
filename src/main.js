@@ -717,8 +717,8 @@ const projectImages = {
   ],
   funnel_analysis: [
     { src: '/projects/Customer Behavior Analysis/Funnel analysis/UI IMPROVEMENT OVERVEW.png', caption: 'UI/UX Improvement Recommendations' },
-    { src: '/projects/Customer Behavior Analysis/Funnel analysis/AANALYSIS OVERVEIW 1_FUNNELOVERVIEW.png', caption: 'Application Conversion Funnel Analysis' },
-    { src: '/projects/Customer Behavior Analysis/Funnel analysis/ANALYSIS OVERVIEW_FUNNEL OVERVIEW.png', caption: 'User Flow and Funnel Breakdown' },
+    { src: '/projects/Customer Behavior Analysis/Funnel analysis/AANALYSIS OVERVEIW 1_FUNNELOVERVEIW.png', caption: 'Application Conversion Funnel Analysis' },
+    { src: '/projects/Customer Behavior Analysis/Funnel analysis/ANALYSIS OVERVIEW_FUNNEL OVERVIEW 5.png', caption: 'User Flow and Funnel Breakdown' },
     { src: '/projects/Customer Behavior Analysis/Funnel analysis/ANALYSIS OVERVIEW_FUNNEL OVERVIEW 2.png', caption: 'Conversion and Exit Rates Analysis 2' },
     { src: '/projects/Customer Behavior Analysis/Funnel analysis/ANALYSIS OVERVIEW_FUNNEL OVERVIEW 3.png', caption: 'Conversion and Exit Rates Analysis 3' },
     { src: '/projects/Customer Behavior Analysis/Funnel analysis/ANALYSIS OVERVIEW_FUNNEL OVERVIEW 4.png', caption: 'Conversion and Exit Rates Analysis 4' }
@@ -726,7 +726,7 @@ const projectImages = {
   market_basket: [
     { src: '/projects/Customer Behavior Analysis/Market basket analysis/glimpse of analysis overview 1.png', caption: 'Apriori Analysis Association Rules Overview 1' },
     { src: '/projects/Customer Behavior Analysis/Market basket analysis/glimpse of analysis overview 2.png', caption: 'Apriori Analysis Association Rules Overview 2' },
-    { src: '/projects/Customer Behavior Analysis/Market basket analysis/glimpse of python script 1.png', caption: 'Python script executing Apriori algorithm 1' },
+    { src: '/projects/Customer Behavior Analysis/Market basket analysis/glimpse of python script_1.png', caption: 'Python script executing Apriori algorithm 1' },
     { src: '/projects/Customer Behavior Analysis/Market basket analysis/glimpse of python script 2.png', caption: 'Python script executing Apriori algorithm 2' }
   ],
   nyc_accident: [
@@ -755,7 +755,7 @@ const projectImages = {
     { src: '/projects/impac projects/pk 239/ERD and database.png', caption: 'Star Schema Relational ERD Database Design' },
     { src: '/projects/impac projects/pk 239/Table and functions usage 1.png', caption: 'Google Sheets Automated Query Tables 1' },
     { src: '/projects/impac projects/pk 239/Table and functions usage 2.png', caption: 'Google Sheets Automated Query Tables 2' },
-    { src: '/projects/impac projects/pk 239/database team ( aku yang pojok kiri duduk) klo bisa ga usah di tampilin as main image cuman optional page aja atua gimana.png', caption: 'LPDP PK 239 Database Management Team' }
+    { src: '/projects/impac projects/pk 239/database team ( aku yang pojok kiri duduk) klo bisa bikin bersinar hehe.png', caption: 'LPDP PK 239 Database Management Team' }
   ],
   sql_academy: [
     { src: '/projects/impac projects/SQL ACADEMY/ppi uk.png', caption: 'PPI UK Education Initiative SQL Academy' },
