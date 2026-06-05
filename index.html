@@ -1190,6 +1190,9 @@
             // Store current scroll position to restore on warp back
             landingScrollY = window.scrollY;
 
+            // Temporarily disable smooth scroll to prevent scroll animation when page height shrinks
+            document.documentElement.style.scrollBehavior = 'auto';
+
             // Swap out the background quietly
             if (window.stopAllPortals) window.stopAllPortals();
 
@@ -1205,6 +1208,9 @@
             if (mainEl) mainEl.style.display = 'none';
             if (navEl) navEl.style.display = 'none';
             if (footerEl) footerEl.style.display = 'none';
+
+            // Restore smooth scroll
+            document.documentElement.style.scrollBehavior = '';
 
             // Reset the portal scale and translation silently behind the space room
             gsap.set(portalEl, { scale: 1, x: 0, y: 0 });
@@ -1250,8 +1256,10 @@
           if (navEl) navEl.style.display = '';
           if (footerEl) footerEl.style.display = '';
 
-          // Restore scroll position to where user was
+          // Restore scroll position instantly to prevent smooth scroll animation
+          document.documentElement.style.scrollBehavior = 'auto';
           window.scrollTo(0, landingScrollY);
+          document.documentElement.style.scrollBehavior = '';
 
           // Refresh ScrollTrigger to recalculate trigger boundaries
           if (window.gsap && window.gsap.ScrollTrigger) {
