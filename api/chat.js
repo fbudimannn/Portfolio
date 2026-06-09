@@ -5,21 +5,23 @@ import { fileURLToPath } from 'url';
 const MAX_MESSAGE_LENGTH = 500;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 20;
-const MODEL_TIMEOUT_MS = 14_000;
-const MAX_CONTEXT_CHARS = 16_000;
+const MODEL_TIMEOUT_MS = 18_000;
+const MAX_CONTEXT_CHARS = 14_000;
+
+const WHATSAPP_URL =
+  'https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0';
+
+// Sequential priority: NVIDIA first, then Gemma, then fallbacks
+const MODEL_CANDIDATES = [
+  'nvidia/nemotron-3-super-120b-a12b:free',
+  'google/gemma-4-26b-a4b-it:free',
+  'meta-llama/llama-3.3-70b-instruct:free',
+  'qwen/qwen3-coder:free',
+  'meta-llama/llama-3.2-3b-instruct:free',
+];
 
 const rateLimitStore = new Map();
 let cachedSystemPrompt = null;
-
-// Race models in parallel — prioritize stronger free models for quality
-const MODEL_CANDIDATES = [
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'google/gemma-4-26b-a4b-it:free',
-  'nvidia/nemotron-3-super-120b-a12b:free',
-  'qwen/qwen3-coder:free',
-  'meta-llama/llama-3.2-3b-instruct:free',
-  'liquid/lfm-2.5-1.2b-instruct:free',
-];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -40,10 +42,7 @@ function isRateLimited(ip) {
     return false;
   }
 
-  if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
-    return true;
-  }
-
+  if (entry.count >= RATE_LIMIT_MAX_REQUESTS) return true;
   entry.count += 1;
   return false;
 }
@@ -60,7 +59,7 @@ function loadProjectsData() {
       if (raw.length <= MAX_CONTEXT_CHARS) return raw;
       return `${raw.slice(0, MAX_CONTEXT_CHARS)}\n\n[Portfolio context truncated for faster responses.]`;
     } catch {
-      // Try next candidate path
+      // try next path
     }
   }
 
@@ -73,44 +72,130 @@ function getSystemPrompt() {
 
   const projectsData = loadProjectsData();
 
-  cachedSystemPrompt = `You are a friendly portfolio guide for Fakhri Budiman. Answer questions about his projects, experience, skills, and background in a warm, natural, and concise manner.
+  cachedSystemPrompt = `You are Fakhri Budiman's portfolio assistant. Answer ONLY using facts from the portfolio database below. Never invent projects, numbers, or employers.
 
 Core profile:
-- Role: Data Analyst & AI Enthusiast based in Indonesia.
-- Education: MSc Business Analytics at University of Warwick (UK).
-- Key Skills: SQL, PostgreSQL, BigQuery, Tableau, Power BI, Python, Machine Learning, Generative AI, Data Visualization.
+- Data Analyst & AI Enthusiast, Indonesia
+- MSc Business Analytics, University of Warwick
+- Skills: SQL, PostgreSQL, BigQuery, Tableau, Power BI, Python, ML, Generative AI
 
 Portfolio database:
 ${projectsData}
 
-Navigation actions (only when user wants to see a site section):
-- skills/tools -> "navigate_to_skills"
-- education/experience/career -> "navigate_to_experience"
-- projects/case studies -> "navigate_to_projects"
-- contact/linkedin/email -> "navigate_to_contact"
-- otherwise -> null
+Navigation (only when user wants to open a site section):
+- skills/tools -> navigate_to_skills
+- education/experience/career/Warwick -> navigate_to_experience
+- projects/case studies -> navigate_to_projects
+- contact/linkedin/email/whatsapp -> navigate_to_contact
 
-Contact links (use markdown exactly when asked about contact):
-- [Email](mailto:fakhribudiman1721@gmail.com)
-- [WhatsApp](https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0)
-- [LinkedIn](https://www.linkedin.com/in/muhammad-fakhri-musyaffa-budiman)
-- [Portfolio](https://fakhri-budiman-portfolio.vercel.app)
-- [GitHub](https://github.com/fbudimannn)
+LANGUAGE RULES (critical):
+- Reply in the SAME language/style as the user.
+- Indonesian question -> Indonesian answer.
+- Jaksel request -> casual Jakarta slang (gue/lo/nih/banget/gas/bro), stay factual.
+- English question -> English answer.
+- If user only asks whether you CAN use a language, confirm IN that language immediately. Example Jaksel: "Oke siap bro! Mau nanya apa nih tentang Fakhri? Gue jelasin pakai bahasa Jaksel ya."
+- Never reply in English when the user writes in Indonesian.
+- Never explain meta-capabilities — just answer.
 
-Language:
-- Match the user's language. Indonesian question -> Indonesian answer.
-- If user asks for Jaksel slang / bahasa gaul, reply in casual Jakarta slang (gue/lo, nih, banget, gas) while staying accurate about Fakhri.
-- If user only asks whether you CAN use a language/style, confirm IN that style first. Example: "Oke siap! Mau nanya apa nih tentang Fakhri? Gue jelasin pakai bahasa Jaksel ya."
+JAKSEL FEW-SHOT:
+User: "bisa bahasa jaksel?"
+Assistant reply: "Oke siap bro! Mau nanya apa nih tentang Fakhri? Gue jelasin pakai bahasa Jaksel ya."
+User: "jelasin project ML-nya fakhri"
+Assistant reply: "Sip! Salah satu project ML Fakhri itu F1 Bayesian Predictor — dia bikin model prediksi pakai Python buat analisis data F1. Tools-nya Python, fokusnya machine learning & visualisasi hasil. Mau gue bahas project lain juga?"
 
-Rules:
-- Respond ONLY with valid JSON: {"reply":"...","action":null|"navigate_to_skills"|"navigate_to_experience"|"navigate_to_projects"|"navigate_to_contact"}
-- The "reply" value MUST be one plain-text string (markdown bullets ok). NEVER put objects or arrays inside "reply".
-- For hiring pitches, write a compelling but factual summary in clear prose or markdown bullets as text.
-- Keep answers concise unless the user asks for a specific length.
-- Use markdown hyperlinks for contact links, never raw URLs alone.
-- Do not hyperlink random phrases in intro sentences.`;
+OUTPUT FORMAT (strict):
+Respond ONLY with JSON: {"reply":"plain text string","action":null|"navigate_to_skills"|"navigate_to_experience"|"navigate_to_projects"|"navigate_to_contact"}
+- "reply" MUST be a single string. No nested objects. No field names like project_overview or Profile Summary as labels.
+- Use markdown bullets and [Label](url) for links when needed.
+- Keep answers concise unless user asks for a specific length.`;
 
   return cachedSystemPrompt;
+}
+
+function detectLanguageMode(message) {
+  const lower = message.toLowerCase();
+
+  if (
+    /jaksel|jakselo|bahasa\s*gaul|bahasa\s*jakarta|gue\s*lo|sok\s*gaul/i.test(lower) ||
+    /\bbro+k?\b|\bbjir\b|\bgas+kan\b/i.test(lower)
+  ) {
+    return 'jaksel';
+  }
+
+  if (
+    /bahasa\s*indo(?:nesia)?|dalam\s*bahasa\s*indo|pakai\s*indo|jelaskan\s*dalam|gunakan\s*bahasa\s*indo/i.test(
+      lower
+    )
+  ) {
+    return 'id';
+  }
+
+  const idHints =
+    /\b(hai|halo|dong|gimana|kenapa|jelasin|jelaskan|bisa|tolong|contoh|projectnya|tentang|pakai|bahasa|kau|kamu|gue|gw|ga|gak|nggak|nih|banget|bro|brok|kah|ya|yg|aja|nih)\b/gi;
+  const enHints =
+    /\b(the|and|what|how|why|tell|about|please|could|would|your|projects|skills|experience|hiring|worth)\b/gi;
+
+  const idCount = (message.match(idHints) || []).length;
+  const enCount = (message.match(enHints) || []).length;
+
+  if (idCount >= 2 && idCount >= enCount) return 'id';
+  if (enCount >= 2 && enCount > idCount) return 'en';
+
+  // Default: Indonesian if message has typical ID particles
+  if (/[áéíóú]|ng$|kah$|dong$|nih\b|gak\b|nggak\b/i.test(lower) || idCount >= 1) {
+    return 'id';
+  }
+
+  return 'en';
+}
+
+function isContactQuestion(message) {
+  return /contact|reach\s*(him|fakhri|out)?|email|whatsapp|linkedin|phone|hubungi|kontak|cara\s*hubung|how\s*can\s*i\s*(reach|contact)/i.test(
+    message
+  );
+}
+
+function getContactTemplate(lang) {
+  const links = `- [Email](mailto:fakhribudiman1721@gmail.com)
+- [WhatsApp](${WHATSAPP_URL})
+- [LinkedIn](https://www.linkedin.com/in/muhammad-fakhri-musyaffa-budiman)
+- [Portfolio](https://fakhri-budiman-portfolio.vercel.app)
+- [GitHub](https://github.com/fbudimannn)`;
+
+  if (lang === 'jaksel') {
+    return {
+      reply: `Nih bro cara hubungin Fakhri:\n${links}\n\nFeel free buat reach out kalau mau diskusi kolaborasi, job, atau sekadar say hi!`,
+      action: 'navigate_to_contact',
+    };
+  }
+
+  if (lang === 'id') {
+    return {
+      reply: `Berikut cara menghubungi Fakhri:\n${links}\n\nSilakan hubungi lewat channel mana pun yang paling nyaman untuk Anda.`,
+      action: 'navigate_to_contact',
+    };
+  }
+
+  return {
+    reply: `Here's how you can reach Fakhri:\n${links}\n\nFeel free to reach out for collaborations, opportunities, or just to say hello!`,
+    action: 'navigate_to_contact',
+  };
+}
+
+function buildAugmentedUserMessage(message, lang, isRetry = false) {
+  const instructions = {
+    en: 'Reply in English.',
+    id: 'WAJIB jawab dalam Bahasa Indonesia yang natural. Jangan pakai Bahasa Inggris.',
+    jaksel:
+      'WAJIB jawab pakai bahasa Jaksel gaul Jakarta (gue/lo/nih/banget/gas/bro). Jangan formal, jangan Bahasa Inggris.',
+  };
+
+  let prefix = `[Language instruction: ${instructions[lang]}]\n`;
+  if (isRetry) {
+    prefix += `[RETRY: Your previous answer used the wrong language or invalid format. Fix it now.]\n`;
+  }
+
+  return `${prefix}${message}`;
 }
 
 function formatReplyValue(value) {
@@ -146,7 +231,7 @@ function formatReplyValue(value) {
 }
 
 function normalizeReplyField(reply) {
-  if (typeof reply === 'string') return reply;
+  if (typeof reply === 'string') return reply.trim();
   return formatReplyValue(reply).trim();
 }
 
@@ -161,15 +246,56 @@ function sanitizeAction(action, reply) {
   if (!action || VALID_ACTIONS.has(action)) {
     return { action: action || null, reply };
   }
-
   if (typeof action === 'string') {
-    return {
-      action: null,
-      reply: `${reply}\n\n${action}`.trim(),
-    };
+    return { action: null, reply: `${reply}\n\n${action}`.trim() };
+  }
+  return { action: null, reply };
+}
+
+function looksLikeSchemaDump(reply) {
+  return /^(project_overview|profile summary|key projects|core skills|contact info|career goals):/im.test(
+    reply
+  );
+}
+
+function isWrongLanguage(reply, lang) {
+  if (lang === 'en') return false;
+
+  const lower = reply.toLowerCase();
+  const englishOpeners =
+    /^(sure!|sure,|i can|i'll|let me|here's|here is|of course|certainly|absolutely|i am|i'm)/i;
+  if (englishOpeners.test(reply.trim())) return true;
+
+  const englishHeavy =
+    /\b(the|and|your|projects|skills|experience|summary|overview|would|could|please|let me know)\b/gi;
+  const indoHints =
+    /\b(yang|dan|dengan|untuk|dari|ini|itu|gue|lo|nih|banget|bro|project|proyek|jelasin|fakhri|data|analisis|skill|pengalaman|bisa|siap|sip|gas)\b/gi;
+
+  const enCount = (reply.match(englishHeavy) || []).length;
+  const idCount = (reply.match(indoHints) || []).length;
+
+  if (lang === 'jaksel') {
+    const jakselHints = /\b(gue|lo|nih|banget|bro|gas|sip|oke|gw|dong|aja|bjir)\b/i;
+    if (!jakselHints.test(lower) && enCount > idCount) return true;
   }
 
-  return { action: null, reply };
+  return enCount >= 4 && enCount > idCount + 1;
+}
+
+function unwrapNestedJsonReply(reply) {
+  let text = reply.trim();
+  if (!text.startsWith('{') && !text.startsWith('[')) return text;
+
+  try {
+    const nested = JSON.parse(text);
+    if (nested && typeof nested.reply === 'string') {
+      return unwrapNestedJsonReply(nested.reply);
+    }
+  } catch {
+    // not nested JSON
+  }
+
+  return text;
 }
 
 function parseModelResponse(replyText) {
@@ -178,15 +304,11 @@ function parseModelResponse(replyText) {
 
     if (parsedResult && typeof parsedResult === 'object') {
       if (!parsedResult.reply) {
-        if (parsedResult.response) {
-          parsedResult.reply = parsedResult.response;
-        } else if (parsedResult.content) {
-          parsedResult.reply = parsedResult.content;
-        } else if (parsedResult.text) {
-          parsedResult.reply = parsedResult.text;
-        } else if (parsedResult.message) {
-          parsedResult.reply = parsedResult.message;
-        } else {
+        if (parsedResult.response) parsedResult.reply = parsedResult.response;
+        else if (parsedResult.content) parsedResult.reply = parsedResult.content;
+        else if (parsedResult.text) parsedResult.reply = parsedResult.text;
+        else if (parsedResult.message) parsedResult.reply = parsedResult.message;
+        else {
           let formattedText = '';
           for (const [key, val] of Object.entries(parsedResult)) {
             if (key === 'action') continue;
@@ -199,7 +321,7 @@ function parseModelResponse(replyText) {
         }
       }
 
-      parsedResult.reply = normalizeReplyField(parsedResult.reply);
+      parsedResult.reply = unwrapNestedJsonReply(normalizeReplyField(parsedResult.reply));
       const sanitized = sanitizeAction(parsedResult.action, parsedResult.reply);
       parsedResult.reply = sanitized.reply;
       parsedResult.action = sanitized.action;
@@ -211,13 +333,21 @@ function parseModelResponse(replyText) {
       return parsedResult;
     }
   } catch {
-    // Fall through to plain-text fallback
+    // fall through
   }
 
   return {
     reply: replyText || "I'm sorry, I couldn't formulate a proper response.",
     action: null,
   };
+}
+
+function isValidReply(parsed, lang) {
+  if (!parsed.reply || parsed.reply.length < 8) return false;
+  if (parsed.reply.trim().startsWith('{') || parsed.reply.trim().startsWith('[')) return false;
+  if (looksLikeSchemaDump(parsed.reply)) return false;
+  if (isWrongLanguage(parsed.reply, lang)) return false;
+  return true;
 }
 
 async function callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage) {
@@ -241,8 +371,8 @@ async function callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage)
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMessage },
         ],
-        temperature: 0.2,
-        max_tokens: 900,
+        temperature: 0.25,
+        max_tokens: 850,
       }),
     });
 
@@ -253,9 +383,7 @@ async function callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage)
 
     const data = await response.json();
     const replyText = data.choices?.[0]?.message?.content;
-    if (!replyText) {
-      throw new Error('Empty model response');
-    }
+    if (!replyText) throw new Error('Empty model response');
 
     return { modelName, replyText };
   } finally {
@@ -263,35 +391,59 @@ async function callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage)
   }
 }
 
-async function getFastestModelReply(apiKey, systemPrompt, userMessage) {
-  const attempts = MODEL_CANDIDATES.map((modelName) =>
-    callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage)
-      .then((result) => {
-        console.log(`Chat success with model: ${modelName}`);
-        return result;
-      })
-      .catch((err) => {
-        console.warn(`Model ${modelName} failed:`, err.message);
-        throw err;
-      })
-  );
+async function getSequentialModelReply(apiKey, systemPrompt, userMessage) {
+  let lastError = null;
 
-  try {
-    return await Promise.any(attempts);
-  } catch {
-    // Free models often hit 429 — retry sequentially with a short pause
-    for (const modelName of MODEL_CANDIDATES) {
-      await sleep(900);
-      try {
-        const result = await callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage);
-        console.log(`Chat success on sequential retry with model: ${modelName}`);
-        return result;
-      } catch (err) {
-        console.warn(`Sequential retry failed for ${modelName}:`, err.message);
-      }
+  for (let i = 0; i < MODEL_CANDIDATES.length; i += 1) {
+    const modelName = MODEL_CANDIDATES[i];
+    if (i > 0) await sleep(700);
+
+    try {
+      const result = await callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage);
+      console.log(`Chat success with model: ${modelName}`);
+      return result;
+    } catch (err) {
+      lastError = err;
+      console.warn(`Model ${modelName} failed:`, err.message);
     }
-    throw new Error('All model attempts failed');
   }
+
+  throw lastError || new Error('All model attempts failed');
+}
+
+async function generateChatReply(apiKey, userMessage) {
+  const lang = detectLanguageMode(userMessage);
+
+  if (isContactQuestion(userMessage)) {
+    return getContactTemplate(lang);
+  }
+
+  const systemPrompt = getSystemPrompt();
+  const augmented = buildAugmentedUserMessage(userMessage, lang, false);
+
+  const { replyText } = await getSequentialModelReply(apiKey, systemPrompt, augmented);
+  let parsed = parseModelResponse(replyText);
+
+  if (!isValidReply(parsed, lang)) {
+    console.warn('Reply failed validation, retrying with Gemma only');
+    const retryMessage = buildAugmentedUserMessage(userMessage, lang, true);
+    try {
+      const { replyText: retryText } = await callOpenRouterModel(
+        'google/gemma-4-26b-a4b-it:free',
+        apiKey,
+        systemPrompt,
+        retryMessage
+      );
+      const retryParsed = parseModelResponse(retryText);
+      if (isValidReply(retryParsed, lang)) {
+        parsed = retryParsed;
+      }
+    } catch (err) {
+      console.warn('Language retry failed:', err.message);
+    }
+  }
+
+  return parsed;
 }
 
 export default async function handler(req, res) {
@@ -328,9 +480,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const systemPrompt = getSystemPrompt();
-    const { replyText } = await getFastestModelReply(apiKey, systemPrompt, userMessage);
-    return res.status(200).json(parseModelResponse(replyText));
+    const result = await generateChatReply(apiKey, userMessage);
+    return res.status(200).json(result);
   } catch (err) {
     console.error('All chat model attempts failed:', err);
     return res.status(502).json({
