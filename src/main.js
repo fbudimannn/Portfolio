@@ -2300,6 +2300,7 @@ function initChatbot() {
   const inputEl = document.getElementById('chat-input');
   const suggestionsContainer = document.getElementById('chat-suggestions');
   const lottieContainer = document.getElementById('chat-lottie');
+  const headerLottieContainer = document.getElementById('chat-header-lottie');
 
   if (!widget || !trigger || !windowPanel || !closeBtn || !messagesContainer || !sendBtn || !inputEl) {
     console.warn('Chatbot DOM elements not found.');
@@ -2309,18 +2310,29 @@ function initChatbot() {
   let chatbotLogoAnim = null;
   let hasGreeted = false;
 
-  // Load Lottie animation for trigger
-  if (lottieContainer && typeof lottie !== 'undefined') {
-    try {
-      chatbotLogoAnim = lottie.loadAnimation({
-        container: lottieContainer,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: '/chatbot_logo.json'
-      });
-    } catch (e) {
-      console.error('Failed to load chatbot Lottie logo:', e);
+  // Load Lottie animation for trigger + header avatar
+  if (typeof lottie !== 'undefined') {
+    const lottieOptions = {
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: '/chatbot_logo.json',
+    };
+
+    if (lottieContainer) {
+      try {
+        chatbotLogoAnim = lottie.loadAnimation({ container: lottieContainer, ...lottieOptions });
+      } catch (e) {
+        console.error('Failed to load chatbot Lottie logo:', e);
+      }
+    }
+
+    if (headerLottieContainer) {
+      try {
+        lottie.loadAnimation({ container: headerLottieContainer, ...lottieOptions });
+      } catch (e) {
+        console.error('Failed to load header chatbot Lottie logo:', e);
+      }
     }
   }
 
@@ -2435,7 +2447,7 @@ function initChatbot() {
   }
 
   function showGreeting() {
-    appendMessage("Hi! 👋 I'm Fakhri's AI Assistant. I can tell you about his projects, MSc at Warwick, SQL/Python skills, or how to reach him. Feel free to ask!", 'bot');
+    appendMessage("Hi! 👋 Ask me anything about Fakhri, his projects, Warwick MSc, skills, or how to reach him.", 'bot');
     scrollToBottom();
   }
 
@@ -2502,16 +2514,70 @@ function initChatbot() {
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
-      
+
     // **bold**
     escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     // *italic*
     escaped = escaped.replace(/\*(.*?)\*/g, '<em>$1</em>');
     // [text](url)
-    escaped = escaped.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    escaped = escaped.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label, url) => {
+      return buildMessageLink(label, url);
+    });
+    // Label: url  →  hyperlink with label only (e.g. LinkedIn: linkedin.com/...)
+    escaped = escaped.replace(
+      /(^|<br>|\s)([A-Za-z][A-Za-z0-9 .&'-]{0,30}):\s*((?:https?:\/\/)?(?:www\.)?[^\s<]+|[^\s<]+@[^\s<]+\.[^\s<]+)/g,
+      (_match, prefix, label, url) => {
+        if (/^(https?|mailto)$/i.test(label.trim())) return _match;
+        return `${prefix}${buildMessageLink(label.trim(), url.trim())}`;
+      }
+    );
+    // Bare URLs / emails not already linked
+    escaped = escaped.replace(
+      /(^|[\s(])((?:https?:\/\/)?(?:www\.)?(?:linkedin|github|drive\.google|fakhri-budiman-portfolio\.vercel)\.[^\s<]+|[^\s<]+@[^\s<]+\.[^\s<]+)/gi,
+      (match, prefix, url, offset, full) => {
+        const before = full.slice(0, offset + prefix.length);
+        if (before.endsWith('href="') || before.endsWith('">')) return match;
+        return `${prefix}${buildMessageLink(inferLinkLabel(url), url)}`;
+      }
+    );
     // Newlines
     escaped = escaped.replace(/\n/g, '<br>');
-    
+
     return escaped;
+  }
+
+  function buildMessageLink(label, url) {
+    const href = normalizeMessageUrl(url);
+    const safeLabel = label
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+    const safeHref = href
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;');
+    return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${safeLabel}</a>`;
+  }
+
+  function normalizeMessageUrl(url) {
+    const value = url.trim();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      return `mailto:${value}`;
+    }
+    if (/^https?:\/\//i.test(value)) {
+      return value;
+    }
+    return `https://${value}`;
+  }
+
+  function inferLinkLabel(url) {
+    const lower = url.toLowerCase();
+    if (lower.includes('linkedin.com')) return 'LinkedIn';
+    if (lower.includes('github.com')) return 'GitHub';
+    if (lower.includes('vercel.app') || lower.includes('portfolio')) return 'Portfolio';
+    if (lower.includes('drive.google.com')) return 'CV / PDF';
+    if (lower.includes('@')) return 'Email';
+    if (lower.includes('mailto:')) return 'Email';
+    return 'Link';
   }
 }

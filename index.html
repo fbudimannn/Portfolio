@@ -1603,22 +1603,29 @@
   <!-- ====================== AI CHATBOT WIDGET ====================== -->
   <div class="chat-widget" id="chat-widget">
     <!-- Floating Trigger Button -->
-    <button class="chat-trigger" id="chat-trigger" aria-label="Open AI Assistant">
-      <div id="chat-lottie"></div>
-      <span class="chat-badge">AI</span>
-    </button>
+    <div class="chat-trigger-group">
+      <span class="chat-badge" aria-hidden="true">
+        <span class="chat-badge-text">Ask mee about Fakhri !!!!</span>
+      </span>
+      <button class="chat-trigger" id="chat-trigger" aria-label="Ask mee about Fakhri">
+        <div id="chat-lottie"></div>
+      </button>
+    </div>
 
     <!-- Chat Window Panel -->
     <div class="chat-window" id="chat-window">
       <!-- Chat Header -->
       <div class="chat-header">
         <div class="chat-header-info">
-          <div class="chat-avatar-status">
-            <div class="chat-status-indicator"></div>
+          <div class="chat-avatar-wrap">
+            <div class="chat-avatar-status">
+              <div id="chat-header-lottie" class="chat-header-lottie"></div>
+            </div>
+            <span class="chat-status-indicator" aria-hidden="true"></span>
           </div>
-          <div>
-            <h3 class="chat-title">Fakhri's AI Assistant</h3>
-            <span class="chat-subtitle">Online • Ask me anything</span>
+          <div class="chat-header-text">
+            <h3 class="chat-title">Fakhri's Assistant</h3>
+            <span class="chat-subtitle">Online</span>
           </div>
         </div>
         <button class="chat-close-btn" id="chat-close-btn" aria-label="Close chat">×</button>
