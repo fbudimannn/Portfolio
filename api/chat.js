@@ -4,18 +4,19 @@ import { fileURLToPath } from 'url';
 
 const MAX_MESSAGE_LENGTH = 500;
 const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX_REQUESTS = 10;
+const RATE_LIMIT_MAX_REQUESTS = 20;
+const MODEL_TIMEOUT_MS = 14_000;
+const MAX_CONTEXT_CHARS = 16_000;
 
 const rateLimitStore = new Map();
+let cachedSystemPrompt = null;
 
+// Fast models first — avoid long sequential fallbacks that hit Vercel timeout
 const MODEL_CANDIDATES = [
-  'nvidia/nemotron-3-super-120b-a12b:free',
-  'google/gemma-4-26b-a4b-it:free',
-  'google/gemma-4-31b-it:free',
-  'qwen/qwen3-coder:free',
-  'meta-llama/llama-3.3-70b-instruct:free',
   'meta-llama/llama-3.2-3b-instruct:free',
   'liquid/lfm-2.5-1.2b-instruct:free',
+  'google/gemma-4-26b-a4b-it:free',
+  'meta-llama/llama-3.3-70b-instruct:free',
 ];
 
 function getClientIp(req) {
@@ -51,7 +52,9 @@ function loadProjectsData() {
 
   for (const projectsPath of candidates) {
     try {
-      return fs.readFileSync(projectsPath, 'utf8');
+      const raw = fs.readFileSync(projectsPath, 'utf8');
+      if (raw.length <= MAX_CONTEXT_CHARS) return raw;
+      return `${raw.slice(0, MAX_CONTEXT_CHARS)}\n\n[Portfolio context truncated for faster responses.]`;
     } catch {
       // Try next candidate path
     }
@@ -59,6 +62,44 @@ function loadProjectsData() {
 
   console.error('Failed to read projects file from known locations.');
   return 'No projects data available.';
+}
+
+function getSystemPrompt() {
+  if (cachedSystemPrompt) return cachedSystemPrompt;
+
+  const projectsData = loadProjectsData();
+
+  cachedSystemPrompt = `You are a friendly portfolio guide for Fakhri Budiman. Answer questions about his projects, experience, skills, and background in a warm, natural, and concise manner.
+
+Core profile:
+- Role: Data Analyst & AI Enthusiast based in Indonesia.
+- Education: MSc Business Analytics at University of Warwick (UK).
+- Key Skills: SQL, PostgreSQL, BigQuery, Tableau, Power BI, Python, Machine Learning, Generative AI, Data Visualization.
+
+Portfolio database:
+${projectsData}
+
+Navigation actions (only when user wants to see a site section):
+- skills/tools -> "navigate_to_skills"
+- education/experience/career -> "navigate_to_experience"
+- projects/case studies -> "navigate_to_projects"
+- contact/linkedin/email -> "navigate_to_contact"
+- otherwise -> null
+
+Contact links (use markdown exactly when asked about contact):
+- [Email](mailto:fakhribudiman1721@gmail.com)
+- [WhatsApp](https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0)
+- [LinkedIn](https://www.linkedin.com/in/muhammad-fakhri-musyaffa-budiman)
+- [Portfolio](https://fakhri-budiman-portfolio.vercel.app)
+- [GitHub](https://github.com/fbudimannn)
+
+Rules:
+- Respond ONLY with valid JSON: {"reply":"...","action":null|"navigate_to_skills"|"navigate_to_experience"|"navigate_to_projects"|"navigate_to_contact"}
+- Keep answers concise unless the user asks for a specific length.
+- Use markdown hyperlinks for contact links, never raw URLs alone.
+- Do not hyperlink random phrases in intro sentences.`;
+
+  return cachedSystemPrompt;
 }
 
 function parseModelResponse(replyText) {
@@ -106,6 +147,65 @@ function parseModelResponse(replyText) {
   };
 }
 
+async function callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), MODEL_TIMEOUT_MS);
+
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://github.com/fbudimannn/Portfolio',
+        'X-Title': 'Fakhri Portfolio Chatbot',
+      },
+      body: JSON.stringify({
+        model: modelName,
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage },
+        ],
+        temperature: 0.2,
+        max_tokens: 700,
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Status ${response.status}: ${errText}`);
+    }
+
+    const data = await response.json();
+    const replyText = data.choices?.[0]?.message?.content;
+    if (!replyText) {
+      throw new Error('Empty model response');
+    }
+
+    return { modelName, replyText };
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+async function getFastestModelReply(apiKey, systemPrompt, userMessage) {
+  const attempts = MODEL_CANDIDATES.map((modelName) =>
+    callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage)
+      .then((result) => {
+        console.log(`Chat success with model: ${modelName}`);
+        return result;
+      })
+      .catch((err) => {
+        console.warn(`Model ${modelName} failed:`, err.message);
+        throw err;
+      })
+  );
+
+  return Promise.any(attempts);
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -140,103 +240,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const projectsData = loadProjectsData();
-
-    const systemPrompt = `You are a friendly portfolio guide for Fakhri Budiman. Your job is to answer questions about Fakhri's projects, experience, skills, and background in a warm, natural, and concise manner.
-
-Here is Fakhri's core profile:
-- Role: Data Analyst & AI Enthusiast based in Indonesia.
-- Education: MSc Business Analytics at University of Warwick (UK), specializing in Machine Learning, SQL, Python, Generative AI, and Data Visualization.
-- Key Skills: SQL, PostgreSQL, BigQuery, Tableau, Power BI, Looker Studio, Python, Machine Learning, Deep Learning, Generative AI, LLM Fine-tuning, RAG, Figma, Adobe Illustrator.
-
-Here is the COMPLETE and CURRENT DATABASE of Fakhri's Projects and Experience:
-${projectsData}
-
-NAVIGATION ROUTING INSTRUCTIONS:
-If the user asks to see or navigate to a specific section of the website, you must identify the intent and respond with a specific action.
-Valid sections and their triggers:
-- If user asks about skills, programming languages, or tools -> Action: "navigate_to_skills"
-- If user asks about education, experience, Warwick, or career -> Action: "navigate_to_experience"
-- If user asks about projects, portfolios, case studies, or coding -> Action: "navigate_to_projects"
-- If user asks about contact, social media, linkedin, or email -> Action: "navigate_to_contact"
-- Otherwise -> Action: null
-
-CONTACT DETAILS (use EXACTLY when asked about contact):
-- Email: [Email](mailto:fakhribudiman1721@gmail.com)
-- WhatsApp / Phone: [WhatsApp](https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0)
-- LinkedIn: [LinkedIn](https://www.linkedin.com/in/muhammad-fakhri-musyaffa-budiman)
-- Portfolio: [Portfolio](https://fakhri-budiman-portfolio.vercel.app)
-- GitHub: [GitHub](https://github.com/fbudimannn)
-
-LINK FORMATTING:
-When sharing contact links, ALWAYS use markdown hyperlinks with clean labels exactly as shown above.
-Do NOT add extra hyperlinks in the intro sentence (never link phrases like "you can reach Fakhri").
-Do NOT repeat the phone number in parentheses after the WhatsApp link.
-NEVER paste raw URLs alone and NEVER use the label as the URL (wrong: [Email](Email), correct: [Email](mailto:fakhribudiman1721@gmail.com)).
-
-RESPONSE FORMAT:
-You MUST respond ONLY in a valid JSON format. Do not write any markdown outside the JSON block.
-JSON format structure:
-{
-  "reply": "Your conversational answer to the user in friendly English based on the projects database.",
-  "action": "navigate_to_skills" | "navigate_to_experience" | "navigate_to_projects" | "navigate_to_contact" | null
-}`;
-
-    let lastError = null;
-    let replyText = '';
-    let responseOk = false;
-
-    for (const modelName of MODEL_CANDIDATES) {
-      try {
-        console.log(`Attempting request to OpenRouter using model: ${modelName}`);
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://github.com/fbudimannn/Portfolio',
-            'X-Title': 'Fakhri Portfolio Chatbot',
-          },
-          body: JSON.stringify({
-            model: modelName,
-            response_format: { type: 'json_object' },
-            messages: [
-              { role: 'system', content: systemPrompt },
-              { role: 'user', content: userMessage },
-            ],
-            temperature: 0.2,
-          }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          replyText = data.choices?.[0]?.message?.content;
-          if (replyText) {
-            responseOk = true;
-            console.log(`Successfully completed chat request with model: ${modelName}`);
-            break;
-          }
-        } else {
-          const errText = await response.text();
-          console.warn(`Model ${modelName} returned status ${response.status}: ${errText}`);
-          lastError = `Status ${response.status}: ${errText}`;
-        }
-      } catch (err) {
-        console.error(`Error requesting model ${modelName}:`, err);
-        lastError = err.message;
-      }
-    }
-
-    if (!responseOk) {
-      console.error('All OpenRouter model candidates failed:', lastError);
-      return res.status(502).json({
-        error: 'AI service is temporarily unavailable. Please try again shortly.',
-      });
-    }
-
+    const systemPrompt = getSystemPrompt();
+    const { replyText } = await getFastestModelReply(apiKey, systemPrompt, userMessage);
     return res.status(200).json(parseModelResponse(replyText));
   } catch (err) {
-    console.error('Chat API Error:', err);
-    return res.status(500).json({ error: 'Unexpected server error while processing your message.' });
+    console.error('All chat model attempts failed:', err);
+    return res.status(502).json({
+      error: 'AI is taking too long right now. Please try again in a few seconds.',
+    });
   }
 }

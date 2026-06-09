@@ -2395,7 +2395,6 @@ function initChatbot() {
         body: JSON.stringify({ message: text })
       });
 
-      // Remove typing indicator
       if (typingIndicator) typingIndicator.remove();
 
       const data = await response.json().catch(() => ({}));
@@ -2403,12 +2402,14 @@ function initChatbot() {
       if (!response.ok) {
         throw new Error(data.error || `Server responded with ${response.status}`);
       }
+
+      if (!data.reply) {
+        throw new Error('AI returned an empty response. Please try again.');
+      }
       
-      // Append bot response
       appendMessage(data.reply, 'bot');
       scrollToBottom();
 
-      // Trigger auto-scroll if an action is defined
       if (data.action) {
         handleNavigationAction(data.action);
       }
@@ -2416,9 +2417,10 @@ function initChatbot() {
     } catch (err) {
       console.error('Error in chatbot communication:', err);
       if (typingIndicator) typingIndicator.remove();
-      const fallback = err?.message?.includes('AI service')
-        ? err.message
-        : "I'm sorry, I'm having trouble connecting right now. Please check your connection and try again.";
+      const msg = err?.message || '';
+      const fallback = msg.includes('AI') || msg.includes('too long') || msg.includes('Too many')
+        ? msg
+        : "I'm having trouble reaching the assistant right now. Please try again in a few seconds.";
       appendMessage(fallback, 'bot');
       scrollToBottom();
     }

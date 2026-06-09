@@ -4,7 +4,7 @@
   "outputDirectory": "dist",
   "functions": {
     "api/chat.js": {
-      "maxDuration": 30,
+      "maxDuration": 60,
       "includeFiles": "docs/projects_data_compiled.md"
     }
   }
