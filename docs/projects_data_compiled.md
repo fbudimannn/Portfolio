@@ -41,7 +41,7 @@ A results-driven **Data and Analytics professional** with a proven track record 
 ## 💼 Professional Experience
 
 ### Data Analyst
-**PT Rakamin Kolektif Madani** — *Project-Based*
+**PT Rakamin Kolektif Madani**
 *Dec 2025 – Present*
 
 - Collaborated with cross-functional teams (Consultants, PMs, BAs) to re-architect an end-to-end **job matching pipeline using LLMs** (JD generation → role alignment → skill extraction), enabling scalable talent mapping across **1,000+ roles** for external clients like Paragon.
