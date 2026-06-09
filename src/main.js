@@ -2453,14 +2453,29 @@ function initChatbot() {
     scrollToBottom();
   }
 
+  function toDisplayText(text) {
+    if (typeof text === 'string') return text;
+    if (text == null) return '';
+    if (typeof text === 'object') {
+      if (typeof text.reply === 'string') return text.reply;
+      try {
+        return JSON.stringify(text, null, 2);
+      } catch {
+        return String(text);
+      }
+    }
+    return String(text);
+  }
+
   function appendMessage(text, sender) {
     const bubble = document.createElement('div');
     bubble.classList.add('chat-bubble', sender);
+    const displayText = toDisplayText(text);
     
     if (sender === 'bot') {
-      bubble.innerHTML = formatMessageText(text);
+      bubble.innerHTML = formatMessageText(displayText);
     } else {
-      bubble.textContent = text;
+      bubble.textContent = displayText;
     }
     
     messagesContainer.appendChild(bubble);
