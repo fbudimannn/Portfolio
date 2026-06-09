@@ -2509,45 +2509,125 @@ function initChatbot() {
     }, 800);
   }
 
+  const WHATSAPP_CONTACT_URL = 'https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0';
+
+  const CONTACT_LINKS = {
+    email: 'mailto:fakhribudiman1721@gmail.com',
+    whatsapp: WHATSAPP_CONTACT_URL,
+    linkedin: 'https://www.linkedin.com/in/muhammad-fakhri-musyaffa-budiman',
+    portfolio: 'https://fakhri-budiman-portfolio.vercel.app',
+    github: 'https://github.com/fbudimannn',
+  };
+
+  const CONTACT_LABELS = {
+    email: 'Email',
+    whatsapp: 'WhatsApp',
+    linkedin: 'LinkedIn',
+    portfolio: 'Portfolio',
+    github: 'GitHub',
+  };
+
   function formatMessageText(text) {
-    let escaped = text
+    const linkTokens = [];
+    const stashLink = (html) => {
+      const token = `\x00LNK${linkTokens.length}\x00`;
+      linkTokens.push(html);
+      return token;
+    };
+
+    let out = text
+      .replace(/\u2014/g, ',')
+      .replace(/\(full number:\s*\+?62[\s-]*822[\s-]*2707[\s-]*5226\)/gi, '')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
-    // **bold**
-    escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    // *italic*
-    escaped = escaped.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    // [text](url)
-    escaped = escaped.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label, url) => {
-      return buildMessageLink(label, url);
+    out = out.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    out = out.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // [text](url) — only turn into links for known contact channels
+    out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label, url) => {
+      const contactKey = inferContactKey(label) || inferContactKey(url);
+      if (contactKey && CONTACT_LINKS[contactKey]) {
+        return stashLink(buildMessageLink(CONTACT_LABELS[contactKey], CONTACT_LINKS[contactKey]));
+      }
+      if (isValidLinkTarget(url) && inferContactKey(url)) {
+        const key = inferContactKey(url);
+        return stashLink(buildMessageLink(CONTACT_LABELS[key], normalizeMessageUrl(url)));
+      }
+      return label;
     });
-    // Label: url  →  hyperlink with label only (e.g. LinkedIn: linkedin.com/...)
-    escaped = escaped.replace(
-      /(^|<br>|\s)([A-Za-z][A-Za-z0-9 .&'-]{0,30}):\s*((?:https?:\/\/)?(?:www\.)?[^\s<]+|[^\s<]+@[^\s<]+\.[^\s<]+)/g,
+
+    // Label: url  (only when url looks like a real target)
+    out = out.replace(
+      /(^|<br>|\s)((?:Email|WhatsApp(?:\/Phone)?|LinkedIn|Portfolio|GitHub|[A-Za-z][A-Za-z0-9 .&'-]{0,24})):\s*([^\s\x00]+)/g,
       (_match, prefix, label, url) => {
         if (/^(https?|mailto)$/i.test(label.trim())) return _match;
-        return `${prefix}${buildMessageLink(label.trim(), url.trim())}`;
+        if (!isValidLinkTarget(url)) {
+          const resolved = resolveContactLink(label, url);
+          if (!resolved) return _match;
+          return `${prefix}${stashLink(buildMessageLink(resolved.label, resolved.href))}`;
+        }
+        const cleanLabel = label.replace(/\/Phone/i, '').trim();
+        return `${prefix}${stashLink(buildMessageLink(cleanLabel, url.trim()))}`;
       }
     );
-    // Bare URLs / emails not already linked
-    escaped = escaped.replace(
-      /(^|[\s(])((?:https?:\/\/)?(?:www\.)?(?:linkedin|github|drive\.google|fakhri-budiman-portfolio\.vercel)\.[^\s<]+|[^\s<]+@[^\s<]+\.[^\s<]+)/gi,
-      (match, prefix, url, offset, full) => {
-        const before = full.slice(0, offset + prefix.length);
-        if (before.endsWith('href="') || before.endsWith('">')) return match;
-        return `${prefix}${buildMessageLink(inferLinkLabel(url), url)}`;
-      }
-    );
-    // Newlines
-    escaped = escaped.replace(/\n/g, '<br>');
 
-    return escaped;
+    // Bare emails and known domains only
+    out = out.replace(
+      /(^|[\s(])((?:https?:\/\/)?(?:www\.)?(?:linkedin|github|drive\.google|fakhri-budiman-portfolio\.vercel|api\.whatsapp)\.[^\s\x00]+|fakhribudiman1721@gmail\.com)/gi,
+      (_match, prefix, url) => `${prefix}${stashLink(buildMessageLink(inferLinkLabel(url), url))}`
+    );
+
+    out = out.replace(/\n/g, '<br>');
+    out = out.replace(/\x00LNK(\d+)\x00/g, (_match, index) => linkTokens[Number(index)]);
+
+    return out;
   }
 
-  function buildMessageLink(label, url) {
-    const href = normalizeMessageUrl(url);
+  function resolveContactLink(label, url) {
+    const contactKey = inferContactKey(label) || inferContactKey(url);
+    const cleanUrl = (url || '').trim();
+
+    if (contactKey && CONTACT_LINKS[contactKey]) {
+      return {
+        label: CONTACT_LABELS[contactKey],
+        href: CONTACT_LINKS[contactKey],
+      };
+    }
+
+    if (isValidLinkTarget(cleanUrl)) {
+      const displayLabel = inferContactKey(label) ? CONTACT_LABELS[inferContactKey(label)] : label.trim();
+      return {
+        label: displayLabel,
+        href: normalizeMessageUrl(cleanUrl),
+      };
+    }
+
+    return null;
+  }
+
+  function inferContactKey(value) {
+    const normalized = (value || '').toLowerCase().replace(/[^a-z]/g, '');
+    if (normalized.includes('email') || normalized.includes('gmail')) return 'email';
+    if (normalized.includes('whatsapp') || normalized.includes('phone') || normalized.includes('6282227075226')) return 'whatsapp';
+    if (normalized.includes('linkedin')) return 'linkedin';
+    if (normalized.includes('portfolio') || normalized.includes('vercel')) return 'portfolio';
+    if (normalized.includes('github')) return 'github';
+    return null;
+  }
+
+  function isValidLinkTarget(url) {
+    const value = (url || '').trim();
+    if (!value) return false;
+    if (/^mailto:/i.test(value)) return true;
+    if (/^https?:\/\//i.test(value)) return true;
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return true;
+    if (/^(?:www\.)?[a-z0-9.-]+\.[a-z]{2,}(?:\/[^\s]*)?$/i.test(value)) return true;
+    return false;
+  }
+
+  function buildMessageLink(label, href) {
     const safeLabel = label
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
@@ -2561,23 +2641,20 @@ function initChatbot() {
 
   function normalizeMessageUrl(url) {
     const value = url.trim();
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      return `mailto:${value}`;
-    }
-    if (/^https?:\/\//i.test(value)) {
-      return value;
-    }
+    if (/^mailto:/i.test(value)) return value;
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return `mailto:${value}`;
+    if (/^https?:\/\//i.test(value)) return value;
     return `https://${value}`;
   }
 
   function inferLinkLabel(url) {
     const lower = url.toLowerCase();
+    if (lower.includes('whatsapp.com') || lower.includes('wa.me')) return 'WhatsApp';
     if (lower.includes('linkedin.com')) return 'LinkedIn';
     if (lower.includes('github.com')) return 'GitHub';
     if (lower.includes('vercel.app') || lower.includes('portfolio')) return 'Portfolio';
     if (lower.includes('drive.google.com')) return 'CV / PDF';
-    if (lower.includes('@')) return 'Email';
-    if (lower.includes('mailto:')) return 'Email';
+    if (lower.includes('@') || lower.includes('mailto:')) return 'Email';
     return 'Link';
   }
 }
