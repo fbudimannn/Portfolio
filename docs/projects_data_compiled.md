@@ -1,3 +1,154 @@
+
+# RESUME FAKHRI
+
+# Muhammad Fakhri Musyaffa Budiman
+
+📍 Jakarta / Pekalongan
+📧 fakhribudiman1721@gmail.com
+📱 +62 822-2707-5226
+🔗 [LinkedIn](www.linkedin.com/in/muhammad-fakhri-musyaffa-budiman) | [Portfolio](https://fakhri-budiman-portfolio.vercel.app/) | [GitHub](https://github.com/fbudimannn)
+
+---
+
+## 👤 Profile
+
+A results-driven **Data and Analytics professional** with a proven track record in teaching, curriculum development, and implementing data-centric solutions across various sectors. Experienced in leading teams, managing large-scale data analysis projects, and developing insightful dashboards to support strategic decision-making. Proficient in **SQL, Python, and data visualization tools**, with a strong focus on applying data-driven decision-making to drive business efficiency and innovation.
+
+---
+
+## 🎓 Education
+
+### University of Warwick
+**Master of Science in Business Analytics**
+*Sept 2024 – Sept 2025*
+
+- Grade: **Merit** | Cumulative GPA (Penyetaraan Ijazah): **3.63 / 4.00**
+- 🏅 Recipient of the **Indonesia Endowment Fund for Education (LPDP)**
+
+---
+
+### Telkom University
+**Bachelor's Degree in International ICT Business**
+*Aug 2017 – Aug 2021*
+
+- Cumulative GPA: **3.68 / 4.00**
+- 🏅 Recipient of the **Internal Student Exchange Scholarship** at Solbridge International Business School, South Korea
+- 📄 Published Article in National Finance Journal: *"Can Good Corporate Governance Influence the Firm Performance? Empirical Study from Indonesia Transportation Firms"*
+  [https://doi.org/10.26905/afr.v4i1.6017](https://doi.org/10.26905/afr.v4i1.6017)
+
+---
+
+## 💼 Professional Experience
+
+### Data Analyst
+**PT Rakamin Kolektif Madani** — *Freelance / Project-Based*
+*Dec 2025 – Present*
+
+- Collaborated with cross-functional teams (Consultants, PMs, BAs) to re-architect an end-to-end **job matching pipeline using LLMs** (JD generation → role alignment → skill extraction), enabling scalable talent mapping across **1,000+ roles** for external clients like Paragon.
+- Developed integrated analytics dashboards and automated reporting pipelines for recruitment and monitoring feature releases by writing complex **PostgreSQL queries** to extract and process **100,000+ data points**, reducing **80% manual workload** across stakeholders.
+- Standardized the talent framework by translating **1,400+ Mercer skill definitions** and redesigning JD generation from 12k Mercer roles, increasing matching accuracy while reducing LLM cost through a hybrid approach.
+
+---
+
+### Team Lead – Full Stack Data Analytics Program
+**PT Revolusi Cita Edukasi (RevoU)** — *Contract*
+*Sept 2023 – Aug 2024*
+
+- Monitored daily and weekly student performance, conducting analyses on both academic and soft skills.
+- Spearheaded the development of a new **Tableau data visualization key answers** dashboard adopted by **400+ students and mentors**, lifting material satisfaction scores to **4.5 / 5.0**.
+- Managed end-to-end project lifecycle for **60+ student data analysis projects** (~15 per batch) across **6+ industries** (retail, fintech, SaaS, etc.), delivering predictive models and dashboards.
+- Led and mentored cohorts of **60+ students** (~13–15 per batch), consistently achieving a perfect **5.0 / 5.0 satisfaction rating**.
+
+---
+
+### ICT and MIS Intern
+**PT Kaltim Methanol Industri** — *Internship*
+*Apr 2021 – May 2021*
+
+- Developed a **UI/UX prototype** for a mobile-based Document Management System (DMS) and internal digital library, improving document storage and retrieval efficiency by up to **80%**.
+- Evaluated the existing system and identified **4 key improvement areas**: interface design, accessibility, file archiving, and internal document tracking.
+- Collaborated with the ICT team to design core features (login, DMS, chat, internal messages) and created visual mockups using **Figma and Adobe Illustrator**.
+
+---
+
+## 🚀 Project Experience
+
+### SQL Instructor and Curriculum Developer
+**SQL Academy PPI UK**
+*May 2025 – July 2025*
+
+- Designed and delivered an **Advanced SQL curriculum** (CTEs, Window Functions, business case studies) to **32 students** across the UK, boosting technical proficiency by **80–90%** and achieving **4.5 / 5** satisfaction rating.
+- Authored curriculum, program development, and contributed to the refinement of **4 other programs** in collaboration with a team of 5 senior data experts.
+- Initiated and managed a daily mentoring system via WhatsApp and direct chat, improving learning effectiveness by **80%** for active participants.
+
+---
+
+### Head of Database Management
+**PK 239 LPDP**
+*Jun 2024 – Aug 2024*
+
+- Directed a **5-member team** to design and implement a centralized database system using **Google Sheets** for **316 participant records**, resulting in a **70% increase** in cross-divisional efficiency and **100% data accuracy**.
+- Architected the database using a **star schema model** to effectively integrate and structure diverse participant data across five categories (demographics, employment, health, etc.).
+- Automated the weekly data update workflow by integrating **Google Form submissions** into the master database, providing real-time access for all divisions.
+
+---
+
+### Data Analyst Associate
+**PT Revolusi Cita Edukasi (RevoU)** — *Apprenticeship (Remote)*
+*Jan 2023 – Apr 2023*
+
+- Designed and developed **3 interactive Tableau dashboards** (executive, managerial, operational levels) visualizing **300,000+ retail data points** to track core KPIs including GMV, AOV, and customer retention.
+- Conducted in-depth analyses: **RFM Analysis, Funnel Analysis, and Market Basket Analysis** to diagnose root causes of GMV decline and identify customer journey bottlenecks.
+- Formulated strategic, data-driven recommendations across UX, promotion, and retention for annual company performance evaluation.
+
+---
+
+### Bantuan Sosial Distribution Analyst
+**Kementerian Sosial Kabupaten Sukoharjo**
+*Dec 2022 – Apr 2023*
+
+- Managed and transformed **1.5 million demographic and geospatial records** of social aid recipients using **Python and Tableau Prep**, achieving **100% data accuracy**.
+- Developed **2 monitoring dashboards**: a Tableau dashboard covering **1 province (35 districts & 5,792 villages)** for annual distribution analysis, and a Looker Studio dashboard for daily operational tracking.
+- Implemented a day-to-day distribution monitoring system adopted by social services officials in Sukoharjo Regency, increasing monitoring effectiveness by **80%**.
+
+---
+
+## 🏆 Certifications
+
+| Certification | Issuer | Year |
+|---|---|---|
+| Gillmore Hackathon | Warwick Enterprise | 2024 |
+| Advanced SQL | HackerRank | 2023 |
+| Mini MBA | SBM ITB | 2023 |
+| Business Requirement Analysis Certification | BNSP | 2021 |
+| Lean Six Sigma Green Belt | NexMu | 2020 |
+| John Robert Powers Advanced Personality | John Robert Powers | 2019 |
+
+---
+
+## 🛠️ Skills
+
+### Languages
+- 🇮🇩 **Indonesian** — Native
+- 🇬🇧 **English** — Professional (IELTS 7.0)
+
+### Soft Skills
+Teamwork · Detail-Oriented · Fast Learner · Analytical Thinking · Growth Mindset · Problem Solver · Leadership
+
+### Technical Skills
+- **Data & Analytics:** SQL, PostgreSQL, Machine Learning, Deep Learning, Data Visualisation, Forecasting, A/B Testing
+- **AI & LLM:** Generative AI, LLM Fine-tuning, Retrieval-Augmented Generation (RAG)
+- **Other:** Microsoft Excel (Pivot, Integrating Data)
+
+### Tools & Platforms
+| Category | Tools |
+|---|---|
+| Visualization | Tableau, Power BI, Looker Studio |
+| Programming | Python, RStudio, BigQuery |
+| Design | Figma, Adobe Illustrator, Canva |
+| Others | Streamlit, Slack |
+
+
 # Portfolio Projects: Compiled & Structured Data
 
 This file compiles and structures all projects from Fakhri Budiman's data portfolio based on the raw extracted text and GitHub README files, categorized into the finalized group umbrellas and organized using 3 distinct layouts.

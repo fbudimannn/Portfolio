@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:chat": "node test/chat.mjs",
+    "test:chat:vercel": "node test/chat.mjs https://fakhri-budiman-portfolio.vercel.app"
   },
   "dependencies": {
     "gsap": "^3.12.7",

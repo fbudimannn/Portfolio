@@ -21,6 +21,13 @@ desktop.ini
 .env.local
 .env.*.local
 
+# Local-only session notes (do not push)
+session-changelog.json
+
+# Dev scratch work
+scratch/
+chatbot/
+
 # Logs
 *.log
 npm-debug.log*

@@ -1600,6 +1600,56 @@
       });
     });
   </script>
+  <!-- ====================== AI CHATBOT WIDGET ====================== -->
+  <div class="chat-widget" id="chat-widget">
+    <!-- Floating Trigger Button -->
+    <button class="chat-trigger" id="chat-trigger" aria-label="Open AI Assistant">
+      <div id="chat-lottie"></div>
+      <span class="chat-badge">AI</span>
+    </button>
+
+    <!-- Chat Window Panel -->
+    <div class="chat-window" id="chat-window">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar-status">
+            <div class="chat-status-indicator"></div>
+          </div>
+          <div>
+            <h3 class="chat-title">Fakhri's AI Assistant</h3>
+            <span class="chat-subtitle">Online • Ask me anything</span>
+          </div>
+        </div>
+        <button class="chat-close-btn" id="chat-close-btn" aria-label="Close chat">×</button>
+      </div>
+
+      <!-- Chat Messages Area -->
+      <div class="chat-messages" id="chat-messages">
+        <!-- Messages will be injected here dynamically -->
+      </div>
+
+      <!-- Suggestions Quick Chips -->
+      <div class="chat-suggestions" id="chat-suggestions">
+        <button class="suggestion-chip" data-msg="Tell me about your MSc Business Analytics at Warwick.">🎓 Education</button>
+        <button class="suggestion-chip" data-msg="What machine learning projects have you done?">🤖 ML Projects</button>
+        <button class="suggestion-chip" data-msg="What are your main programming skills?">💻 Skills</button>
+        <button class="suggestion-chip" data-msg="How can I contact Fakhri?">✉️ Contact</button>
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="chat-input-container">
+        <input type="text" class="chat-input" id="chat-input" placeholder="Ask about Fakhri's projects, education..." autocomplete="off" />
+        <button class="chat-send-btn" id="chat-send-btn" aria-label="Send message">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ====================== PROJECT DETAILS DRAWER OVERLAY ====================== -->
   <div class="details-drawer-overlay" id="details-drawer-overlay">
     <div class="details-drawer-panel" id="details-drawer-panel">

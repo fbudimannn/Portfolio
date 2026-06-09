@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSpaceRoomScroll();
   initLottieAnimations();
   initPdfPopup();
+  initChatbot();
 });
 
 /* ============ CUSTOM CURSOR ============ */
@@ -2286,4 +2287,231 @@ function initPdfPopup() {
     popup.classList.remove('visible');
     pdfPopupDismissed = true;
   });
+}
+
+/* ============ AI CHATBOT INTEGRATION ============ */
+function initChatbot() {
+  const widget = document.getElementById('chat-widget');
+  const trigger = document.getElementById('chat-trigger');
+  const windowPanel = document.getElementById('chat-window');
+  const closeBtn = document.getElementById('chat-close-btn');
+  const messagesContainer = document.getElementById('chat-messages');
+  const sendBtn = document.getElementById('chat-send-btn');
+  const inputEl = document.getElementById('chat-input');
+  const suggestionsContainer = document.getElementById('chat-suggestions');
+  const lottieContainer = document.getElementById('chat-lottie');
+
+  if (!widget || !trigger || !windowPanel || !closeBtn || !messagesContainer || !sendBtn || !inputEl) {
+    console.warn('Chatbot DOM elements not found.');
+    return;
+  }
+
+  let chatbotLogoAnim = null;
+  let hasGreeted = false;
+
+  // Load Lottie animation for trigger
+  if (lottieContainer && typeof lottie !== 'undefined') {
+    try {
+      chatbotLogoAnim = lottie.loadAnimation({
+        container: lottieContainer,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: '/chatbot_logo.json'
+      });
+    } catch (e) {
+      console.error('Failed to load chatbot Lottie logo:', e);
+    }
+  }
+
+  // Toggle Chat Panel
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isActive = windowPanel.classList.contains('active');
+    if (isActive) {
+      windowPanel.classList.remove('active');
+    } else {
+      windowPanel.classList.add('active');
+      inputEl.focus();
+      
+      // Send greeting on first open
+      if (!hasGreeted) {
+        showGreeting();
+        hasGreeted = true;
+      }
+    }
+  });
+
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    windowPanel.classList.remove('active');
+  });
+
+  // Close window on clicking outside
+  document.addEventListener('click', (e) => {
+    if (!widget.contains(e.target) && windowPanel.classList.contains('active')) {
+      windowPanel.classList.remove('active');
+    }
+  });
+
+  // Prevent closing when clicking inside the window panel
+  windowPanel.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // Handle Send Message
+  async function handleSend() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+
+    // Append user message
+    appendMessage(text, 'user');
+    inputEl.value = '';
+
+    // Scroll to bottom
+    scrollToBottom();
+
+    // Show typing indicator
+    const typingIndicator = showTypingIndicator();
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: text })
+      });
+
+      // Remove typing indicator
+      if (typingIndicator) typingIndicator.remove();
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || `Server responded with ${response.status}`);
+      }
+      
+      // Append bot response
+      appendMessage(data.reply, 'bot');
+      scrollToBottom();
+
+      // Trigger auto-scroll if an action is defined
+      if (data.action) {
+        handleNavigationAction(data.action);
+      }
+
+    } catch (err) {
+      console.error('Error in chatbot communication:', err);
+      if (typingIndicator) typingIndicator.remove();
+      const fallback = err?.message?.includes('AI service')
+        ? err.message
+        : "I'm sorry, I'm having trouble connecting right now. Please check your connection and try again.";
+      appendMessage(fallback, 'bot');
+      scrollToBottom();
+    }
+  }
+
+  // Event Listeners for sending message
+  sendBtn.addEventListener('click', handleSend);
+  inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
+  });
+
+  // Handle Suggestion Chips
+  if (suggestionsContainer) {
+    suggestionsContainer.addEventListener('click', (e) => {
+      const chip = e.target.closest('.suggestion-chip');
+      if (!chip) return;
+      
+      const msg = chip.getAttribute('data-msg');
+      if (msg) {
+        inputEl.value = msg;
+        handleSend();
+      }
+    });
+  }
+
+  function showGreeting() {
+    appendMessage("Hi! 👋 I'm Fakhri's AI Assistant. I can tell you about his projects, MSc at Warwick, SQL/Python skills, or how to reach him. Feel free to ask!", 'bot');
+    scrollToBottom();
+  }
+
+  function appendMessage(text, sender) {
+    const bubble = document.createElement('div');
+    bubble.classList.add('chat-bubble', sender);
+    
+    if (sender === 'bot') {
+      bubble.innerHTML = formatMessageText(text);
+    } else {
+      bubble.textContent = text;
+    }
+    
+    messagesContainer.appendChild(bubble);
+  }
+
+  function showTypingIndicator() {
+    const indicator = document.createElement('div');
+    indicator.classList.add('chat-bubble', 'bot', 'typing-indicator-wrapper');
+    indicator.innerHTML = `
+      <div class="typing-indicator">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </div>
+    `;
+    messagesContainer.appendChild(indicator);
+    scrollToBottom();
+    return indicator;
+  }
+
+  function scrollToBottom() {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  function handleNavigationAction(action) {
+    setTimeout(() => {
+      const targetId = action.replace('navigate_to_', '');
+      const sectionId = targetId === 'experience' ? 'journey' : targetId;
+      const targetEl = document.getElementById(sectionId);
+      
+      if (targetEl) {
+        // Safe check for mobile menu close
+        const mobileToggle = document.getElementById('nav-toggle');
+        const mobileLinks = document.getElementById('nav-links');
+        if (mobileToggle && mobileLinks && mobileLinks.classList.contains('active')) {
+          mobileToggle.classList.remove('active');
+          mobileLinks.classList.remove('active');
+        }
+
+        // Smooth scroll
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Auto collapse window on mobile/tablet to let user see target area
+        if (window.innerWidth < 768) {
+          windowPanel.classList.remove('active');
+        }
+      }
+    }, 800);
+  }
+
+  function formatMessageText(text) {
+    let escaped = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+      
+    // **bold**
+    escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // *italic*
+    escaped = escaped.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    // [text](url)
+    escaped = escaped.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    // Newlines
+    escaped = escaped.replace(/\n/g, '<br>');
+    
+    return escaped;
+  }
 }

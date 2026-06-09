@@ -17,6 +17,7 @@ A cinematic, scroll-based personal portfolio built with modern web technologies.
 - **Greeting Rotator** — Cycles through 20 languages including Japanese, Korean, Arabic, Hindi, and more
 - **Fully Responsive** — Optimized layouts for desktop, tablet, and mobile
 - **Glassmorphism UI** — Frosted glass cards with gradient borders and subtle glow effects
+- **AI Chatbot Assistant** — Floating widget powered by OpenRouter (NVIDIA Nemotron + free-model fallbacks), with project-aware answers and auto-navigation to site sections
 
 ## 🛠 Tech Stack
 
@@ -27,12 +28,17 @@ A cinematic, scroll-based personal portfolio built with modern web technologies.
 | **Three.js** | 3D particle star field background |
 | **Vanilla CSS** | Custom design system with CSS variables |
 | **Google Fonts** | Syne, Space Mono, DM Sans |
+| **OpenRouter API** | LLM gateway for the portfolio chatbot |
 
 ## 🚀 Getting Started
 
 ```bash
 # Install dependencies
 npm install
+
+# Configure environment (local only)
+cp .env.example .env
+# Then set OPEN_ROUTER_KEY in .env
 
 # Start development server
 npm run dev
@@ -41,16 +47,53 @@ npm run dev
 npm run build
 ```
 
+## 🤖 AI Chatbot Setup
+
+The chatbot uses a server-side API route at `/api/chat` so your OpenRouter key never reaches the browser.
+
+### Local development
+
+1. Create `.env` from `.env.example`
+2. Add your `OPEN_ROUTER_KEY` from [OpenRouter](https://openrouter.ai/)
+3. Run `npm run dev`
+4. Open the site and click the floating **AI** button, or run:
+
+```bash
+npm run test:chat
+```
+
+### Vercel deployment
+
+1. Push the repo to GitHub
+2. In Vercel → **Project Settings → Environment Variables**, add:
+   - `OPEN_ROUTER_KEY` = your OpenRouter API key
+3. Redeploy the project
+4. Test production:
+
+```bash
+npm run test:chat:vercel
+```
+
+`vercel.json` bundles `docs/projects_data_compiled.md` into the serverless function so the chatbot can answer from your project database in production.
+
 ## 📁 Project Structure
 
 ```
+├── api/
+│   └── chat.js             # Serverless chat endpoint (OpenRouter)
+├── docs/
+│   └── projects_data_compiled.md
 ├── public/
-│   └── fakhri.png          # Hero photo
+│   ├── fakhri.png          # Hero photo
+│   └── chatbot_logo.json   # Chatbot Lottie asset
 ├── src/
-│   ├── main.js             # Core animation logic
+│   ├── main.js             # Core animation logic + chatbot UI
 │   ├── three-bg.js         # Three.js star field + warp
 │   └── style.css           # Design system & styles
+├── test/
+│   └── chat.mjs            # CLI test helper for /api/chat
 ├── index.html              # Main HTML structure
+├── vercel.json             # Vercel build + serverless config
 ├── package.json
 └── vite.config.js
 ```
