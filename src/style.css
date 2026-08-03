@@ -21,6 +21,8 @@
   --font-display: 'Syne', sans-serif;
   --font-mono: 'Space Mono', monospace;
   --font-body: 'DM Sans', sans-serif;
+  --space-section-py: clamp(5rem, 8vh, 7.5rem);
+  --container-max-w: 1200px;
 }
 
 html { scroll-behavior: smooth; }
@@ -339,8 +341,8 @@ img { max-width: 100%; display: block; }
   backface-visibility: hidden;
 }
 .section-container {
-  max-width: 1100px; width: 100%;
-  margin: 0 auto; padding: 6rem 2rem;
+  max-width: var(--container-max-w); width: 100%;
+  margin: 0 auto; padding: var(--space-section-py) 2rem;
 }
 .section-header { text-align: center; margin-bottom: 4rem; }
 .section-tag {
@@ -649,8 +651,8 @@ img { max-width: 100%; display: block; }
 
 /* ======================== SKILLS UNIVERSE ======================== */
 .skills-section {
-  background: transparent; /* Let the 3D space background shine through */
-  padding-bottom: 0rem; /* Reduced to bring Journey section closer */
+  background: transparent;
+  padding: var(--space-section-py) 0;
 }
 .skills-grid {
   display: grid;
@@ -794,7 +796,7 @@ img.simple-icon {
 }
 
 /* ======================== JOURNEY PORTALS ======================== */
-.journey-section { padding-top: 0rem; padding-bottom: 2rem; position: relative; } /* Reduced paddings */
+.journey-section { padding: var(--space-section-py) 0; position: relative; }
 /* ======================== MAGIC PORTALS (DR. STRANGE STYLE) ======================== */
 .magic-portals-container {
   display: flex;
@@ -980,11 +982,6 @@ img.simple-icon {
   0%   { transform: translate(0, 0) rotate(3deg) scale(1); }
   50%  { transform: translate(-8px, 10px) rotate(-2deg) scale(0.96); }
   100% { transform: translate(7px, -12px) rotate(1deg) scale(1.03); }
-}
-
-@keyframes float-highlight {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-10px); }
 }
 
 @media (max-width: 768px) {
@@ -3735,5 +3732,3 @@ img.simple-icon {
     bottom: 95px;
   }
 }
-
-
