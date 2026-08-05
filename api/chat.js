@@ -107,11 +107,18 @@ Core profile:
 Portfolio database:
 ${projectsData}
 
-Navigation (only when user wants to open a site section):
-- skills/tools -> navigate_to_skills
-- education/experience/career/Warwick -> navigate_to_experience
-- projects/case studies -> navigate_to_projects
-- contact/linkedin/email/whatsapp -> navigate_to_contact
+Navigation — emit the action when user asks WHERE to see something or asks to be directed:
+- "lihat skills", "skill kamu apa", "tools" → navigate_to_skills
+- "lihat education", "pendidikan", "warwick", "riwayat akademik" → navigate_to_education
+- "lihat experience", "pengalaman kerja", "karir", "professional logs", "project archives" → navigate_to_experience
+- "lihat project", "project kamu", "case study" → navigate_to_projects
+- "kontak", "contact", "hubungi", "email", "whatsapp", "linkedin" → navigate_to_contact
+
+When navigate_to_contact fires, ALWAYS include these links in the reply:
+- [Email](mailto:fakhribudiman1721@gmail.com)
+- [WhatsApp](https://api.whatsapp.com/send/?phone=%2B6282227075226)
+- [LinkedIn](https://www.linkedin.com/in/muhammad-fakhri-musyaffa-budiman)
+- [GitHub](https://github.com/fbudimannn)
 
 LANGUAGE RULES (critical):
 - Reply in the SAME language/style as the user.
@@ -129,7 +136,7 @@ User: "jelasin project ML-nya fakhri"
 Assistant reply: "Sip! Salah satu project ML Fakhri itu F1 Bayesian Predictor — dia bikin model prediksi pakai Python buat analisis data F1. Tools-nya Python, fokusnya machine learning & visualisasi hasil. Mau gue bahas project lain juga?"
 
 OUTPUT FORMAT (strict):
-Respond ONLY with JSON: {"reply":"plain text string","action":null|"navigate_to_skills"|"navigate_to_experience"|"navigate_to_projects"|"navigate_to_contact"}
+Respond ONLY with JSON: {"reply":"plain text string","action":null|"navigate_to_skills"|"navigate_to_education"|"navigate_to_experience"|"navigate_to_projects"|"navigate_to_contact"}
 - "reply" MUST be a single string. No nested objects. No field names like project_overview or Profile Summary as labels.
 - Use markdown bullets and [Label](url) for links when needed.
 - Keep answers concise unless user asks for a specific length.`;
@@ -262,10 +269,59 @@ function normalizeReplyField(reply) {
 
 const VALID_ACTIONS = new Set([
   'navigate_to_skills',
+  'navigate_to_education',
   'navigate_to_experience',
   'navigate_to_projects',
   'navigate_to_contact',
 ]);
+
+// Section-question detector: fires BEFORE LLM to instantly direct users
+const SECTION_PATTERNS = [
+  { pattern: /kontak|contact|hubungi|reach|email|whatsapp|linkedin|phone|nomor/i, action: 'navigate_to_contact' },
+  { pattern: /skill|tools?|kemampuan|keahlian|tech stack|teknologi yang dipakai/i, action: 'navigate_to_skills' },
+  { pattern: /pendidikan|education|kuliah|warwick|telkom|solbridge|akademik|academic/i, action: 'navigate_to_education' },
+  { pattern: /pengalaman kerja|karir|career|professional logs?|kerja di mana|bekerja di|riwayat kerja/i, action: 'navigate_to_experience' },
+  { pattern: /project archives?|project kerja|proyek|project lain/i, action: 'navigate_to_experience' },
+  { pattern: /project|case stud|portfolio|karya/i, action: 'navigate_to_projects' },
+];
+
+const SECTION_LABELS = {
+  navigate_to_contact: { id: 'halaman Kontak', en: 'the Contact section' },
+  navigate_to_skills: { id: 'halaman Skills', en: 'the Skills section' },
+  navigate_to_education: { id: 'portal Education (Academic Archives)', en: 'the Education portal (Academic Archives)' },
+  navigate_to_experience: { id: 'portal Experience (Professional Logs & Project Archives)', en: 'the Experience portal' },
+  navigate_to_projects: { id: 'halaman Projects', en: 'the Projects section' },
+};
+
+const CONTACT_LINKS = `- [Email](mailto:fakhribudiman1721@gmail.com)
+- [WhatsApp](https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0)
+- [LinkedIn](https://www.linkedin.com/in/muhammad-fakhri-musyaffa-budiman)
+- [GitHub](https://github.com/fbudimannn)`;
+
+function detectSectionIntent(message) {
+  // Only fires when user is clearly asking WHERE to view something
+  const wherePattern = /\b(lihat|bisa lihat|di mana|dimana|ada di|tunjukk?an?|bawa|show|where|take me|go to|open|navigate|scroll|page|section|halaman|portal|bagian)\b/i;
+  if (!wherePattern.test(message)) return null;
+  for (const { pattern, action } of SECTION_PATTERNS) {
+    if (pattern.test(message)) return action;
+  }
+  return null;
+}
+
+function getSectionResponse(action, lang) {
+  const label = SECTION_LABELS[action];
+  const sectionName = lang === 'en' ? label.en : label.id;
+
+  if (action === 'navigate_to_contact') {
+    if (lang === 'jaksel') return { reply: `Nih bro cara hubungin Fakhri:\n${CONTACT_LINKS}\n\nFeel free reach out ya!`, action };
+    if (lang === 'id') return { reply: `Yuk, aku arahkan ke ${sectionName}! Berikut kontak Fakhri:\n${CONTACT_LINKS}`, action };
+    return { reply: `Here are Fakhri's contact details:\n${CONTACT_LINKS}`, action };
+  }
+
+  if (lang === 'jaksel') return { reply: `Gue arahin ke ${sectionName} ya bro! Scroll ke sana sekarang.`, action };
+  if (lang === 'id') return { reply: `Oke, aku arahin kamu ke ${sectionName}!`, action };
+  return { reply: `Sure! Taking you to ${sectionName} now.`, action };
+}
 
 function sanitizeAction(action, reply) {
   if (!action || VALID_ACTIONS.has(action)) {
@@ -441,6 +497,12 @@ async function generateChatReply(apiKey, userMessage) {
 
   if (isContactQuestion(userMessage)) {
     return getContactTemplate(lang);
+  }
+
+  // Fast-path: instantly navigate if user is asking WHERE to view a section
+  const sectionAction = detectSectionIntent(userMessage);
+  if (sectionAction) {
+    return getSectionResponse(sectionAction, lang);
   }
 
   const systemPrompt = await getSystemPrompt();

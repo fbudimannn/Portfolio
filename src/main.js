@@ -2513,25 +2513,38 @@ function initChatbot() {
   function handleNavigationAction(action) {
     setTimeout(() => {
       const targetId = action.replace('navigate_to_', '');
-      const sectionId = targetId === 'experience' ? 'journey' : targetId;
+
+      // Education & Experience live inside the Journey portals — trigger portal click
+      if (targetId === 'education') {
+        const eduPortal = document.getElementById('portal-education');
+        if (eduPortal) {
+          document.getElementById('journey')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => eduPortal.click(), 600);
+        }
+        return;
+      }
+
+      if (targetId === 'experience') {
+        const expPortal = document.getElementById('portal-experience');
+        if (expPortal) {
+          document.getElementById('journey')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => expPortal.click(), 600);
+        }
+        return;
+      }
+
+      const sectionId = targetId;
       const targetEl = document.getElementById(sectionId);
-      
+
       if (targetEl) {
-        // Safe check for mobile menu close
         const mobileToggle = document.getElementById('nav-toggle');
         const mobileLinks = document.getElementById('nav-links');
         if (mobileToggle && mobileLinks && mobileLinks.classList.contains('active')) {
           mobileToggle.classList.remove('active');
           mobileLinks.classList.remove('active');
         }
-
-        // Smooth scroll
         targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // Auto collapse window on mobile/tablet to let user see target area
-        if (window.innerWidth < 768) {
-          windowPanel.classList.remove('active');
-        }
+        if (window.innerWidth < 768) windowPanel.classList.remove('active');
       }
     }, 800);
   }
