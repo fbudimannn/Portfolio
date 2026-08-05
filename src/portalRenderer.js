@@ -164,3 +164,57 @@ export async function buildExperienceHTML(fallbackHTML) {
     return fallbackHTML;
   }
 }
+
+// ─── PROJECTS & SKILLS DYNAMIC SUPABASE SYNC ─────────────────────────────────
+
+export async function syncProjectsDataFromSupabase(targetProjectsObj) {
+  if (!isSupabaseConfigured || !supabase) return;
+
+  try {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('display_order', { ascending: true });
+
+    if (error || !data?.length) return;
+
+    data.forEach(p => {
+      const key = p.slug || p.id;
+      targetProjectsObj[key] = {
+        title: p.title,
+        category: p.category,
+        accent: p.accent || 'var(--accent-customer)',
+        client: p.client,
+        timeline: p.timeline,
+        role: p.role,
+        caseOverview: p.case_overview || p.caseOverview,
+        scopeGoals: p.scope_goals || p.scopeGoals,
+        summary: p.summary,
+        tools: p.tools || [],
+        methodology: p.methodology || [],
+        analysisPlaceholder: p.analysis_placeholder || p.analysisPlaceholder || 'Analysis & Dashboard Overview',
+        liveLink: p.live_link || p.liveLink || ''
+      };
+    });
+
+    console.log(`✅ Dynamically synced ${data.length} projects from Supabase!`);
+  } catch (err) {
+    console.warn('Failed to sync projects from Supabase:', err);
+  }
+}
+
+export async function fetchSkillsFromSupabase() {
+  if (!isSupabaseConfigured || !supabase) return null;
+
+  try {
+    const { data, error } = await supabase
+      .from('skills')
+      .select('*')
+      .order('display_order', { ascending: true });
+
+    if (error || !data?.length) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}

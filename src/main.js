@@ -6,7 +6,7 @@ import lottie from 'lottie-web';
 import { initThreeBackground, triggerWarp } from './three-bg.js';
 import { initWarpTransition } from './warp-transition.js';
 import { projectsData } from './projectsData.js';
-import { buildEducationHTML, buildExperienceHTML } from './portalRenderer.js';
+import { buildEducationHTML, buildExperienceHTML, syncProjectsDataFromSupabase } from './portalRenderer.js';
 
 // Expose Lottie globally to support inline scripts (e.g. index.html)
 window.lottie = lottie;
@@ -32,6 +32,7 @@ let pdfPopupDismissed = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   injectVercelAnalytics();
+  syncProjectsDataFromSupabase(projectsData);
   initPreloader();
   initCustomCursor();
   initThreeBackground();
