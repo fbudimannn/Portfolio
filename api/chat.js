@@ -99,22 +99,21 @@ async function fetchSupabaseKnowledge() {
   }
 }
 
-async function saveChatLogToSupabase(sessionId, role, content, extra = {}) {
+async function saveChatLogToSupabase({ sessionId, userMessage, botResponse, modelName, latencyMs, ragSource, action }) {
   const { url, key } = getSupabaseCredentials();
 
-  if (!url || !key || url.includes('your-project') || !content) return;
+  if (!url || !key || url.includes('your-project') || !userMessage) return;
 
   try {
     const payload = {
       session_id: sessionId || 'anonymous',
-      role: role,
-      content: String(content)
+      user_message: String(userMessage),
+      bot_response: String(botResponse || ''),
+      model_name: modelName || 'gemma-4',
+      latency_ms: typeof latencyMs === 'number' ? latencyMs : 0,
+      rag_source: ragSource || 'pgvector',
+      action: action || null
     };
-
-    if (extra.modelName) payload.model_name = extra.modelName;
-    if (typeof extra.latencyMs === 'number') payload.latency_ms = extra.latencyMs;
-    if (extra.ragSource) payload.rag_source = extra.ragSource;
-    if (extra.action) payload.action = extra.action;
 
     const res = await fetch(`${url}/rest/v1/chat_logs`, {
       method: 'POST',
@@ -623,17 +622,17 @@ export default async function handler(req, res) {
   const startTime = Date.now();
   const sessionId = req.body?.sessionId || 'anonymous';
 
-  // Save user message log
-  saveChatLogToSupabase(sessionId, 'user', userMessage, { latencyMs: 0 });
-
   try {
     const result = await generateChatReply(apiKey, userMessage);
     const latencyMs = Date.now() - startTime;
 
     if (result && result.reply) {
-      saveChatLogToSupabase(sessionId, 'assistant', result.reply, {
+      saveChatLogToSupabase({
+        sessionId,
+        userMessage,
+        botResponse: result.reply,
         modelName: result.modelName,
-        latencyMs: latencyMs,
+        latencyMs,
         ragSource: result.ragSource,
         action: result.action
       });
