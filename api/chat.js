@@ -627,7 +627,7 @@ export default async function handler(req, res) {
     const latencyMs = Date.now() - startTime;
 
     if (result && result.reply) {
-      saveChatLogToSupabase({
+      await saveChatLogToSupabase({
         sessionId,
         userMessage,
         botResponse: result.reply,
