@@ -1,0 +1,116 @@
+// ============================================================
+// FAKHRI BUDIMAN PORTFOLIO — SUPABASE DATABASE ERD (DBML)
+// Copy-paste this entire code into https://dbdiagram.io/
+// ============================================================
+
+Project "Fakhri Budiman Portfolio Database" {
+  database_type: 'PostgreSQL (Supabase)'
+  note: 'Database schema for dynamic portfolio website, 3D space rooms, AI RAG vector store, and chat telemetry.'
+}
+
+Table project_categories {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar [not null, note: 'e.g. Customer Behaviour, Applied AI']
+  filter_key varchar [not null, unique, note: 'e.g. customer, ai, viz, impact']
+  lottie_path text [note: 'Path to animated Lottie icon JSON']
+  accent_color varchar [note: 'CSS variable name e.g. var(--accent-customer)']
+  accent_rgb varchar [note: 'RGB tuple e.g. 168, 85, 247']
+  display_order integer [default: 0]
+  created_at timestamptz [default: `now()`]
+  
+  Indexes {
+    filter_key
+  }
+}
+
+Table projects {
+  id uuid [pk, default: `gen_random_uuid()`]
+  slug varchar [not null, unique, note: 'Unique key e.g. rfm_segmentation']
+  title varchar [not null]
+  category varchar [not null]
+  filter_key varchar [ref: > project_categories.filter_key, note: 'Foreign key referencing category filter']
+  accent varchar [default: 'var(--accent-customer)']
+  accent_rgb varchar [default: '168, 85, 247']
+  client varchar
+  timeline varchar
+  role varchar
+  case_overview text
+  scope_goals text
+  summary text
+  tools "text[]" [note: 'Array of tool names e.g. ["Python", "SQL"]']
+  methodology jsonb [note: 'JSON array of methodology steps']
+  analysis_placeholder varchar
+  live_link text
+  image_url text
+  bg_image_url text [note: 'Background card photo for Impact Projects']
+  card_title varchar [note: 'Short title for carousel card']
+  card_desc text [note: 'Short summary snippet for card']
+  card_tags "text[]" [note: 'Array of top tags shown on card']
+  display_order integer [default: 0]
+  created_at timestamptz [default: `now()`]
+
+  Indexes {
+    slug
+    filter_key
+  }
+}
+
+Table skills {
+  id uuid [pk, default: `gen_random_uuid()`]
+  category varchar [not null, note: 'Data Analytics & BI | AI & Machine Learning | Cloud & Dev Tools']
+  name varchar [not null, note: 'e.g. PostgreSQL, Python, Tableau']
+  icon_url text [note: 'CDN SVG icon URL']
+  icon_type varchar [default: 'devicon', note: 'devicon | simple-icon']
+  proficiency varchar
+  display_order integer [default: 0]
+  created_at timestamptz [default: `now()`]
+}
+
+Table experiences {
+  id uuid [pk, default: `gen_random_uuid()`]
+  type varchar [not null, default: 'professional', note: 'professional | project']
+  role varchar [not null]
+  company varchar [not null]
+  period varchar [not null]
+  description text
+  bullets "text[]" [note: 'Array of key achievement bullet points']
+  logo_url text [note: 'Company or project logo asset path']
+  gallery jsonb [note: 'JSON array of photo slideshow items {src, caption}']
+  display_order integer [default: 0]
+  created_at timestamptz [default: `now()`]
+}
+
+Table education {
+  id uuid [pk, default: `gen_random_uuid()`]
+  degree varchar [not null]
+  institution varchar [not null]
+  year varchar [not null]
+  description text
+  bullets "text[]" [note: 'Array of academic achievements']
+  logo_url text [note: 'University logo asset path']
+  gallery jsonb [note: 'JSON array of campus photos {src, caption}']
+  display_order integer [default: 0]
+  created_at timestamptz [default: `now()`]
+}
+
+Table portfolio_knowledge {
+  id uuid [pk, default: `gen_random_uuid()`]
+  title varchar [not null]
+  category varchar [not null, note: 'project | experience | education | skill | profile']
+  content text [not null, note: 'Text chunk used for LLM context']
+  metadata jsonb [default: '{}']
+  embedding "vector(1536)" [note: 'pgvector 1536-dim embedding for RAG']
+  created_at timestamptz [default: `now()`]
+}
+
+Table chat_logs {
+  id uuid [pk, default: `gen_random_uuid()`]
+  session_id varchar [default: 'anonymous']
+  user_message text [not null]
+  bot_response text [not null]
+  model_name varchar
+  latency_ms integer
+  rag_source varchar
+  action varchar [note: 'e.g. navigate:#projects | warp:portal-education']
+  created_at timestamptz [default: `now()`]
+}
