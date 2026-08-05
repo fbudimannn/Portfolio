@@ -99,12 +99,23 @@ async function fetchSupabaseKnowledge() {
   }
 }
 
-async function saveChatLogToSupabase(sessionId, role, content) {
+async function saveChatLogToSupabase(sessionId, role, content, extra = {}) {
   const { url, key } = getSupabaseCredentials();
 
   if (!url || !key || url.includes('your-project') || !content) return;
 
   try {
+    const payload = {
+      session_id: sessionId || 'anonymous',
+      role: role,
+      content: String(content)
+    };
+
+    if (extra.modelName) payload.model_name = extra.modelName;
+    if (typeof extra.latencyMs === 'number') payload.latency_ms = extra.latencyMs;
+    if (extra.ragSource) payload.rag_source = extra.ragSource;
+    if (extra.action) payload.action = extra.action;
+
     const res = await fetch(`${url}/rest/v1/chat_logs`, {
       method: 'POST',
       headers: {
@@ -113,11 +124,7 @@ async function saveChatLogToSupabase(sessionId, role, content) {
         'Content-Type': 'application/json',
         'Prefer': 'return=minimal'
       },
-      body: JSON.stringify({
-        session_id: sessionId || 'anonymous',
-        role: role,
-        content: String(content)
-      })
+      body: JSON.stringify(payload)
     });
 
     if (!res.ok) {
@@ -129,10 +136,13 @@ async function saveChatLogToSupabase(sessionId, role, content) {
   }
 }
 
-async function getSystemPrompt() {
-  if (cachedSystemPrompt) return cachedSystemPrompt;
+let cachedIsDynamic = false;
+
+async function getSystemPromptWithSource() {
+  if (cachedSystemPrompt) return { systemPrompt: cachedSystemPrompt, isDynamic: cachedIsDynamic };
 
   const dynamicKnowledge = await fetchSupabaseKnowledge();
+  cachedIsDynamic = Boolean(dynamicKnowledge);
   const projectsData = dynamicKnowledge || loadProjectsData();
 
   cachedSystemPrompt = `You are Fakhri Budiman's portfolio assistant. Answer ONLY using facts from the portfolio database below. Never invent projects, numbers, or employers.
@@ -179,7 +189,7 @@ Respond ONLY with JSON: {"reply":"plain text string","action":null|"navigate_to_
 - Use markdown bullets and [Label](url) for links when needed.
 - Keep answers concise unless user asks for a specific length.`;
 
-  return cachedSystemPrompt;
+  return { systemPrompt: cachedSystemPrompt, isDynamic: cachedIsDynamic };
 }
 
 function detectLanguageMode(message) {
@@ -534,19 +544,21 @@ async function generateChatReply(apiKey, userMessage) {
   const lang = detectLanguageMode(userMessage);
 
   if (isContactQuestion(userMessage)) {
-    return getContactTemplate(lang);
+    const res = getContactTemplate(lang);
+    return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_contact' };
   }
 
   // Fast-path: instantly navigate if user is asking WHERE to view a section
   const sectionAction = detectSectionIntent(userMessage);
   if (sectionAction) {
-    return getSectionResponse(sectionAction, lang);
+    const res = getSectionResponse(sectionAction, lang);
+    return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_navigation' };
   }
 
-  const systemPrompt = await getSystemPrompt();
+  const { systemPrompt, isDynamic } = await getSystemPromptWithSource();
   const augmented = buildAugmentedUserMessage(userMessage, lang, false);
 
-  const { replyText } = await getSequentialModelReply(apiKey, systemPrompt, augmented);
+  const { modelName, replyText } = await getSequentialModelReply(apiKey, systemPrompt, augmented);
   let parsed = parseModelResponse(replyText);
 
   if (!isValidReply(parsed, lang)) {
@@ -568,7 +580,11 @@ async function generateChatReply(apiKey, userMessage) {
     }
   }
 
-  return parsed;
+  return {
+    ...parsed,
+    modelName: modelName || 'google/gemma-4-26b-a4b-it:free',
+    ragSource: isDynamic ? 'pgvector' : 'local_file'
+  };
 }
 
 export default async function handler(req, res) {
@@ -604,13 +620,23 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'OpenRouter API key is not configured on the server.' });
   }
 
+  const startTime = Date.now();
   const sessionId = req.body?.sessionId || 'anonymous';
-  saveChatLogToSupabase(sessionId, 'user', userMessage);
+
+  // Save user message log
+  saveChatLogToSupabase(sessionId, 'user', userMessage, { latencyMs: 0 });
 
   try {
     const result = await generateChatReply(apiKey, userMessage);
+    const latencyMs = Date.now() - startTime;
+
     if (result && result.reply) {
-      saveChatLogToSupabase(sessionId, 'assistant', result.reply);
+      saveChatLogToSupabase(sessionId, 'assistant', result.reply, {
+        modelName: result.modelName,
+        latencyMs: latencyMs,
+        ragSource: result.ragSource,
+        action: result.action
+      });
     }
     return res.status(200).json(result);
   } catch (err) {
