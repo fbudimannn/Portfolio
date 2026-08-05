@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.0",
+    "@vercel/analytics": "^2.0.1",
     "gsap": "^3.12.7",
     "lottie-web": "^5.13.0",
     "three": "^0.184.0"

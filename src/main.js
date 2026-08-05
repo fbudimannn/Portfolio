@@ -1,4 +1,5 @@
 import './style.css';
+import { inject as injectVercelAnalytics } from '@vercel/analytics';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import lottie from 'lottie-web';
@@ -30,6 +31,7 @@ window.buildPortalHTML = async function (portalId, fallbackHTML) {
 let pdfPopupDismissed = false;
 
 document.addEventListener('DOMContentLoaded', () => {
+  injectVercelAnalytics();
   initPreloader();
   initCustomCursor();
   initThreeBackground();
