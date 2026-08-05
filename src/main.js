@@ -2399,12 +2399,18 @@ function initChatbot() {
     const typingIndicator = showTypingIndicator();
 
     try {
+      let sessionId = sessionStorage.getItem('chat_session_id');
+      if (!sessionId) {
+        sessionId = 'sess_' + Math.random().toString(36).substring(2, 10);
+        sessionStorage.setItem('chat_session_id', sessionId);
+      }
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({ message: text, sessionId })
       });
 
       if (typingIndicator) typingIndicator.remove();

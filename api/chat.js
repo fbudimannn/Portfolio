@@ -91,6 +91,32 @@ async function fetchSupabaseKnowledge() {
   }
 }
 
+async function saveChatLogToSupabase(sessionId, role, content) {
+  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+  if (!url || !key || url.includes('your-project') || !content) return;
+
+  try {
+    await fetch(`${url}/rest/v1/chat_logs`, {
+      method: 'POST',
+      headers: {
+        'apikey': key,
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        session_id: sessionId || 'anonymous',
+        role: role,
+        content: String(content)
+      })
+    });
+  } catch (err) {
+    console.warn('Failed to save chat log to Supabase:', err.message);
+  }
+}
+
 async function getSystemPrompt() {
   if (cachedSystemPrompt) return cachedSystemPrompt;
 
@@ -566,8 +592,14 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'OpenRouter API key is not configured on the server.' });
   }
 
+  const sessionId = req.body?.sessionId || 'anonymous';
+  saveChatLogToSupabase(sessionId, 'user', userMessage);
+
   try {
     const result = await generateChatReply(apiKey, userMessage);
+    if (result && result.reply) {
+      saveChatLogToSupabase(sessionId, 'assistant', result.reply);
+    }
     return res.status(200).json(result);
   } catch (err) {
     console.error('All chat model attempts failed:', err);
