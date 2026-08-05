@@ -11,10 +11,10 @@ const MAX_CONTEXT_CHARS = 14_000;
 const WHATSAPP_URL =
   'https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0';
 
-// Sequential priority: NVIDIA first, then Gemma, then fallbacks
+// Sequential priority: Gemma/Gemini first (per ADVANCED RAG flow), then NVIDIA, Llama, Qwen
 const MODEL_CANDIDATES = [
-  'nvidia/nemotron-3-super-120b-a12b:free',
   'google/gemma-4-26b-a4b-it:free',
+  'nvidia/nemotron-3-super-120b-a12b:free',
   'meta-llama/llama-3.3-70b-instruct:free',
   'qwen/qwen3-coder:free',
   'meta-llama/llama-3.2-3b-instruct:free',
@@ -67,10 +67,35 @@ function loadProjectsData() {
   return 'No projects data available.';
 }
 
-function getSystemPrompt() {
+async function fetchSupabaseKnowledge() {
+  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const key = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+  if (!url || !key || url.includes('your-project')) return null;
+
+  try {
+    const res = await fetch(`${url}/rest/v1/portfolio_knowledge?select=title,category,content`, {
+      headers: {
+        'apikey': key,
+        'Authorization': `Bearer ${key}`
+      }
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) return null;
+
+    return data.map(item => `### [${item.category.toUpperCase()}] ${item.title}\n${item.content}`).join('\n\n');
+  } catch (err) {
+    console.warn('Failed to fetch dynamic knowledge from Supabase, falling back to local file:', err.message);
+    return null;
+  }
+}
+
+async function getSystemPrompt() {
   if (cachedSystemPrompt) return cachedSystemPrompt;
 
-  const projectsData = loadProjectsData();
+  const dynamicKnowledge = await fetchSupabaseKnowledge();
+  const projectsData = dynamicKnowledge || loadProjectsData();
 
   cachedSystemPrompt = `You are Fakhri Budiman's portfolio assistant. Answer ONLY using facts from the portfolio database below. Never invent projects, numbers, or employers.
 
@@ -418,7 +443,7 @@ async function generateChatReply(apiKey, userMessage) {
     return getContactTemplate(lang);
   }
 
-  const systemPrompt = getSystemPrompt();
+  const systemPrompt = await getSystemPrompt();
   const augmented = buildAugmentedUserMessage(userMessage, lang, false);
 
   const { replyText } = await getSequentialModelReply(apiKey, systemPrompt, augmented);

@@ -5,6 +5,7 @@ import lottie from 'lottie-web';
 import { initThreeBackground, triggerWarp, pauseThreeBackground, resumeThreeBackground } from './three-bg.js';
 import { initWarpTransition } from './warp-transition.js';
 import { projectsData } from './projectsData.js';
+import { buildEducationHTML, buildExperienceHTML } from './portalRenderer.js';
 
 // Expose Lottie globally to support inline scripts (e.g. index.html)
 window.lottie = lottie;
@@ -16,6 +17,15 @@ gsap.registerPlugin(ScrollTrigger);
 // Expose GSAP globally so inline scripts in index.html can use it
 window.gsap = gsap;
 window.triggerWarp = triggerWarp;
+
+// Expose portal renderers — inline index.html click handlers call these.
+// Each function fetches from Supabase and falls back to hardcoded HTML.
+window.buildPortalHTML = async function (portalId, fallbackHTML) {
+  if (portalId === 'portal-education') {
+    return buildEducationHTML(fallbackHTML);
+  }
+  return buildExperienceHTML(fallbackHTML);
+};
 
 let pdfPopupDismissed = false;
 

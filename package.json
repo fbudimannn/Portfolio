@@ -11,6 +11,7 @@
     "test:chat:vercel": "node test/chat.mjs https://fakhri-budiman-portfolio.vercel.app"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.0",
     "gsap": "^3.12.7",
     "lottie-web": "^5.13.0",
     "three": "^0.184.0"

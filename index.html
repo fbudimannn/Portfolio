@@ -1235,13 +1235,18 @@
         const body = document.getElementById('space-timeline');
         const flash = document.getElementById('warp-flash');
 
-        if (portalId === 'portal-education') {
-          body.innerHTML = educationData;
-          initSpaceLottie('portal-education');
-        } else {
-          body.innerHTML = experienceData;
-          initSpaceLottie('portal-experience');
-        }
+        // Fetch dynamic data from Supabase (falls back to hardcoded strings automatically)
+        const fallback = portalId === 'portal-education' ? educationData : experienceData;
+        const buildFn = window.buildPortalHTML;
+        const renderPortal = async () => {
+          const html = buildFn ? await buildFn(portalId, fallback) : fallback;
+          body.innerHTML = html;
+          if (portalId === 'portal-education') initSpaceLottie('portal-education');
+          else initSpaceLottie('portal-experience');
+          // Re-init space room scroll after dynamic content injected
+          if (window.updateSpaceRoom3D) window.updateSpaceRoom3D();
+        };
+        renderPortal();
 
         // --- FLY-IN ANIMATION ---
         const portalContent = portalEl.querySelector('.magic-content');
