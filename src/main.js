@@ -2,7 +2,7 @@ import './style.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import lottie from 'lottie-web';
-import { initThreeBackground, triggerWarp, pauseThreeBackground, resumeThreeBackground } from './three-bg.js';
+import { initThreeBackground, triggerWarp } from './three-bg.js';
 import { initWarpTransition } from './warp-transition.js';
 import { projectsData } from './projectsData.js';
 import { buildEducationHTML, buildExperienceHTML } from './portalRenderer.js';
