@@ -67,9 +67,17 @@ function loadProjectsData() {
   return 'No projects data available.';
 }
 
+const FALLBACK_SUPABASE_URL = 'https://pgbwebhatdhhdjafmcon.supabase.co';
+const FALLBACK_SUPABASE_KEY = 'sb_publishable_8iUwmbwV3YK4ezGi5TXz5g_ctwc3wIA';
+
+function getSupabaseCredentials() {
+  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || FALLBACK_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || FALLBACK_SUPABASE_KEY;
+  return { url, key };
+}
+
 async function fetchSupabaseKnowledge() {
-  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
-  const key = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+  const { url, key } = getSupabaseCredentials();
 
   if (!url || !key || url.includes('your-project')) return null;
 
@@ -92,13 +100,12 @@ async function fetchSupabaseKnowledge() {
 }
 
 async function saveChatLogToSupabase(sessionId, role, content) {
-  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+  const { url, key } = getSupabaseCredentials();
 
   if (!url || !key || url.includes('your-project') || !content) return;
 
   try {
-    await fetch(`${url}/rest/v1/chat_logs`, {
+    const res = await fetch(`${url}/rest/v1/chat_logs`, {
       method: 'POST',
       headers: {
         'apikey': key,
@@ -112,6 +119,11 @@ async function saveChatLogToSupabase(sessionId, role, content) {
         content: String(content)
       })
     });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      console.warn(`Supabase chat_log insert returned status ${res.status}:`, errText);
+    }
   } catch (err) {
     console.warn('Failed to save chat log to Supabase:', err.message);
   }
