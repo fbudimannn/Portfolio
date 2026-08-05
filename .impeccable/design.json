@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "title": "Design System: Fakhri Budiman Portfolio",
+  "generatedAt": "2026-08-05T08:40:45Z",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Command Cyan", "canonical": "#38bdf8" },
+      "secondary": { "role": "primary", "displayName": "Hyperdrive Blue", "canonical": "#3b82f6" },
+      "accent-ai": { "role": "accent", "displayName": "Emerald Green", "canonical": "#10b981" },
+      "accent-ml": { "role": "accent", "displayName": "Electric Cyan", "canonical": "#00f0ff" },
+      "accent-customer": { "role": "accent", "displayName": "Neon Purple", "canonical": "#a855f7" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Syne Display", "purpose": "Section titles and hero headings" },
+      "body": { "displayName": "DM Sans", "purpose": "Case study copy and descriptions" },
+      "mono": { "displayName": "Space Mono", "purpose": "Sci-fi telemetry and code tags" }
+    }
+  },
+  "narrative": {
+    "northStar": "The Deep-Space Tactical Command Terminal",
+    "overview": "Ultra-immersive sci-fi space command center portfolio with dynamic Supabase integration.",
+    "dos": [
+      "Do update portfolio items directly in Supabase Dashboard.",
+      "Do maintain category accent color consistency."
+    ],
+    "donts": [
+      "Don't hardcode static card HTML without Supabase dynamic sync."
+    ]
+  }
+}

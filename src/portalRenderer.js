@@ -218,3 +218,117 @@ export async function fetchSkillsFromSupabase() {
     return null;
   }
 }
+
+export async function renderSkillsFromSupabase() {
+  const container = document.querySelector('.skills-grid');
+  if (!container || !isSupabaseConfigured || !supabase) return;
+
+  try {
+    const skills = await fetchSkillsFromSupabase();
+    if (!skills || !skills.length) return;
+
+    // Group skills by category
+    const categoriesMap = {
+      'Data Analytics & BI': { icon: '📊', accent: '1', items: [] },
+      'AI & Machine Learning': { icon: '🧠', accent: '2', items: [] },
+      'Cloud & Dev Tools': { icon: '🛠️', accent: '3', items: [] }
+    };
+
+    skills.forEach(s => {
+      if (!categoriesMap[s.category]) {
+        categoriesMap[s.category] = { icon: '⚡', accent: '1', items: [] };
+      }
+      categoriesMap[s.category].items.push(s);
+    });
+
+    const categoryHTML = Object.entries(categoriesMap)
+      .filter(([_, cat]) => cat.items.length > 0)
+      .map(([catName, cat]) => {
+        const badgesHTML = cat.items.map(s => `
+          <div class="skill-badge">
+            <img src="${s.icon_url}" class="${s.icon_type === 'simple-icon' ? 'simple-icon' : ''}" alt="${s.name}">
+            <span>${s.name}</span>
+          </div>`).join('');
+
+        return `
+          <div class="skill-category" data-accent="${cat.accent}">
+            <div class="category-header">
+              <div class="category-icon">${cat.icon}</div>
+              <h3 class="category-title">${catName}</h3>
+            </div>
+            <div class="skill-badges">
+              ${badgesHTML}
+            </div>
+          </div>`;
+      }).join('\n');
+
+    container.innerHTML = categoryHTML;
+    console.log(`✅ Dynamically rendered ${skills.length} skills across ${Object.keys(categoriesMap).length} categories from Supabase!`);
+  } catch (err) {
+    console.warn('Failed to render skills from Supabase:', err);
+  }
+}
+
+export async function renderCategoriesFromSupabase() {
+  const container = document.querySelector('.project-categories');
+  if (!container || !isSupabaseConfigured || !supabase) return;
+
+  try {
+    const { data, error } = await supabase
+      .from('project_categories')
+      .select('*')
+      .order('display_order', { ascending: true });
+
+    if (error || !data?.length) return;
+
+    container.innerHTML = data.map(c => `
+      <div class="category-card${c.filter_key === 'all' ? ' active' : ''}" data-filter="${c.filter_key}">
+        <div class="category-icon-anim" id="lottie-cat-${c.filter_key}"></div>
+        <span>${c.name}</span>
+      </div>`).join('\n');
+
+    console.log(`✅ Dynamically rendered ${data.length} project categories from Supabase!`);
+  } catch (err) {
+    console.warn('Failed to render project categories from Supabase:', err);
+  }
+}
+
+export async function renderProjectCardsFromSupabase() {
+  const container = document.getElementById('projects-carousel-container');
+  if (!container || !isSupabaseConfigured || !supabase) return;
+
+  try {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('display_order', { ascending: true });
+
+    if (error || !data?.length) return;
+
+    container.innerHTML = data.map(p => {
+      const accentNum = ((p.display_order - 1) % 3) + 1;
+      const bgImgHTML = p.bg_image_url ? `<div class="card-bg-image" style="background-image: url('${p.bg_image_url}');"></div>` : '';
+      const tagsHTML = (p.card_tags || p.tools || []).map(t => `<span class="tag">${t}</span>`).join('');
+
+      return `
+        <div class="project-card" data-id="${p.slug}" data-accent="${accentNum}" data-categories="${p.filter_key || 'customer'}"
+          style="--accent-color: ${p.accent || 'var(--accent-customer)'}; --accent-rgb: ${p.accent_rgb || '168, 85, 247'};">
+          ${bgImgHTML}
+          <div class="card-meta">
+            <span class="card-number">${String(p.display_order).padStart(2, '0')}</span>
+            <span class="card-category">${p.category}</span>
+          </div>
+          <h3 class="card-title">${p.card_title || p.title}</h3>
+          <p class="card-desc">${p.card_desc || p.summary}</p>
+          <div class="card-tags">
+            ${tagsHTML}
+          </div>
+        </div>`;
+    }).join('\n');
+
+    console.log(`✅ Dynamically rendered ${data.length} project cards from Supabase!`);
+  } catch (err) {
+    console.warn('Failed to render project cards from Supabase:', err);
+  }
+}
+
