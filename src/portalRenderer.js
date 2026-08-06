@@ -180,20 +180,24 @@ export async function syncProjectsDataFromSupabase(targetProjectsObj) {
 
     data.forEach(p => {
       const key = p.slug || p.id;
+      const existing = targetProjectsObj[key] || {};
+
       targetProjectsObj[key] = {
-        title: p.title,
-        category: p.category,
-        accent: p.accent || 'var(--accent-customer)',
-        client: p.client,
-        timeline: p.timeline,
-        role: p.role,
-        caseOverview: p.case_overview || p.caseOverview,
-        scopeGoals: p.scope_goals || p.scopeGoals,
-        summary: p.summary,
-        tools: p.tools || [],
-        methodology: p.methodology || [],
-        analysisPlaceholder: p.analysis_placeholder || p.analysisPlaceholder || 'Analysis & Dashboard Overview',
-        liveLink: p.live_link || p.liveLink || ''
+        ...existing,
+        title: p.title || existing.title,
+        category: p.category || existing.category,
+        accent: p.accent || existing.accent || 'var(--accent-customer)',
+        client: p.client ?? existing.client,
+        timeline: p.timeline || existing.timeline,
+        role: p.role ?? existing.role,
+        caseOverview: p.case_overview || p.caseOverview || existing.caseOverview,
+        scopeGoals: p.scope_goals || p.scopeGoals || existing.scopeGoals,
+        summary: p.summary || existing.summary,
+        tools: (p.tools && p.tools.length > 0) ? p.tools : (existing.tools || []),
+        methodology: (p.methodology && p.methodology.length > 0) ? p.methodology : (existing.methodology || []),
+        analysisPlaceholder: p.analysis_placeholder || p.analysisPlaceholder || existing.analysisPlaceholder || 'Analysis & Dashboard Overview',
+        liveLink: p.live_link || p.liveLink || existing.liveLink || '',
+        structure: existing.structure || (p.category === 'Data Visualization' ? 2 : (p.category === 'Impact Projects' ? 1 : 3))
       };
     });
 

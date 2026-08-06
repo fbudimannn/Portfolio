@@ -1245,8 +1245,10 @@ function openProjectDetails(id, proj) {
     </div>
   `;
 
+  const structureType = proj.structure || (proj.category === 'Data Visualization' ? 2 : (proj.category === 'Impact Projects' ? 1 : 3));
+
   // Choose structure
-  if (proj.structure === 3) {
+  if (structureType === 3) {
     // STRUCTURE 3: Technical/Others
     html = `
       ${headerHtml}
@@ -1297,7 +1299,7 @@ function openProjectDetails(id, proj) {
         ${proj.liveLink ? `<a href="${proj.liveLink}" target="_blank" class="detail-btn-action detail-btn-action-secondary">Live Demo / Deck</a>` : ''}
       </div>
     `;
-  } else if (proj.structure === 2) {
+  } else if (structureType === 2) {
     // STRUCTURE 2: Data Visualization
     html = `
       ${headerHtml}
@@ -1338,7 +1340,7 @@ function openProjectDetails(id, proj) {
         ${proj.liveLink ? `<a href="${proj.liveLink}" target="_blank" class="detail-btn-action detail-btn-action-primary">Open Interactive Dashboard</a>` : ''}
       </div>
     `;
-  } else if (proj.structure === 1) {
+  } else if (structureType === 1) {
     // STRUCTURE 1: Impact Projects
     
     // Check for map scope image
