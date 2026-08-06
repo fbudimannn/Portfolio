@@ -878,10 +878,12 @@ function initProjectCards() {
   // ─── PAGINATED RENDER ENGINE ───
   function renderFilteredProjects(animate = true) {
     if (!carousel) return;
+    const currentProjectCards = carousel.querySelectorAll('.project-card');
 
     const performUpdate = () => {
-      const filtered = Array.from(projectCards).filter(project => {
-        const categories = project.getAttribute('data-categories').split(' ');
+      const filtered = Array.from(currentProjectCards).filter(project => {
+        const catAttr = project.getAttribute('data-categories') || '';
+        const categories = catAttr.split(' ');
         return activeCategory === 'all' || categories.includes(activeCategory);
       });
 
@@ -894,7 +896,7 @@ function initProjectCards() {
       }
 
       if (activeCategory === 'all') {
-        const totalPages = Math.ceil(filtered.length / projectsPerPage);
+        const totalPages = Math.ceil(filtered.length / projectsPerPage) || 1;
         if (currentPage > totalPages) currentPage = totalPages;
         if (currentPage < 1) currentPage = 1;
 
@@ -902,7 +904,7 @@ function initProjectCards() {
         const endIndex = currentPage * projectsPerPage;
         const visible = filtered.slice(startIndex, endIndex);
 
-        projectCards.forEach(project => {
+        currentProjectCards.forEach(project => {
           const isVisible = visible.includes(project);
           if (isVisible) {
             project.style.display = 'flex';
@@ -920,7 +922,7 @@ function initProjectCards() {
         }
         updateArrowStatesGrid(currentPage, totalPages);
       } else {
-        projectCards.forEach(project => {
+        currentProjectCards.forEach(project => {
           const isMatch = filtered.includes(project);
           if (isMatch) {
             project.style.display = 'flex';
@@ -1000,8 +1002,9 @@ function initProjectCards() {
     const scrollAmount = 374; // 350px card width + 24px gap
 
     nextBtn.addEventListener('click', () => {
+      const currentProjectCards = carousel.querySelectorAll('.project-card');
       if (activeCategory === 'all') {
-        const filtered = Array.from(projectCards);
+        const filtered = Array.from(currentProjectCards);
         const totalPages = Math.ceil(filtered.length / projectsPerPage);
         if (currentPage < totalPages) {
           currentPage++;
@@ -1028,7 +1031,7 @@ function initProjectCards() {
       updateArrowStatesCarousel();
     });
 
-    // Touch Swipe/Drag Scrolling Support (disabled in grid layout mode)
+    // Touch Swipe/Drag Scrolling Support
     let isDown = false;
     let startX;
     let scrollLeftVal;
@@ -1041,13 +1044,8 @@ function initProjectCards() {
       scrollLeftVal = carousel.scrollLeft;
     });
 
-    carousel.addEventListener('mouseleave', () => {
-      isDown = false;
-    });
-
-    carousel.addEventListener('mouseup', () => {
-      isDown = false;
-    });
+    carousel.addEventListener('mouseleave', () => { isDown = false; });
+    carousel.addEventListener('mouseup', () => { isDown = false; });
 
     carousel.addEventListener('mousemove', (e) => {
       if (!isDown || activeCategory === 'all') return;
@@ -1056,43 +1054,23 @@ function initProjectCards() {
       const walk = (x - startX) * 1.5;
       carousel.scrollLeft = scrollLeftVal - walk;
     });
-  }
 
-  // ─── 3D TILT ON HOVER ───
-  projectCards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-
-      gsap.to(card, {
-        rotationY: x * 15,
-        rotationX: -y * 15,
-        transformPerspective: 800,
-        ease: 'power2.out',
-        duration: 0.4,
-      });
-    });
-
-    card.addEventListener('mouseleave', () => {
-      gsap.to(card, {
-        rotationY: 0, rotationX: 0,
-        duration: 0.6,
-        ease: 'elastic.out(1, 0.5)',
-      });
-    });
-
-    // ─── CLICK TO OPEN DETAILS DRAWER ───
-    card.addEventListener('click', (e) => {
+    // ─── EVENT DELEGATION: PROJECT CARD CLICK TO OPEN DRAWER ───
+    carousel.addEventListener('click', (e) => {
+      const card = e.target.closest('.project-card');
+      if (!card) return;
       if (e.target.closest('a') || e.target.closest('button')) return;
 
       const projectId = card.getAttribute('data-id');
       const proj = projectsData[projectId];
-      if (!proj) return;
+      if (!proj) {
+        console.warn('Project data not found for ID:', projectId);
+        return;
+      }
 
       openProjectDetails(projectId, proj);
     });
-  });
+  }
 
   // ─── DETAILS PANEL DRAWER CLOSE TRIGGERS ───
   const overlay = document.getElementById('details-drawer-overlay');
@@ -1115,18 +1093,21 @@ function initProjectCards() {
     });
   }
 
-  // ─── CATEGORY FILTER HUB TRIGGERS ───
-  categoryCards.forEach(card => {
-    card.addEventListener('click', () => {
-      // Update active category
-      categoryCards.forEach(c => c.classList.remove('active'));
+  // ─── CATEGORY FILTER HUB EVENT DELEGATION ───
+  const catContainer = document.querySelector('.project-categories');
+  if (catContainer) {
+    catContainer.addEventListener('click', (e) => {
+      const card = e.target.closest('.category-card');
+      if (!card) return;
+
+      catContainer.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
       card.classList.add('active');
 
       activeCategory = card.getAttribute('data-filter');
-      currentPage = 1; // Reset to page 1
+      currentPage = 1;
       renderFilteredProjects(true);
     });
-  });
+  }
 
   // ─── INITIAL RENDER ───
   renderFilteredProjects(false);
