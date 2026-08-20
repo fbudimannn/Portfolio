@@ -11,10 +11,9 @@ const MAX_CONTEXT_CHARS = 14_000;
 const WHATSAPP_URL =
   'https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0';
 
-// Sequential priority: Gemma/Gemini first (per ADVANCED RAG flow), then NVIDIA, Llama, Qwen
+// Sequential priority: Direct Google Gemini 3.6 Flash first, then OpenRouter (Gemma 4, Llama 3.3, Qwen 3)
 const MODEL_CANDIDATES = [
   'google/gemma-4-26b-a4b-it:free',
-  'nvidia/nemotron-3-super-120b-a12b:free',
   'meta-llama/llama-3.3-70b-instruct:free',
   'qwen/qwen3-coder:free',
   'meta-llama/llama-3.2-3b-instruct:free',
@@ -519,16 +518,68 @@ async function callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage)
   }
 }
 
+async function callDirectGeminiModel(systemPrompt, userMessage) {
+  const geminiApiKey = process.env.GEMINI_API_KEY;
+  if (!geminiApiKey || geminiApiKey.length < 10) throw new Error('No valid GEMINI_API_KEY configured');
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), MODEL_TIMEOUT_MS);
+
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${geminiApiKey}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          { role: 'user', parts: [{ text: `${systemPrompt}\n\n[USER QUESTION]\n${userMessage}` }] }
+        ],
+        generationConfig: {
+          temperature: 0.25,
+          maxOutputTokens: 850,
+          responseMimeType: 'application/json'
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Google Gemini Status ${response.status}: ${errText}`);
+    }
+
+    const data = await response.json();
+    const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!replyText) throw new Error('Empty Gemini model response');
+
+    return { modelName: 'google/gemini-3.6-flash (Direct AI API)', replyText };
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 async function getSequentialModelReply(apiKey, systemPrompt, userMessage) {
   let lastError = null;
 
+  // 1. Try Direct Google Gemini 3.6 Flash first (Fastest & Most Reliable)
+  try {
+    const result = await callDirectGeminiModel(systemPrompt, userMessage);
+    console.log(`Chat success with primary model: ${result.modelName}`);
+    return result;
+  } catch (err) {
+    console.warn('Direct Google Gemini API failed, falling back to OpenRouter candidates:', err.message);
+    lastError = err;
+  }
+
+  // 2. Fallback to OpenRouter sequential candidates
   for (let i = 0; i < MODEL_CANDIDATES.length; i += 1) {
     const modelName = MODEL_CANDIDATES[i];
     if (i > 0) await sleep(700);
 
     try {
       const result = await callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage);
-      console.log(`Chat success with model: ${modelName}`);
+      console.log(`Chat success with OpenRouter model: ${modelName}`);
       return result;
     } catch (err) {
       lastError = err;
