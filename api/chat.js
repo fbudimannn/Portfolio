@@ -11,11 +11,18 @@ const MAX_CONTEXT_CHARS = 14_000;
 const WHATSAPP_URL =
   'https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0';
 
-// Sequential priority: Direct Google Gemini 3.6 Flash first, then OpenRouter (Gemma 4, Llama 3.3, Qwen 3)
-const MODEL_CANDIDATES = [
+// Sequential candidates matching exact ADVANCED_RAG backend strategy
+const DIRECT_GOOGLE_MODELS = [
+  'gemini-3.6-flash',
+  'gemini-2.5-flash-lite',
+];
+
+const OPENROUTER_MODELS = [
+  'google/gemma-4-31b-it:free',
   'google/gemma-4-26b-a4b-it:free',
+  'qwen/qwen3-next-80b-a3b-instruct:free',
+  'openai/gpt-oss-120b:free',
   'meta-llama/llama-3.3-70b-instruct:free',
-  'qwen/qwen3-coder:free',
   'meta-llama/llama-3.2-3b-instruct:free',
 ];
 
@@ -518,7 +525,7 @@ async function callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage)
   }
 }
 
-async function callDirectGeminiModel(systemPrompt, userMessage) {
+async function callDirectGeminiModel(modelName, systemPrompt, userMessage) {
   const geminiApiKey = process.env.GEMINI_API_KEY;
   if (!geminiApiKey || geminiApiKey.length < 10) throw new Error('No valid GEMINI_API_KEY configured');
 
@@ -526,7 +533,7 @@ async function callDirectGeminiModel(systemPrompt, userMessage) {
   const timeoutId = setTimeout(() => controller.abort(), MODEL_TIMEOUT_MS);
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${geminiApiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${geminiApiKey}`;
 
     const response = await fetch(url, {
       method: 'POST',
@@ -553,7 +560,7 @@ async function callDirectGeminiModel(systemPrompt, userMessage) {
     const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!replyText) throw new Error('Empty Gemini model response');
 
-    return { modelName: 'google/gemini-3.6-flash (Direct AI API)', replyText };
+    return { modelName: `google/${modelName} (Direct AI Studio)`, replyText };
   } finally {
     clearTimeout(timeoutId);
   }
@@ -562,32 +569,43 @@ async function callDirectGeminiModel(systemPrompt, userMessage) {
 async function getSequentialModelReply(apiKey, systemPrompt, userMessage) {
   let lastError = null;
 
-  // 1. Try Direct Google Gemini 3.6 Flash first (Fastest & Most Reliable)
-  try {
-    const result = await callDirectGeminiModel(systemPrompt, userMessage);
-    console.log(`Chat success with primary model: ${result.modelName}`);
-    return result;
-  } catch (err) {
-    console.warn('Direct Google Gemini API failed, falling back to OpenRouter candidates:', err.message);
-    lastError = err;
-  }
-
-  // 2. Fallback to OpenRouter sequential candidates
-  for (let i = 0; i < MODEL_CANDIDATES.length; i += 1) {
-    const modelName = MODEL_CANDIDATES[i];
-    if (i > 0) await sleep(700);
-
-    try {
-      const result = await callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage);
-      console.log(`Chat success with OpenRouter model: ${modelName}`);
-      return result;
-    } catch (err) {
-      lastError = err;
-      console.warn(`Model ${modelName} failed:`, err.message);
+  // 1. Direct Google AI Studio candidates (models/gemini-3.6-flash, gemini-2.5-flash-lite)
+  for (const modelName of DIRECT_GOOGLE_MODELS) {
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      try {
+        console.log(`[LLM] Trying direct Google model: ${modelName} (Attempt ${attempt}/2)`);
+        const result = await callDirectGeminiModel(modelName, systemPrompt, userMessage);
+        console.log(`[LLM] Success with direct Google model: ${result.modelName}`);
+        return result;
+      } catch (err) {
+        lastError = err;
+        console.warn(`[LLM] Direct Google model ${modelName} attempt ${attempt} failed:`, err.message);
+        if (attempt === 1 && (err.message.includes('429') || err.message.includes('rate'))) {
+          await sleep(2000);
+        }
+      }
     }
   }
 
-  throw lastError || new Error('All model attempts failed');
+  // 2. OpenRouter Candidates Fallback (Gemma 4 31B/26B, Qwen3 80B, GPT-OSS 120B, Llama 3.3 70B, Llama 3.2 3B)
+  for (const modelName of OPENROUTER_MODELS) {
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      try {
+        console.log(`[LLM] Trying OpenRouter model: ${modelName} (Attempt ${attempt}/2)`);
+        const result = await callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage);
+        console.log(`[LLM] Success with OpenRouter model: ${modelName}`);
+        return result;
+      } catch (err) {
+        lastError = err;
+        console.warn(`[LLM] OpenRouter model ${modelName} attempt ${attempt} failed:`, err.message);
+        if (attempt === 1 && (err.message.includes('429') || err.message.includes('rate'))) {
+          await sleep(2000);
+        }
+      }
+    }
+  }
+
+  throw lastError || new Error('All candidate LLM providers failed');
 }
 
 async function generateChatReply(apiKey, userMessage) {
