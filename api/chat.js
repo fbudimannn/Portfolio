@@ -13,8 +13,8 @@ const WHATSAPP_URL =
 
 // Sequential candidates matching exact ADVANCED_RAG backend strategy
 const DIRECT_GOOGLE_MODELS = [
-  'gemini-3.6-flash',
-  'gemini-2.5-flash-lite',
+  'gemma-4-31b-it',
+  'gemma-4-26b-a4b-it',
 ];
 
 const OPENROUTER_MODELS = [
