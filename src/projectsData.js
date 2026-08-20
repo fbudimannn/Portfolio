@@ -262,23 +262,23 @@ export const projectsData = {
     structure: 3,
     category: 'Applied AI',
     accent: 'var(--accent-ai)',
-    title: 'Advanced RAG System (Medical PubMed Pipeline)',
-    client: 'Clinical Query Solution',
-    timeline: '2025',
-    role: 'AI Engineer',
-    caseOverview: 'Medical research on cardiovascular disease (CVD), stroke, and diabetes grows rapidly, but standard LLMs have knowledge cutoff dates (e.g., late 2023 or mid-2024), preventing clinical practitioners from accessing recent research. This project builds a RAG system to query PubMed articles published between January 2023 and May 2025.',
-    scopeGoals: 'Build a document retrieval and question-answering pipeline using PubMed articles. Implement advanced RAG techniques: semantic chunking, hybrid search, and re-ranking. Evaluate the RAG pipeline using the RAGAS framework.',
-    summary: 'Integrates semantic chunking, hybrid retrieval (BM25 + BGE dense embeddings), BGE-M3 CrossEncoder re-ranking, and Mistral-7B-Instruct for generation. The RAGAS framework verified retrieval quality and answer accuracy. The system helps clinicians retrieve recent evidence-based answers.',
-    tools: ['Python', 'LlamaIndex', 'LangChain', 'BM25', 'BGE Embeddings', 'RAGAS', 'Mistral-7B-Instruct'],
+    title: 'ClinIQ — Academic Medical Journal Research Assistant',
+    client: 'Self-Developed',
+    timeline: '2025 - Present',
+    role: 'Self-Developed',
+    caseOverview: 'Originally developed as a Warwick University coursework exploring RAG for medical literature (BM25 + BGE dense embeddings, Mistral-7B-Instruct, and RAGAS evaluation), this project evolved into ClinIQ — a full-stack production-grade Academic Medical Journal Research Assistant. ClinIQ now indexes 300,000+ PubMed abstracts across 34 active clinical specialties (Medicine, Dentistry, Pharmacy, Nutrition), serving structured, citation-backed answers with verified PMIDs and Level of Evidence grading (L1 Systematic Review to L5 Case Report).',
+    scopeGoals: 'Phase 1 (Warwick): Build a RAG prototype with semantic chunking, hybrid retrieval (BM25 + Dense), CrossEncoder re-ranking, and RAGAS evaluation. Phase 2 (Self-Developed): Scale into a deployed multi-domain clinical platform with a 5-stage Advanced RAG pipeline — 3-Level Hybrid Guardrails (Regex + Keyword Blacklist + LLM Topic Judge), Semantic Retrieval (k=15 via BGE Embeddings into Pinecone), FlashRank TinyBERT Cross-Encoder Reranking (Top 8), LLM Clinical Synthesis (Gemma 4 31B with redundant fallback chain), and Automated PMID Citation Verification.',
+    summary: 'Deployed full-stack solution: Next.js 15 frontend (Vercel) + FastAPI backend (Render) + Pinecone vector DB (34 domain namespaces) + Supabase (OTP Auth, PostgreSQL, Storage). Features include per-domain guardrails, evidence grading badges, pinned chats with multi-device sync, in-conversation question navigator, cross-domain navigation suggestions, and user quota management. Reduced hallucinated medical references to near-zero using automated citation verification guardrails.',
+    tools: ['Python', 'FastAPI', 'Next.js', 'TypeScript', 'Pinecone', 'Supabase', 'BGE Embeddings', 'FlashRank', 'Gemma 4', 'RAGAS', 'Tailwind CSS', 'Vercel'],
     methodology: [
-      { title: 'Document Ingestion', desc: 'Filter PubMed abstracts based on keyword relevance and abstract lengths.' },
-      { title: 'Chunking & Indexing', desc: 'Apply semantic chunking to retain clinical context, storing embeddings.' },
-      { title: 'Retrieval & Re-ranking', desc: 'Execute hybrid search (BM25 + Dense) and re-rank with BGE CrossEncoder.' },
-      { title: 'Evaluation', desc: 'Assess generation faithfulness and answer relevancy via RAGAS.' }
+      { title: 'Academic Foundation (Warwick)', desc: 'Built RAG prototype with semantic chunking, BM25 + BGE hybrid search, BGE-M3 CrossEncoder re-ranking, Mistral-7B-Instruct generation, and RAGAS evaluation framework.' },
+      { title: 'Production RAG Pipeline', desc: '5-stage pipeline: 3-Level Hybrid Guardrails → Semantic Retrieval (k=15) → FlashRank TinyBERT Reranking (Top 8) → Gemma 4 31B Clinical Synthesis → Automated PMID Citation Verification.' },
+      { title: 'Multi-Domain Scaling', desc: 'Expanded to 34 Pinecone namespaces across Medicine (21), Dentistry (6), Pharmacy (4), and Nutrition (3). Each domain has isolated vector index, guardrail config, and keyword blacklist.' },
+      { title: 'Full-Stack Deployment', desc: 'Next.js 15 on Vercel + FastAPI on Render + Supabase Auth (OTP Magic Link) + Sentry monitoring. Features: chat history, pinned conversations, feedback system, quota tracking.' }
     ],
-    analysisPlaceholder: 'RAGAS Score Metrics & Retrieval Fidelity Chart',
+    analysisPlaceholder: 'ClinIQ 5-Stage RAG Architecture & 34-Domain Clinical Platform',
     githubLink: 'https://github.com/fbudimannn/ADVANCED_RAG',
-    liveLink: 'https://github.com/fbudimannn/ADVANCED_RAG'
+    liveLink: 'https://cliniq-dev.vercel.app/'
   },
 
   // ==================== DATABASE BUILDING ====================
