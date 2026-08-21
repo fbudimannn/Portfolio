@@ -619,7 +619,48 @@ async function getSequentialModelReply(apiKey, systemPrompt, userMessage) {
 }
 
 function isProfileQuestion(message) {
-  return /\b(who\s*is\s*fakhri|about\s*fakhri|siapa\s*fakhri|profile\s*fakhri|tentang\s*fakhri|tell\s*me\s*about\s*fakhri)\b/i.test(message);
+  const lower = String(message || '').toLowerCase().trim();
+  if (/\b(project|projek|work|skills|skill|education|experience|cliniq|f1|rfm|contact|email|wa)\b/i.test(lower)) {
+    return false;
+  }
+  return /^(who\s*is\s*fakhri|siapa\s*fakhri|tell\s*me\s*about\s*fakhri\s*\??$|about\s*fakhri\s*\??$)/i.test(lower);
+}
+
+function isAiProjectQuestion(message) {
+  const lower = String(message || '').toLowerCase();
+  return /\b(ai\s*project|project\s*in\s*ai|projek\s*ai|project\s*ai|applied\s*ai)\b/i.test(lower) ||
+         (/\b(project|projek)\b/i.test(lower) && /\b(ai|rag|cliniq|gemma|llm)\b/i.test(lower));
+}
+
+function getAiProjectsResponse(lang) {
+  if (lang === 'jaksel' || lang === 'id') {
+    return {
+      reply: "Berikut projek-projek **Applied AI & Intelligent Systems** unggulan Fakhri:\n\n1. **ClinIQ — Academic Medical Journal Research Assistant**\n   - **Tech**: Python, FastAPI, Next.js, Pinecone (34 namespaces), BGE Embeddings, FlashRank TinyBERT, Gemma 4 31B.\n   - **Fitur**: Engine Advanced RAG 5-Stage dengan 3-Level Hybrid Guardrails & verifikasi kutipan PMID otomatis untuk 300K+ abstrak PubMed.\n\n2. **Talent Match AI — Smart Resume Screener**\n   - **Tech**: Python, Spacy (NLP), Sentence-Transformers, Streamlit.\n   - **Fitur**: Sistem pencocokan otomatis CV pelamar dengan Job Description menggunakan Cosine Similarity & NER extraction.\n\n3. **Longformer Financial Text Summarization**\n   - **Tech**: PyTorch, HuggingFace Transformers, Longformer-LED.\n   - **Fitur**: Peringkasan otomatis dokumen keuangan & laporan tahunan berukuran panjang (long-document) dengan ekstraksi metrik finansial kunci.",
+      action: "navigate_to_projects"
+    };
+  }
+  return {
+    reply: "Here are Fakhri's key **Applied AI & Intelligent Systems** projects:\n\n1. **ClinIQ — Academic Medical Journal Research Assistant**\n   - **Tech**: Python, FastAPI, Next.js, Pinecone (34 namespaces), BGE Embeddings, FlashRank TinyBERT, Gemma 4 31B.\n   - **Features**: 5-Stage Advanced RAG engine with 3-Level Hybrid Guardrails & automated PMID citation verification indexing 300K+ PubMed abstracts.\n\n2. **Talent Match AI — Smart Resume Screener**\n   - **Tech**: Python, Spacy (NLP), Sentence-Transformers, Streamlit.\n   - **Features**: Automated candidate CV to Job Description matching system using Cosine Similarity & NER extraction.\n\n3. **Longformer Financial Text Summarization**\n   - **Tech**: PyTorch, HuggingFace Transformers, Longformer-LED.\n   - **Features**: Abstractive summarization for long-form annual financial reports with key metric extraction.",
+    action: "navigate_to_projects"
+  };
+}
+
+function isGeneralProjectsQuestion(message) {
+  const lower = String(message || '').toLowerCase();
+  return /\b(tell\s*me\s*about\s*fakhri\s*project|what\s*are\s*fakhri\s*project|projek\s*fakhri\s*apa\s*aja|project\s*fakhri\s*apa\s*aja|list\s*project|projek\s*fakhri)\b/i.test(lower);
+}
+
+function getGeneralProjectsResponse(lang) {
+  if (lang === 'jaksel' || lang === 'id') {
+    return {
+      reply: "Berikut projek-projek unggulan Fakhri di berbagai bidang:\n\n🤖 **Applied AI & RAG**:\n- **ClinIQ**: Platform RAG Medis 34 domain & 300K+ abstrak PubMed.\n- **Talent Match AI**: Smart Resume & Candidate Screener (NLP).\n- **Longformer Financial Summarization**: Peringkas otomatis laporan keuangan panjang.\n\n📊 **Customer Behaviour & Analytics**:\n- **RFM Segmentation**: Analisis segmentasi e-commerce (Royal, Current, Absent, Sleeping).\n- **Funnel Journey Analysis**: Optimalisasi conversion rate flow aplikasi.\n\n📈 **Machine Learning & Predictive**:\n- **F1 Bayesian Predictor**: Model Bayesian & Logistic Regression prediksi race F1.\n- **K-Means Mutual Fund Clustering**: Klasterisasi reksa dana berdasarkan risk-return profile.",
+      action: "navigate_to_projects"
+    };
+  }
+  return {
+    reply: "Here is an overview of Fakhri's key projects across domains:\n\n🤖 **Applied AI & RAG**:\n- **ClinIQ**: 34-domain Medical RAG Assistant indexing 300K+ PubMed abstracts.\n- **Talent Match AI**: Smart Candidate Screener & Resume Matcher (NLP).\n- **Longformer Financial Summarization**: Long-document abstractive summarization.\n\n📊 **Customer Behaviour & Analytics**:\n- **RFM Segmentation**: E-commerce user segmentation (Royal, Current, Absent, Sleeping).\n- **Funnel Journey Analysis**: App conversion rate & dropout optimization.\n\n📈 **Machine Learning & Predictive**:\n- **F1 Bayesian Predictor**: F1 race outcome predictor using Bayesian Modeling.\n- **K-Means Mutual Fund Clustering**: Risk-return mutual fund clustering.",
+    action: "navigate_to_projects"
+  };
 }
 
 function getProfileResponse(lang) {
@@ -647,6 +688,16 @@ async function generateChatReply(apiKey, userMessage) {
   if (isContactQuestion(userMessage)) {
     const res = getContactTemplate(lang);
     return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_contact' };
+  }
+
+  if (isAiProjectQuestion(userMessage)) {
+    const res = getAiProjectsResponse(lang);
+    return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_ai_projects' };
+  }
+
+  if (isGeneralProjectsQuestion(userMessage)) {
+    const res = getGeneralProjectsResponse(lang);
+    return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_general_projects' };
   }
 
   if (isProfileQuestion(userMessage)) {
