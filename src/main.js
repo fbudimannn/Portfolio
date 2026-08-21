@@ -1056,7 +1056,7 @@ function initProjectCards() {
     });
 
     // ─── EVENT DELEGATION: PROJECT CARD CLICK TO OPEN DRAWER ───
-    carousel.addEventListener('click', (e) => {
+    document.addEventListener('click', (e) => {
       const card = e.target.closest('.project-card');
       if (!card) return;
       if (e.target.closest('a') || e.target.closest('button')) return;

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const MAX_MESSAGE_LENGTH = 500;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 20;
-const MODEL_TIMEOUT_MS = 18_000;
+const MODEL_TIMEOUT_MS = 6_000;
 const MAX_CONTEXT_CHARS = 14_000;
 
 const WHATSAPP_URL =
@@ -13,6 +13,7 @@ const WHATSAPP_URL =
 
 // Sequential candidates matching exact ADVANCED_RAG backend strategy
 const DIRECT_GOOGLE_MODELS = [
+  'gemini-3.6-flash',
   'gemma-4-31b-it',
   'gemma-4-26b-a4b-it',
 ];
