@@ -418,7 +418,11 @@ function isWrongLanguage(reply, lang) {
 }
 
 function unwrapNestedJsonReply(reply) {
-  let text = reply.trim();
+  if (!reply) return '';
+  let text = String(reply).trim();
+  if (text.startsWith('```')) {
+    text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+  }
   if (!text.startsWith('{') && !text.startsWith('[')) return text;
 
   try {
@@ -434,8 +438,17 @@ function unwrapNestedJsonReply(reply) {
 }
 
 function parseModelResponse(replyText) {
+  if (!replyText) {
+    return { reply: "I'm sorry, I couldn't formulate a proper response.", action: null };
+  }
+
+  let cleanText = String(replyText).trim();
+  if (cleanText.startsWith('```')) {
+    cleanText = cleanText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+  }
+
   try {
-    const parsedResult = JSON.parse(replyText);
+    const parsedResult = JSON.parse(cleanText);
 
     if (parsedResult && typeof parsedResult === 'object') {
       if (!parsedResult.reply) {
@@ -468,11 +481,15 @@ function parseModelResponse(replyText) {
       return parsedResult;
     }
   } catch {
-    // fall through
+    const match = cleanText.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/s);
+    if (match && match[1]) {
+      const extracted = match[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
+      return { reply: extracted, action: null };
+    }
   }
 
   return {
-    reply: replyText || "I'm sorry, I couldn't formulate a proper response.",
+    reply: unwrapNestedJsonReply(cleanText),
     action: null,
   };
 }
@@ -570,39 +587,29 @@ async function callDirectGeminiModel(modelName, systemPrompt, userMessage) {
 async function getSequentialModelReply(apiKey, systemPrompt, userMessage) {
   let lastError = null;
 
-  // 1. Direct Google AI Studio candidates (models/gemini-3.6-flash, gemini-2.5-flash-lite)
+  // 1. Direct Google AI Studio candidates
   for (const modelName of DIRECT_GOOGLE_MODELS) {
-    for (let attempt = 1; attempt <= 2; attempt += 1) {
-      try {
-        console.log(`[LLM] Trying direct Google model: ${modelName} (Attempt ${attempt}/2)`);
-        const result = await callDirectGeminiModel(modelName, systemPrompt, userMessage);
-        console.log(`[LLM] Success with direct Google model: ${result.modelName}`);
-        return result;
-      } catch (err) {
-        lastError = err;
-        console.warn(`[LLM] Direct Google model ${modelName} attempt ${attempt} failed:`, err.message);
-        if (attempt === 1 && (err.message.includes('429') || err.message.includes('rate'))) {
-          await sleep(2000);
-        }
-      }
+    try {
+      console.log(`[LLM] Trying direct Google model: ${modelName}`);
+      const result = await callDirectGeminiModel(modelName, systemPrompt, userMessage);
+      console.log(`[LLM] Success with direct Google model: ${result.modelName}`);
+      return result;
+    } catch (err) {
+      lastError = err;
+      console.warn(`[LLM] Direct Google model ${modelName} failed:`, err.message);
     }
   }
 
-  // 2. OpenRouter Candidates Fallback (Gemma 4 31B/26B, Qwen3 80B, GPT-OSS 120B, Llama 3.3 70B, Llama 3.2 3B)
+  // 2. OpenRouter Candidates Fallback
   for (const modelName of OPENROUTER_MODELS) {
-    for (let attempt = 1; attempt <= 2; attempt += 1) {
-      try {
-        console.log(`[LLM] Trying OpenRouter model: ${modelName} (Attempt ${attempt}/2)`);
-        const result = await callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage);
-        console.log(`[LLM] Success with OpenRouter model: ${modelName}`);
-        return result;
-      } catch (err) {
-        lastError = err;
-        console.warn(`[LLM] OpenRouter model ${modelName} attempt ${attempt} failed:`, err.message);
-        if (attempt === 1 && (err.message.includes('429') || err.message.includes('rate'))) {
-          await sleep(2000);
-        }
-      }
+    try {
+      console.log(`[LLM] Trying OpenRouter model: ${modelName}`);
+      const result = await callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage);
+      console.log(`[LLM] Success with OpenRouter model: ${modelName}`);
+      return result;
+    } catch (err) {
+      lastError = err;
+      console.warn(`[LLM] OpenRouter model ${modelName} failed:`, err.message);
     }
   }
 

@@ -2460,7 +2460,6 @@ function initChatbot() {
   }
 
   function toDisplayText(text) {
-    if (typeof text === 'string') return text;
     if (text == null) return '';
     if (typeof text === 'object') {
       if (typeof text.reply === 'string') return text.reply;
@@ -2469,6 +2468,21 @@ function initChatbot() {
       } catch {
         return String(text);
       }
+    }
+    if (typeof text === 'string') {
+      let str = text.trim();
+      if (str.startsWith('{') || str.includes('"reply"')) {
+        try {
+          const parsed = JSON.parse(str);
+          if (parsed && typeof parsed.reply === 'string') return parsed.reply;
+        } catch {
+          const match = str.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/s);
+          if (match && match[1]) {
+            return match[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
+          }
+        }
+      }
+      return str;
     }
     return String(text);
   }
