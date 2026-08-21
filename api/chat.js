@@ -682,12 +682,41 @@ function getProfileResponse(lang) {
   };
 }
 
+function isOutOfScopeQuestion(message) {
+  const lower = String(message || '').toLowerCase().trim();
+  const outOfScopePatterns = [
+    /\b(resep|masak|rendang|nasi\s*goreng|bikin\s*kue|kuah)\b/i,
+    /\b(presiden|pemilu|politik|dpr|parlemen)\b/i,
+    /\b(cuaca|hujan|panas|ramalan\s*zodiak|horoskop)\b/i,
+    /\b(lirik\s*lagu|chord\s*gitar|main\s*game)\b/i
+  ];
+  return outOfScopePatterns.some(pattern => pattern.test(lower));
+}
+
+function getOutOfScopeResponse(lang) {
+  if (lang === 'jaksel' || lang === 'id') {
+    return {
+      reply: "Sebagai AI Assistant khusus Portofolio Fakhri Budiman, fokus utama saya adalah menjawab seputar **pengalaman, projek Data & AI (seperti ClinIQ RAG), skill teknis, latar belakang pendidikan di University of Warwick, serta kontak Fakhri**.\n\nAda projek atau skill Fakhri tertentu yang ingin kamu tanyakan? 🚀",
+      action: null
+    };
+  }
+  return {
+    reply: "As Fakhri Budiman's Portfolio AI Assistant, I am specialized in answering questions about **Fakhri's background, Data & AI projects (such as ClinIQ RAG), technical skills, Warwick MSc degree, and contact information**.\n\nFeel free to ask me anything about Fakhri's projects or skills! 🚀",
+    action: null
+  };
+}
+
 async function generateChatReply(apiKey, userMessage) {
   const lang = detectLanguageMode(userMessage);
 
   if (isContactQuestion(userMessage)) {
     const res = getContactTemplate(lang);
     return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_contact' };
+  }
+
+  if (isOutOfScopeQuestion(userMessage)) {
+    const res = getOutOfScopeResponse(lang);
+    return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_out_of_scope' };
   }
 
   if (isAiProjectQuestion(userMessage)) {
