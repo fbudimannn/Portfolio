@@ -28,6 +28,26 @@ window.buildPortalHTML = async function (portalId, fallbackHTML) {
   return buildExperienceHTML(fallbackHTML);
 };
 
+// Expose openProjectDetails globally for failsafe inline & dynamic card clicks
+window.openProjectDetails = openProjectDetails;
+
+// Top-level bulletproof capture-phase click listener for project cards
+window.addEventListener('click', (e) => {
+  const card = e.target.closest('.project-card');
+  if (!card) return;
+  if (e.target.closest('a') || e.target.closest('button')) return;
+
+  const projectId = card.getAttribute('data-id');
+  if (!projectId) return;
+
+  const proj = projectsData[projectId];
+  if (proj) {
+    openProjectDetails(projectId, proj);
+  } else {
+    console.warn('Project data not found for ID:', projectId);
+  }
+}, true);
+
 let pdfPopupDismissed = false;
 
 document.addEventListener('DOMContentLoaded', async () => {

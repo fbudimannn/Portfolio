@@ -316,7 +316,7 @@ export async function renderProjectCardsFromSupabase() {
 
       return `
         <div class="project-card" data-id="${p.slug}" data-accent="${accentNum}" data-categories="${p.filter_key || 'customer'}"
-          style="--accent-color: ${p.accent || 'var(--accent-customer)'}; --accent-rgb: ${p.accent_rgb || '168, 85, 247'};">
+          style="--accent-color: ${p.accent || 'var(--accent-customer)'}; --accent-rgb: ${p.accent_rgb || '168, 85, 247'}; cursor: pointer; pointer-events: auto;">
           ${bgImgHTML}
           <div class="card-meta">
             <span class="card-number">${String(p.display_order).padStart(2, '0')}</span>
