@@ -262,7 +262,7 @@ export const projectsData = {
     structure: 3,
     category: 'Applied AI',
     accent: 'var(--accent-ai)',
-    title: 'ClinIQ — Academic Medical Journal Research Assistant',
+    title: 'ClinIQ Academic Medical Journal Research Assistant',
     client: 'Self-Developed',
     timeline: '2025 - Present',
     role: 'Self-Developed',
