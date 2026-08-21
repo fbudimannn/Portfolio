@@ -207,33 +207,46 @@ function detectLanguageMode(message) {
     /\bbro+k?\b|\bbjir\b|\bgas+kan\b/i.test(lower)
   ) {
     return 'jaksel';
-  }
-
-  if (
-    /bahasa\s*indo(?:nesia)?|dalam\s*bahasa\s*indo|pakai\s*indo|jelaskan\s*dalam|gunakan\s*bahasa\s*indo/i.test(
-      lower
-    )
-  ) {
-    return 'id';
-  }
+  const jakselKeywords =
+    /\b(gue|lo|nih|banget|bro|gas|sip|oke|gw|dong|aja|bjir|anjay|parah|worth\s*it|rekomendasi)\b/i;
+  const jakselCount = (message.match(jakselKeywords) || []).length;
+  if (jakselCount >= 2) return 'jaksel';
 
   const idHints =
-    /\b(hai|halo|dong|gimana|kenapa|jelasin|jelaskan|bisa|tolong|contoh|projectnya|tentang|pakai|bahasa|kau|kamu|gue|gw|ga|gak|nggak|nih|banget|bro|brok|kah|ya|yg|aja|nih)\b/gi;
+    /\b(hai|halo|dong|gimana|kenapa|jelasin|jelaskan|bisa|tolong|contoh|projectnya|tentang|pakai|bahasa|kau|kamu|gue|gw|ga|gak|nggak|nih|banget|bro|brok|kah|ya|yg|aja|menurutmu|menurut|aku|kira|kirakira|khususnya|worth|hire|rekrut|apakah|bagus|layak)\b/gi;
   const enHints =
-    /\b(the|and|what|how|why|tell|about|please|could|would|your|projects|skills|experience|hiring|worth)\b/gi;
+    /\b(the|and|what|how|why|tell|about|please|could|would|your|projects|skills|experience)\b/gi;
 
   const idCount = (message.match(idHints) || []).length;
   const enCount = (message.match(enHints) || []).length;
 
-  if (idCount >= 2 && idCount >= enCount) return 'id';
-  if (enCount >= 2 && enCount > idCount) return 'en';
+  if (idCount >= 1 && idCount >= enCount) return 'id';
+  if (enCount >= 2 && enCount > idCount + 1) return 'en';
 
-  // Default: Indonesian if message has typical ID particles
-  if (/[áéíóú]|ng$|kah$|dong$|nih\b|gak\b|nggak\b/i.test(lower) || idCount >= 1) {
+  // Default: Indonesian if message has typical ID particles or words
+  if (/[áéíóú]|ng$|kah$|dong$|nih\b|gak\b|nggak\b|aku\b|menurut\b|bisa\b/i.test(lower) || idCount >= 1) {
     return 'id';
   }
 
-  return 'en';
+  return 'id';
+}
+
+function isHiringQuestion(message) {
+  const lower = String(message || '').toLowerCase();
+  return /\b(worth\s*it|hire|rekruit|rekrut|layak|hire\s*fakhri|hire\s*him|alasan\s*hire|alasan\s*memilih)\b/i.test(lower);
+}
+
+function getHiringResponse(lang) {
+  if (lang === 'jaksel' || lang === 'id') {
+    return {
+      reply: "Sangat **worth it**! 🚀 Berikut 4 alasan utama mengapa Fakhri Budiman sangat direkomendasikan untuk di-hire sebagai **Data / AI Analyst**:\n\n1. **Strong Academic Foundation (University of Warwick)**:\n   - MSc Business Analytics dari kampus Top UK dengan spesialisasi Advanced Data Mining, Machine Learning, dan Analytics in Practice.\n\n2. **Full-Stack Applied AI & RAG Specialist**:\n   - Mengembangkan **ClinIQ** (Medical RAG Platform yang mengindeks 300K+ abstrak PubMed di 34 spesialisasi medis) dari arsitektur backend FastAPI hingga frontend Next.js 15.\n\n3. **Proven Business & Analytics Track Record**:\n   - Pengalaman nyata mengerjakan E-commerce RFM Segmentation, App Funnel Journey Optimization, dan Financial Longform Text Summarization.\n\n4. **End-to-End Problem Solver**:\n   - Menguasai ekosistem data modern: Python, BigQuery, PostgreSQL/Supabase, Pinecone Vector DB, Tableau, FastAPI, dan Next.js.",
+      action: "navigate_to_skills"
+    };
+  }
+  return {
+    reply: "Absolutely **worth it**! 🚀 Here are 4 key reasons why Fakhri Budiman is a top candidate for a **Data / AI Analyst** role:\n\n1. **Strong Academic Foundation (University of Warwick)**:\n   - MSc in Business Analytics from a top UK university specializing in Data Mining, Machine Learning, and Analytics in Practice.\n\n2. **Full-Stack Applied AI & RAG Specialist**:\n   - Built **ClinIQ**, an Advanced Medical RAG engine indexing 300K+ PubMed abstracts across 34 clinical specialties.\n\n3. **Proven Business Impact**:\n   - Practical experience in E-commerce RFM User Segmentation, App Funnel Optimization, and Financial Text Summarization.\n\n4. **Comprehensive Tech Stack**:\n   - Skilled across the modern data lifecycle: Python, BigQuery, PostgreSQL/Supabase, Pinecone, Tableau, FastAPI, and Next.js.",
+    action: "navigate_to_skills"
+  };
 }
 
 function isContactQuestion(message) {
@@ -712,6 +725,11 @@ async function generateChatReply(apiKey, userMessage) {
   if (isContactQuestion(userMessage)) {
     const res = getContactTemplate(lang);
     return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_contact' };
+  }
+
+  if (isHiringQuestion(userMessage)) {
+    const res = getHiringResponse(lang);
+    return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_hiring' };
   }
 
   if (isOutOfScopeQuestion(userMessage)) {
