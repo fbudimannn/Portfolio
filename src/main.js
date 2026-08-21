@@ -2491,14 +2491,18 @@ function initChatbot() {
     }
     if (typeof text === 'string') {
       let str = text.trim();
+      if (str.startsWith('```')) {
+        str = str.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+      }
       if (str.startsWith('{') || str.includes('"reply"')) {
         try {
           const parsed = JSON.parse(str);
           if (parsed && typeof parsed.reply === 'string') return parsed.reply;
         } catch {
-          const match = str.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/s);
+          const match = str.match(/"reply"\s*:\s*"([\s\S]*)/i) || str.match(/"response"\s*:\s*"([\s\S]*)/i) || str.match(/"content"\s*:\s*"([\s\S]*)/i);
           if (match && match[1]) {
-            return match[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
+            let raw = match[1].replace(/"\s*\}?\s*$/, '');
+            return raw.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\t/g, '\t');
           }
         }
       }

@@ -482,9 +482,10 @@ function parseModelResponse(replyText) {
       return parsedResult;
     }
   } catch {
-    const match = cleanText.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/s);
+    const match = cleanText.match(/"reply"\s*:\s*"([\s\S]*)/i) || cleanText.match(/"response"\s*:\s*"([\s\S]*)/i) || cleanText.match(/"content"\s*:\s*"([\s\S]*)/i);
     if (match && match[1]) {
-      const extracted = match[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
+      let raw = match[1].replace(/"\s*\}?\s*$/, '');
+      const extracted = raw.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\t/g, '\t');
       return { reply: extracted, action: null };
     }
   }
@@ -525,7 +526,7 @@ async function callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage)
           { role: 'user', content: userMessage },
         ],
         temperature: 0.25,
-        max_tokens: 850,
+        max_tokens: 1500,
       }),
     });
 
@@ -564,7 +565,7 @@ async function callDirectGeminiModel(modelName, systemPrompt, userMessage) {
         ],
         generationConfig: {
           temperature: 0.25,
-          maxOutputTokens: 850,
+          maxOutputTokens: 1500,
           responseMimeType: 'application/json'
         }
       })
