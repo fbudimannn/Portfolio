@@ -1635,8 +1635,10 @@ function openProjectDetails(id, proj) {
     });
   }
 
-  // Suspend heavy Three.js animation rendering loop
-  pauseThreeBackground();
+  // Suspend heavy Three.js animation rendering loop if function exists
+  if (typeof window.pauseThreeBackground === 'function') {
+    window.pauseThreeBackground();
+  }
 
   // Slide-in animation using GSAP
   overlay.classList.add('active');
@@ -1682,8 +1684,10 @@ function closeProjectDetails() {
         onComplete: () => {
           overlay.classList.remove('active');
           document.body.style.overflow = '';
-          // Resume background Three.js loop
-          resumeThreeBackground();
+          // Resume background Three.js loop if function exists
+          if (typeof window.resumeThreeBackground === 'function') {
+            window.resumeThreeBackground();
+          }
           if (typeof ScrollTrigger !== 'undefined') {
             ScrollTrigger.refresh();
           }
