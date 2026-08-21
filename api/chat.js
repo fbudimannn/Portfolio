@@ -616,12 +616,40 @@ async function getSequentialModelReply(apiKey, systemPrompt, userMessage) {
   throw lastError || new Error('All candidate LLM providers failed');
 }
 
+function isProfileQuestion(message) {
+  return /\b(who\s*is\s*fakhri|about\s*fakhri|siapa\s*fakhri|profile\s*fakhri|tentang\s*fakhri|tell\s*me\s*about\s*fakhri)\b/i.test(message);
+}
+
+function getProfileResponse(lang) {
+  if (lang === 'jaksel') {
+    return {
+      reply: "Fakhri Budiman itu Data Analyst & AI Specialist lulusan MSc Business Analytics dari University of Warwick! 🚀\n\nDia banyak ngerjain project Applied AI & Analytics, salah satu karya terbarunya itu **ClinIQ — Academic Medical Journal Research Assistant** (Advanced RAG 34 domain & 300K+ PubMed abstracts). Ada juga F1 Bayesian Predictor & RFM Segmentation.",
+      action: "navigate_to_projects"
+    };
+  }
+  if (lang === 'id') {
+    return {
+      reply: "Fakhri Budiman adalah Data Analyst & AI Specialist lulusan MSc Business Analytics dari University of Warwick. 🚀\n\nFakhri berpengalaman membangun platform Applied AI & Data Analytics end-to-end. Projek terbarunya adalah **ClinIQ — Academic Medical Journal Research Assistant** yang mengindeks 300.000+ abstrak PubMed di 34 spesialisasi medis. Projek unggulan lainnya meliputi F1 Bayesian Predictor, RFM Segmentation, dan Longformer Financial Summarization.",
+      action: "navigate_to_projects"
+    };
+  }
+  return {
+    reply: "Fakhri Budiman is a Data Analyst & AI Specialist holding an MSc in Business Analytics from the University of Warwick. 🚀\n\nHe specializes in building full-stack Applied AI systems and Data Analytics pipelines. His flagship project is **ClinIQ — Academic Medical Journal Research Assistant**, an Advanced RAG engine indexing 300,000+ PubMed abstracts across 34 clinical specialties. Other key projects include the F1 Bayesian Predictor, RFM Customer Segmentation, and Financial Text Summarization.",
+    action: "navigate_to_projects"
+  };
+}
+
 async function generateChatReply(apiKey, userMessage) {
   const lang = detectLanguageMode(userMessage);
 
   if (isContactQuestion(userMessage)) {
     const res = getContactTemplate(lang);
     return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_contact' };
+  }
+
+  if (isProfileQuestion(userMessage)) {
+    const res = getProfileResponse(lang);
+    return { ...res, modelName: 'rule-based-fastpath', ragSource: 'system_profile' };
   }
 
   // Fast-path: instantly navigate if user is asking WHERE to view a section
@@ -634,33 +662,29 @@ async function generateChatReply(apiKey, userMessage) {
   const { systemPrompt, isDynamic } = await getSystemPromptWithSource();
   const augmented = buildAugmentedUserMessage(userMessage, lang, false);
 
-  const { modelName, replyText } = await getSequentialModelReply(apiKey, systemPrompt, augmented);
-  let parsed = parseModelResponse(replyText);
+  try {
+    const { modelName, replyText } = await getSequentialModelReply(apiKey, systemPrompt, augmented);
+    let parsed = parseModelResponse(replyText);
 
-  if (!isValidReply(parsed, lang)) {
-    console.warn('Reply failed validation, retrying with Gemma only');
-    const retryMessage = buildAugmentedUserMessage(userMessage, lang, true);
-    try {
-      const { replyText: retryText } = await callOpenRouterModel(
-        'google/gemma-4-26b-a4b-it:free',
-        apiKey,
-        systemPrompt,
-        retryMessage
-      );
-      const retryParsed = parseModelResponse(retryText);
-      if (isValidReply(retryParsed, lang)) {
-        parsed = retryParsed;
-      }
-    } catch (err) {
-      console.warn('Language retry failed:', err.message);
+    if (!isValidReply(parsed, lang)) {
+      console.warn('Reply failed validation, retrying formatting');
+      parsed = parseModelResponse(replyText);
     }
-  }
 
-  return {
-    ...parsed,
-    modelName: modelName || 'google/gemma-4-26b-a4b-it:free',
-    ragSource: isDynamic ? 'pgvector' : 'local_file'
-  };
+    return {
+      ...parsed,
+      modelName: modelName || 'google/gemini-3.6-flash',
+      ragSource: isDynamic ? 'pgvector' : 'local_file'
+    };
+  } catch (err) {
+    console.error('All model attempts failed in generateChatReply:', err.message);
+    const fallbackRes = getProfileResponse(lang);
+    return {
+      ...fallbackRes,
+      modelName: 'fallback-portfolio-fastpath',
+      ragSource: 'local_file'
+    };
+  }
 }
 
 export default async function handler(req, res) {
