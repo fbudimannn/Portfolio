@@ -25,6 +25,7 @@ const OPENROUTER_MODELS = [
   'openai/gpt-oss-120b:free',
   'meta-llama/llama-3.3-70b-instruct:free',
   'meta-llama/llama-3.2-3b-instruct:free',
+  'openrouter/free',
 ];
 
 const rateLimitStore = new Map();
