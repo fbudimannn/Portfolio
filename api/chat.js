@@ -11,9 +11,11 @@ const MAX_CONTEXT_CHARS = 14_000;
 const WHATSAPP_URL =
   'https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0';
 
-// Prioritized: Gemini 3.6 Flash
+// Direct Google AI Studio candidates (Gemini + Gemma versions matching ClinIQ RAG)
 const DIRECT_GOOGLE_MODELS = [
   'gemini-3.6-flash',
+  'gemma-4-31b-it',
+  'gemma-4-26b-a4b-it',
 ];
 
 // Only proven free models — fewer models = faster total fallback
