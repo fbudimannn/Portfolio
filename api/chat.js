@@ -11,16 +11,15 @@ const MAX_CONTEXT_CHARS = 14_000;
 const WHATSAPP_URL =
   'https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0';
 
-// Prioritized: Gemini Flash first (fastest), then one Gemma fallback
+// Prioritized: Gemini 3.6 Flash
 const DIRECT_GOOGLE_MODELS = [
   'gemini-3.6-flash',
-  'gemma-4-26b-a4b-it',
 ];
 
 // Only proven free models — fewer models = faster total fallback
 const OPENROUTER_MODELS = [
-  'meta-llama/llama-3.3-70b-instruct:free',
   'openrouter/free',
+  'meta-llama/llama-3.3-70b-instruct:free',
 ];
 
 const rateLimitStore = new Map();
@@ -505,7 +504,7 @@ async function callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage)
 }
 
 async function callDirectGeminiModel(modelName, systemPrompt, userMessage) {
-  const geminiApiKey = process.env.GEMINI_API_KEY;
+  const geminiApiKey = (process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.OPEN_ROUTER_KEY || '').trim();
   if (!geminiApiKey || geminiApiKey.length < 10) throw new Error('No valid GEMINI_API_KEY configured');
 
   const controller = new AbortController();
