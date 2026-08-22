@@ -172,12 +172,11 @@ When navigate_to_contact fires, ALWAYS include these links in the reply:
 - [GitHub](https://github.com/fbudimannn)
 
 LANGUAGE RULES (critical):
-- Reply in the SAME language/style as the user.
+- Reply in the SAME language/style requested by the user.
+- If the user asks in English or requests English ("answer in english"), you MUST translate all facts/content from the database into fluent, natural English. Never output Indonesian text when responding in English.
 - Indonesian question -> Indonesian answer.
 - Jaksel request -> casual Jakarta slang (gue/lo/nih/banget/gas/bro), stay factual.
-- English question -> English answer.
 - If user only asks whether you CAN use a language, confirm IN that language immediately. Example Jaksel: "Oke siap bro! Mau nanya apa nih tentang Fakhri? Gue jelasin pakai bahasa Jaksel ya."
-- Never reply in English when the user writes in Indonesian.
 - Never explain meta-capabilities — just answer.
 
 JAKSEL FEW-SHOT:
@@ -355,20 +354,23 @@ function looksLikeSchemaDump(reply) {
 }
 
 function isWrongLanguage(reply, lang) {
-  if (lang === 'en') return false;
-
   const lower = reply.toLowerCase();
-  const englishOpeners =
-    /^(sure!|sure,|i can|i'll|let me|here's|here is|of course|certainly|absolutely|i am|i'm)/i;
-  if (englishOpeners.test(reply.trim())) return true;
-
   const englishHeavy =
     /\b(the|and|your|projects|skills|experience|summary|overview|would|could|please|let me know)\b/gi;
   const indoHints =
-    /\b(yang|dan|dengan|untuk|dari|ini|itu|gue|lo|nih|banget|bro|project|proyek|jelasin|fakhri|data|analisis|skill|pengalaman|bisa|siap|sip|gas)\b/gi;
+    /\b(berikut|adalah|latar|belakang|mengenai|lulusan|dengan|predikat|penerima|beasiswa|pengalaman|keahlian|serta|pengembangan|yang|dan|untuk|dari|ini|itu|gue|lo|nih|banget|bro|project|proyek|jelasin|fakhri|data|analisis|skill|pengalaman|bisa|siap|sip|gas)\b/gi;
 
   const enCount = (reply.match(englishHeavy) || []).length;
   const idCount = (reply.match(indoHints) || []).length;
+
+  if (lang === 'en') {
+    // If user asked in English, reply must NOT be heavy Indonesian text from RAG
+    return idCount >= 3 && idCount > enCount;
+  }
+
+  const englishOpeners =
+    /^(sure!|sure,|i can|i'll|let me|here's|here is|of course|certainly|absolutely|i am|i'm)/i;
+  if (englishOpeners.test(reply.trim())) return true;
 
   if (lang === 'jaksel') {
     const jakselHints = /\b(gue|lo|nih|banget|bro|gas|sip|oke|gw|dong|aja|bjir)\b/i;
