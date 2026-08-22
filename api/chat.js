@@ -5,26 +5,21 @@ import { fileURLToPath } from 'url';
 const MAX_MESSAGE_LENGTH = 500;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 20;
-const MODEL_TIMEOUT_MS = 6_000;
+const MODEL_TIMEOUT_MS = 15_000;
 const MAX_CONTEXT_CHARS = 14_000;
 
 const WHATSAPP_URL =
   'https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0';
 
-// Sequential candidates matching exact ADVANCED_RAG backend strategy
+// Prioritized: Gemini Flash first (fastest), then one Gemma fallback
 const DIRECT_GOOGLE_MODELS = [
   'gemini-3.6-flash',
-  'gemma-4-31b-it',
   'gemma-4-26b-a4b-it',
 ];
 
+// Only proven free models — fewer models = faster total fallback
 const OPENROUTER_MODELS = [
-  'google/gemma-4-31b-it:free',
-  'google/gemma-4-26b-a4b-it:free',
-  'qwen/qwen3-next-80b-a3b-instruct:free',
-  'openai/gpt-oss-120b:free',
   'meta-llama/llama-3.3-70b-instruct:free',
-  'meta-llama/llama-3.2-3b-instruct:free',
   'openrouter/free',
 ];
 
@@ -552,9 +547,12 @@ async function callDirectGeminiModel(modelName, systemPrompt, userMessage) {
 
 async function getSequentialModelReply(apiKey, systemPrompt, userMessage) {
   let lastError = null;
+  const startTime = Date.now();
+  const TOTAL_BUDGET_MS = 50_000; // bail before Vercel's 60s maxDuration
 
   // 1. Direct Google AI Studio candidates
   for (const modelName of DIRECT_GOOGLE_MODELS) {
+    if (Date.now() - startTime > TOTAL_BUDGET_MS) break;
     try {
       console.log(`[LLM] Trying direct Google model: ${modelName}`);
       const result = await callDirectGeminiModel(modelName, systemPrompt, userMessage);
@@ -568,6 +566,7 @@ async function getSequentialModelReply(apiKey, systemPrompt, userMessage) {
 
   // 2. OpenRouter Candidates Fallback
   for (const modelName of OPENROUTER_MODELS) {
+    if (Date.now() - startTime > TOTAL_BUDGET_MS) break;
     try {
       console.log(`[LLM] Trying OpenRouter model: ${modelName}`);
       const result = await callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage);
