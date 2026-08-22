@@ -504,8 +504,10 @@ async function callOpenRouterModel(modelName, apiKey, systemPrompt, userMessage)
 }
 
 async function callDirectGeminiModel(modelName, systemPrompt, userMessage) {
-  const geminiApiKey = (process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.OPEN_ROUTER_KEY || '').trim();
-  if (!geminiApiKey || geminiApiKey.length < 10) throw new Error('No valid GEMINI_API_KEY configured');
+  const geminiApiKey = (process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '').trim();
+  if (!geminiApiKey || geminiApiKey.startsWith('sk-or-') || geminiApiKey.length < 10) {
+    throw new Error('No valid Google AI Studio GEMINI_API_KEY configured');
+  }
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), MODEL_TIMEOUT_MS);
