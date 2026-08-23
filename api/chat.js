@@ -16,10 +16,11 @@ const DIRECT_GOOGLE_MODELS = [
   'gemini-3.6-flash',
 ];
 
-// Only proven free models — fewer models = faster total fallback
+// Only proven live free models on OpenRouter — instant response (~1s)
 const OPENROUTER_MODELS = [
   'openrouter/free',
   'meta-llama/llama-3.3-70b-instruct:free',
+  'qwen/qwen-2.5-72b-instruct:free',
 ];
 
 const rateLimitStore = new Map();
@@ -28,11 +29,11 @@ let cachedSystemPrompt = null;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function getClientIp(req) {
-  const forwarded = req.headers['x-forwarded-for'];
+  const forwarded = req?.headers?.['x-forwarded-for'];
   if (typeof forwarded === 'string' && forwarded.length > 0) {
     return forwarded.split(',')[0].trim();
   }
-  return req.socket?.remoteAddress || 'unknown';
+  return req?.socket?.remoteAddress || 'unknown';
 }
 
 function isRateLimited(ip) {
@@ -527,10 +528,10 @@ function getFallbackOpenRouterKey() {
 
 async function callDirectGeminiModel(modelName, systemPrompt, userMessage) {
   let geminiApiKey = (process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '').trim();
-  if (!geminiApiKey || geminiApiKey.startsWith('sk-or-') || geminiApiKey.length < 10) {
+  if (!geminiApiKey || !geminiApiKey.startsWith('AIzaSy') || geminiApiKey.length < 10) {
     geminiApiKey = getFallbackGeminiKey();
   }
-  if (!geminiApiKey || geminiApiKey.length < 10) {
+  if (!geminiApiKey || !geminiApiKey.startsWith('AIzaSy')) {
     throw new Error('No valid Google AI Studio GEMINI_API_KEY configured');
   }
 
