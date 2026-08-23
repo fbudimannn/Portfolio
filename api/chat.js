@@ -5,17 +5,15 @@ import { fileURLToPath } from 'url';
 const MAX_MESSAGE_LENGTH = 500;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 20;
-const MODEL_TIMEOUT_MS = 15_000;
+const MODEL_TIMEOUT_MS = 8_000;
 const MAX_CONTEXT_CHARS = 14_000;
 
 const WHATSAPP_URL =
   'https://api.whatsapp.com/send/?phone=%2B6282227075226&text&type=phone_number&app_absent=0';
 
-// Direct Google AI Studio candidates (Gemini + Gemma versions matching ClinIQ RAG)
+// Ultra-fast primary direct model
 const DIRECT_GOOGLE_MODELS = [
   'gemini-3.6-flash',
-  'gemma-4-31b-it',
-  'gemma-4-26b-a4b-it',
 ];
 
 // Only proven free models — fewer models = faster total fallback
